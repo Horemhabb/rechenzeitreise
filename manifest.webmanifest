@@ -1,0 +1,30 @@
+{
+  "name": "Rechenzeitreise",
+  "short_name": "Rechenzeitreise",
+  "description": "Rechnen üben mit Geschichten, Tempeln und Welpen",
+  "lang": "de",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f1e3bf",
+  "theme_color": "#2a4f9e",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
