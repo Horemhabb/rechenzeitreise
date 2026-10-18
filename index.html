@@ -2765,7 +2765,7 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
   // ---------- LOGIK-ENDE ----------
 
   // ===================== APP: Speichern, Töne, Darstellung, Eingabe, Belohnungen, Eltern =====================
-  const VERSION = "2.1";
+  const VERSION = "2.1.1";
   const STORE_KEY = "rechenzeitreise-v1";
   const OLD_KEY = "rechen-geschichten-v1";
   const BACKUP_KEY = "rzr-backup-at";
@@ -3512,7 +3512,12 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
 </script>
 <script>
 if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "localhost")) {
-  window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
+  // Neue Fassung ohne Zutun: beim Zurückholen der App nachsehen, und wenn eine neue übernimmt, einmal neu laden
+  const hadSW = !!navigator.serviceWorker.controller;
+  navigator.serviceWorker.addEventListener("controllerchange", () => { if (hadSW) location.reload(); });
+  window.addEventListener("load", () => navigator.serviceWorker.register("sw.js", { updateViaCache: "none" }).then((reg) => {
+    document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") reg.update().catch(() => {}); });
+  }).catch(() => {}));
 }
 </script>
 </body>
