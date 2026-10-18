@@ -26,6 +26,7 @@
   --font-display: "Marcellus", "Palatino Linotype", Georgia, serif;
   --font-body: "Andika", "Trebuchet MS", system-ui, sans-serif;
   --font-hiero: "Noto Sans Egyptian Hieroglyphs", "Segoe UI Historic", "Apple Symbols", sans-serif;
+  --temple: var(--temple-day); --temple-op: .62;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
@@ -33,6 +34,7 @@
     --bg: #121a2c; --fiber: rgba(255, 255, 255, .025); --card: #1c2539; --card2: #222c43; --ink: #efe3c4; --muted: #b2a78d;
     --lapis: #8fb0ef; --lapis-soft: #263559; --turq: #5cc6b8; --turq-soft: #16393a; --carn: #f08d6c; --carn-soft: #452a21;
     --gold: #e8c158; --gold-bright: #e8c158; --gold-soft: #3c3119; --mark: #4a3e1a; --on: #111827; --veil: rgba(4, 7, 15, .74); --shadow: #05070d;
+    --temple: var(--temple-night); --temple-op: .55;
     color-scheme: dark;
   }
 }
@@ -40,6 +42,7 @@
   --bg: #121a2c; --fiber: rgba(255, 255, 255, .025); --card: #1c2539; --card2: #222c43; --ink: #efe3c4; --muted: #b2a78d;
   --lapis: #8fb0ef; --lapis-soft: #263559; --turq: #5cc6b8; --turq-soft: #16393a; --carn: #f08d6c; --carn-soft: #452a21;
   --gold: #e8c158; --gold-bright: #e8c158; --gold-soft: #3c3119; --mark: #4a3e1a; --on: #111827; --veil: rgba(4, 7, 15, .74); --shadow: #05070d;
+  --temple: var(--temple-night); --temple-op: .55;
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
@@ -49,6 +52,18 @@ body {
   margin: 0; background-color: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 17px; line-height: 1.5;
   background-image: repeating-linear-gradient(0deg, var(--fiber) 0 2px, transparent 2px 7px), repeating-linear-gradient(90deg, var(--fiber) 0 3px, transparent 3px 13px);
 }
+/* Tempel von Luxor als Wachsmalstift-Bild, fest hinter allem */
+body::before {
+  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: var(--temple-op);
+  background: var(--temple, none) center bottom / cover no-repeat;
+}
+@media (orientation: portrait) {
+  body::before { background-size: auto 62vh; -webkit-mask-image: linear-gradient(to bottom, transparent 36%, #000 58%); mask-image: linear-gradient(to bottom, transparent 36%, #000 58%); }
+}
+/* Flächen der Rechenseite lassen das Bild leicht durchscheinen */
+.app { --card: rgba(251, 244, 226, .88); --card2: rgba(244, 232, 204, .88); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .app { --card: rgba(28, 37, 57, .9); --card2: rgba(34, 44, 67, .9); } }
+:root[data-theme="dark"] .app { --card: rgba(28, 37, 57, .9); --card2: rgba(34, 44, 67, .9); }
 button, input, select, textarea { font: inherit; color: inherit; }
 button { cursor: pointer; }
 :focus-visible { outline: 3px solid var(--lapis); outline-offset: 3px; }
@@ -63,13 +78,16 @@ button { cursor: pointer; }
 .top { display: flex; flex-direction: column; gap: 8px; }
 .top-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 10px; }
 .brand { display: flex; align-items: center; gap: 10px; min-width: 0; flex-wrap: wrap; }
+/* Titel: zwei Sekunden gedrückt halten öffnet den Elternbereich */
+#brandTitle { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; touch-action: manipulation;
+  background: linear-gradient(var(--gold-bright), var(--gold-bright)) left bottom / 0% 3px no-repeat; padding-bottom: 3px; }
+#brandTitle.holding { background-size: 100% 3px; transition: background-size 2s linear; }
 h1 { font-family: var(--font-display); font-weight: 400; font-size: 1.75rem; margin: 0; line-height: 1.05; letter-spacing: .02em; color: var(--lapis); text-wrap: balance; }
 .cartouche {
   display: inline-flex; align-items: center; font-family: var(--font-hiero); font-size: 1.35rem; line-height: 1; padding: 3px 14px 3px 12px;
   border: 2.5px solid var(--ink); border-radius: 999px; background: var(--gold-soft); color: var(--ink); position: relative; letter-spacing: .04em; white-space: nowrap;
   font-size: 1.6rem; text-shadow: 0 0 .5px currentColor, 0 0 .5px currentColor, 0 0 .5px currentColor;
 }
-.cartouche::after { content: ""; position: absolute; right: -7px; top: 3px; bottom: 3px; width: 4px; background: var(--ink); border-radius: 2px; }
 .top-actions { display: flex; gap: 6px; flex-wrap: wrap; }
 .chip { background: var(--card); border: 2px solid var(--ink); border-radius: 999px; padding: 5px 11px; font-weight: 700; font-size: .88rem; white-space: nowrap; }
 .chip:active { transform: translateY(1px); }
@@ -227,7 +245,6 @@ table.plan caption { text-align: left; color: var(--muted); font-size: .85rem; p
   border-radius: 6px; border: 2px solid #6b4f22; box-shadow: 0 10px 30px rgba(0, 0, 0, .4), inset 0 0 40px rgba(120, 80, 20, .3); animation: pop .5s ease-out;
 }
 .papyrus .cartouche { background: #f6e7b8; border-color: #2b2118; color: #2b2118; }
-.papyrus .cartouche::after { background: #2b2118; }
 .doc-head { margin: 0; font-size: .8rem; letter-spacing: .14em; text-transform: uppercase; color: #8a3a22; font-weight: 700; }
 .papyrus h2 { font-family: var(--font-display); font-weight: 400; font-size: 1.7rem; margin: 0; color: #1f3d7a; }
 .doc-art { display: flex; align-items: flex-end; justify-content: center; gap: 12px; }
@@ -311,13 +328,12 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
     <div class="frieze" aria-hidden="true"></div>
     <div class="top-row">
       <div class="brand">
-        <h1>Rechenzeitreise</h1>
+        <h1 id="brandTitle">Rechenzeitreise</h1>
         <span class="cartouche" id="cartouche" hidden></span>
       </div>
       <div class="top-actions">
         <button class="chip" id="soundBtn" type="button" aria-pressed="true">Ton an</button>
         <button class="chip" id="collBtn" type="button">Schätze</button>
-        <button class="chip" id="parentsBtn" type="button">Eltern</button>
       </div>
     </div>
   </header>
@@ -2240,6 +2256,150 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
       `<rect x="${10 + i * w}" y="10" width="${w}" height="40" fill="${i < n ? "var(--lapis)" : "var(--card)"}" stroke="var(--ink)" stroke-width="2.2"/>`).join("")}</svg>`;
   }
 
+  // ---------- Hintergrund: Tempel von Luxor als Wachsmalstift-Zeichnung ----------
+  // Blick über die Sphinx-Allee auf den Pylon mit Obelisk, zwei Sitzfiguren und Fahnenmasten,
+  // dahinter die Papyrus-Säulen des Kolonnadenhofs, links der Nil, rechts Palmen.
+  // Flächen sind schräg schraffiert (zufällig, aber immer gleich), ein Filter macht die Striche wachsig und krakelig.
+  function templeBG(night) {
+    let seed = 7;
+    const rnd = () => { seed = (seed + 0x6d2b79f5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+    const j = (a) => (rnd() - .5) * 2 * a;
+    const f = (n) => Math.round(n * 10) / 10;
+    const P = night
+      ? { sky: "#3a4f8a", sky2: "#22305e", sun: "#f3e6b0", sand: "#8a7550", stone: "#b59a6a", stoneD: "#7d6847", granite: "#9a7f86", dark: "#1a1f33", line: "#e9dcb4", palm: "#5f8a6a", trunk: "#8a6a48", nile: "#4e6fb0", flag1: "#c98a7a", flag2: "#8fa8d8", star: "#f7ecc4" }
+      : { sky: "#8ec3e8", sky2: "#bfe0f2", sun: "#f5c33b", sand: "#e3b866", stone: "#e9c98c", stoneD: "#c99a55", granite: "#c98b7c", dark: "#6b4a2e", line: "#5a3d22", palm: "#4f9a4a", trunk: "#8b5a2b", nile: "#3f7fc8", flag1: "#d2452c", flag2: "#2a4f9e", star: "#fff" };
+    let defs = "", out = "", clipN = 0;
+    // Krakelige Linie durch Punkte, doppelt gezogen wie mit Wachsmalstift
+    const scrib = (pts, col, w = 3, close = false, op = 1) => {
+      let s = "";
+      for (let k = 0; k < 2; k++) {
+        const q = pts.map(([x, y]) => [f(x + j(1.6)), f(y + j(1.6))]);
+        if (close) q.push(q[0]);
+        s += `<path d="M${q.map((p) => p.join(" ")).join("L")}" stroke="${col}" stroke-width="${f(w * (k ? .7 : 1))}" opacity="${op}"/>`;
+      }
+      return s;
+    };
+    // Fläche schraffieren: viele schräge Striche, auf die Form zugeschnitten
+    const hatch = (shape, [x0, y0, x1, y1], col, gap = 7, ang = -28, w = 3, op = .75) => {
+      const id = `tb${night ? "n" : "d"}${clipN++}`;
+      defs += `<clipPath id="${id}">${shape}</clipPath>`;
+      const t = Math.tan(ang * Math.PI / 180), h = y1 - y0;
+      let s = "";
+      for (let x = x0 - Math.abs(t * h) - gap; x < x1 + Math.abs(t * h) + gap; x += gap + j(gap * .35)) {
+        const a = [x + j(2), y1 + 4], b = [x + t * (h + 8) + j(3), y0 - 4];
+        s += `<path d="M${f(a[0])} ${f(a[1])}L${f(b[0])} ${f(b[1])}" stroke="${col}" stroke-width="${f(w + j(.8))}" opacity="${f(op + j(.15))}"/>`;
+      }
+      return `<g clip-path="url(#${id})">${s}</g>`;
+    };
+    const poly = (pts) => `<polygon points="${pts.map((p) => p.join(",")).join(" ")}"/>`;
+    const box = (pts) => [Math.min(...pts.map((p) => p[0])), Math.min(...pts.map((p) => p[1])), Math.max(...pts.map((p) => p[0])), Math.max(...pts.map((p) => p[1]))];
+    const area = (pts, fill, line, gap, ang, w) => hatch(poly(pts), box(pts), fill, gap, ang, w) + (line ? scrib(pts, line, 3, true) : "");
+
+    // Himmel und Sonne bzw. Mond mit Sternen
+    out += hatch(`<rect x="0" y="0" width="1200" height="530"/>`, [0, 0, 1200, 530], P.sky2, 11, 64, 4, night ? .7 : .55);
+    out += hatch(`<rect x="0" y="0" width="1200" height="260"/>`, [0, 0, 1200, 260], P.sky, 13, 64, 4, night ? .7 : .45);
+    if (night) {
+      const moon = "M1015.1 132.6A46 46 0 1 1 973.9 64A40 40 0 0 0 1015.1 132.6Z";
+      out += hatch(`<path d="${moon}"/>`, [929, 64, 1021, 156], P.sun, 4, 30, 3, .95) + `<path d="${moon}" stroke="${P.sun}" stroke-width="3"/>`;
+      for (let k = 0; k < 34; k++) { const x = rnd() * 1200, y = rnd() * 230, r = 2 + rnd() * 3; out += scrib([[x - r, y], [x + r, y]], P.star, 2) + scrib([[x, y - r], [x, y + r]], P.star, 2); }
+    } else {
+      out += hatch(`<circle cx="975" cy="110" r="50"/>`, [925, 60, 1025, 160], P.sun, 5, 30, 3.5, .95) + scrib(Array.from({ length: 13 }, (_, k) => [975 + 50 * Math.cos(k / 12 * 2 * Math.PI), 110 + 50 * Math.sin(k / 12 * 2 * Math.PI)]), "#e08a1e", 3);
+      for (let k = 0; k < 12; k++) { const a = k / 12 * 2 * Math.PI; out += scrib([[975 + 64 * Math.cos(a), 110 + 64 * Math.sin(a)], [975 + 88 * Math.cos(a), 110 + 88 * Math.sin(a)]], "#e08a1e", 3.5); }
+    }
+    // Nil mit Segelboot (Feluke)
+    out += area([[0, 492], [330, 500], [300, 530], [0, 535]], P.nile, null, 6, -8, 3.5);
+    out += scrib([[60, 505], [140, 505], [128, 516], [72, 516]], P.dark, 3, true) + scrib([[100, 505], [100, 440]], P.dark, 2.5) + area([[102, 442], [142, 500], [102, 500]], P.line === "#5a3d22" ? "#fff8e6" : "#d8cfb4", P.dark, 5, 40, 2.5);
+    // Boden: Sand und die helle Allee
+    out += hatch(`<rect x="0" y="520" width="1200" height="180"/>`, [0, 520, 1200, 700], P.sand, 8, 58, 4, .8);
+    out += area([[250, 700], [950, 700], [640, 520], [560, 520]], night ? "#a08d66" : "#f1d79c", null, 7, 20, 3.5);
+
+    // Säulenhof hinter dem Pylon: Architrav und Papyrus-Säulen mit offenen Kapitellen
+    out += area([[860, 300], [1150, 300], [1150, 326], [860, 326]], P.stoneD, P.line, 6, -30, 3);
+    for (let x = 885; x <= 1130; x += 49) {
+      out += area([[x - 11, 520], [x - 11, 360], [x + 11, 360], [x + 11, 520]], P.stone, P.line, 6, -30, 3);
+      out += area([[x - 11, 360], [x - 22, 330], [x + 22, 330], [x + 11, 360]], P.stoneD, P.line, 5, 30, 3);
+      out += scrib([[x - 11, 372], [x + 11, 372]], P.line, 2) + scrib([[x - 11, 380], [x + 11, 380]], P.line, 2);
+    }
+    // Fahnenmasten mit Wimpeln (gehören zu den Nischen im Pylon)
+    for (const [x, c] of [[400, P.flag1], [470, P.flag2], [730, P.flag2], [800, P.flag1]]) {
+      out += scrib([[x, 520], [x, 120]], P.trunk, 4);
+      out += area([[x, 124], [x + 46, 134 + j(4)], [x + 40, 148], [x, 150]], c, null, 5, 50, 3);
+    }
+    // Pylon: zwei Türme mit schrägen Außenwänden, Hohlkehle oben, Tor in der Mitte
+    const towers = [[[310, 520], [345, 205], [565, 205], [565, 520]], [[635, 520], [635, 205], [855, 205], [890, 520]]];
+    for (const t of towers) out += area(t, P.stone, P.line, 7, -30, 3.5);
+    out += area([[338, 205], [342, 186], [570, 186], [568, 205]], P.stoneD, P.line, 5, 30, 3) + area([[632, 205], [630, 186], [858, 186], [862, 205]], P.stoneD, P.line, 5, 30, 3);
+    for (const x of [400, 470, 730, 800]) out += area([[x - 8, 520], [x - 8, 222], [x + 8, 222], [x + 8, 520]], P.stoneD, null, 4, 30, 2.5);
+    // Torbau und Durchgang
+    out += area([[560, 520], [560, 250], [640, 250], [640, 520]], P.stone, P.line, 6, -30, 3.5);
+    out += area([[553, 250], [556, 232], [644, 232], [647, 250]], P.stoneD, P.line, 5, 30, 3);
+    out += area([[578, 520], [578, 340], [622, 340], [622, 520]], P.dark, P.line, 4, -30, 3.5);
+    // Flachbilder: Register und kleine Zeichen in Spalten
+    for (const [x0, x1] of [[352, 552], [648, 845]]) {
+      out += scrib([[x0, 300], [x1, 300]], P.stoneD, 2) + scrib([[x0, 420], [x1, 420]], P.stoneD, 2);
+      for (let x = x0 + 12; x < x1 - 8; x += 20) {
+        if ([400, 470, 730, 800].some((q) => Math.abs(q - x) < 14)) continue;
+        for (let y = 318; y < 410; y += 22) {
+          const r = rnd();
+          out += r < .33 ? scrib([[x - 5, y], [x + 5, y], [x, y + 9]], P.stoneD, 2, true) : r < .66 ? scrib([[x - 5, y + 4], [x, y], [x + 5, y + 4], [x, y + 9]], P.stoneD, 2, true) : scrib([[x, y], [x, y + 10]], P.stoneD, 2) + scrib([[x - 5, y + 3], [x + 5, y + 3]], P.stoneD, 2);
+        }
+      }
+    }
+    // Zwei Sitzfiguren von Ramses II. vor dem Tor
+    for (const [cx, dir] of [[520, 1], [680, -1]]) {
+      const X = (dx) => cx + dx * dir;
+      out += area([[X(-36), 520], [X(-36), 492], [X(36), 492], [X(36), 520]], P.granite, P.line, 5, -30, 3);
+      out += area([[X(-30), 492], [X(-30), 440], [X(-2), 440], [X(-2), 470], [X(28), 470], [X(28), 492]], P.granite, P.line, 5, 30, 3);
+      out += area([[X(-30), 440], [X(-28), 398], [X(2), 398], [X(6), 440]], P.granite, P.line, 5, -30, 3);
+      out += area([[X(-30), 402], [X(-24), 362], [X(4), 362], [X(10), 402]], night ? "#c9b27a" : "#e7c25a", P.line, 4, 30, 3);
+      out += scrib([[X(-18), 366], [X(-18), 396], [X(-4), 396], [X(-4), 366]], P.line, 2, true);
+      for (let y = 368; y < 400; y += 7) out += scrib([[X(-28), y], [X(-20), y]], P.flag2, 2) + scrib([[X(-2), y], [X(6), y]], P.flag2, 2);
+    }
+    // Obelisk mit Spitze (der zweite steht heute in Paris)
+    out += area([[438, 520], [446, 150], [470, 150], [478, 520]], P.granite, P.line, 5, -30, 3.5);
+    out += area([[446, 150], [458, 124], [470, 150]], night ? "#e2c66e" : "#f0bf3a", P.line, 4, 30, 3);
+    for (let y = 172; y < 500; y += 24) out += rnd() < .5 ? scrib([[453, y], [463, y], [458, y + 10]], P.line, 2, true) : scrib([[458, y], [458, y + 12]], P.line, 2) + scrib([[453, y + 4], [463, y + 4]], P.line, 2);
+
+    // Sphinx-Allee: liegende Sphingen zu beiden Seiten, nach hinten kleiner
+    for (let k = 0; k < 6; k++) {
+      const t = k / 5, s = 1 - t * .72;
+      for (const side of [-1, 1]) {
+        const bx = 600 + side * (330 - 260 * t), by = 690 - 160 * t, X = (dx) => bx + side * dx * s, Y = (dy) => by + dy * s;
+        out += area([[X(-46), Y(0)], [X(-46), Y(-14)], [X(46), Y(-14)], [X(46), Y(0)]], P.stoneD, P.line, 5, -30, 2.6 * s + .8);
+        out += area([[X(-40), Y(-14)], [X(-36), Y(-34)], [X(-6), Y(-40)], [X(10), Y(-30)], [X(14), Y(-14)]], P.stone, P.line, 5, 30, 2.6 * s + .8);
+        out += area([[X(4), Y(-30)], [X(8), Y(-58)], [X(30), Y(-58)], [X(34), Y(-30)]], night ? "#c9b27a" : "#e7c25a", P.line, 4, -30, 2.4 * s + .8);
+        out += scrib([[X(14), Y(-14)], [X(44), Y(-14)]], P.line, 2.4 * s + .6);
+      }
+    }
+    // Palmen
+    for (const [x, y, s] of [[180, 545, 1], [1060, 548, 1.05], [1145, 560, .85], [255, 535, .75]]) {
+      const top = [x + 18 * s, y - 230 * s];
+      out += scrib([[x, y], [x + 6 * s, y - 80 * s], [x + 13 * s, y - 160 * s], top], P.trunk, 7 * s);
+      for (let k = 1; k < 10; k++) { const yy = y - k * 23 * s, xx = x + (top[0] - x) * k / 10; out += scrib([[xx - 5 * s, yy], [xx + 5 * s, yy - 4 * s]], P.dark, 2); }
+      for (const [dx, dy] of [[-80, 20], [-70, -10], [-30, -40], [30, -42], [75, -12], [85, 22], [0, -55]]) {
+        const ex = top[0] + dx * s, ey = top[1] + dy * s, mx = top[0] + dx * s * .5, my = top[1] + Math.min(dy, 0) * s * .6 - 18 * s;
+        out += scrib([top, [mx, my], [ex, ey]], P.palm, 6 * s);
+        for (let q = .3; q < 1; q += .14) { const px = top[0] + (ex - top[0]) * q, py = my + (ey - my) * q * q; out += scrib([[px, py], [px + j(6), py + 14 * s]], P.palm, 3 * s); }
+      }
+      out += scrib([[top[0] - 6, top[1] + 8], [top[0] + 6, top[1] + 10]], "#b5442a", 5 * s);
+    }
+
+    const filt = `<filter id="wachs${night ? "N" : "D"}" x="0" y="0" width="1200" height="700" filterUnits="userSpaceOnUse">
+<feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="4" result="n"/>
+<feDisplacementMap in="SourceGraphic" in2="n" scale="5" xChannelSelector="R" yChannelSelector="G" result="d"/>
+<feTurbulence type="fractalNoise" baseFrequency="0.75" numOctaves="1" seed="9" result="g"/>
+<feColorMatrix in="g" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -1.5 1.45" result="ga"/>
+<feComposite in="d" in2="ga" operator="in"/></filter>`;
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" preserveAspectRatio="xMidYMax slice"><defs>${filt}${defs}</defs><g filter="url(#wachs${night ? "N" : "D"})" fill="none" stroke-linecap="round" stroke-linejoin="round">${out}</g></svg>`;
+  }
+  // Einmal erzeugen und als Hintergrundbild hinterlegen (Tag und Nacht, das Stylesheet wählt)
+  try {
+    const url = (svg) => `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
+    const r = document.documentElement.style;
+    r.setProperty("--temple-day", url(templeBG(false)));
+    r.setProperty("--temple-night", url(templeBG(true)));
+  } catch (e) { /* ohne Hintergrundbild geht es auch */ }
+
   // ===================== LOGIK: Einstellungen, Lernstand, Auswahl, Stufe, Belohnungen (ohne Oberfläche) =====================
   const AREAS = TEMPLES.map((t) => t.id);
   const CFG_DEF = {
@@ -2605,7 +2765,7 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
   // ---------- LOGIK-ENDE ----------
 
   // ===================== APP: Speichern, Töne, Darstellung, Eingabe, Belohnungen, Eltern =====================
-  const VERSION = "2.0";
+  const VERSION = "2.1";
   const STORE_KEY = "rechenzeitreise-v1";
   const OLD_KEY = "rechen-geschichten-v1";
   const BACKUP_KEY = "rzr-backup-at";
@@ -3252,6 +3412,7 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
         <div class="reset-row" id="resetRow"><button class="link-btn" id="resetBtn" type="button">Alles zurücksetzen (Fortschritt, Schätze, Lernstand)</button></div>
       </section>
       ${!standalone && !inClaude() ? `<section class="psec"><h3>Auf den Home-Bildschirm</h3><p class="note">iPhone und iPad: In Safari auf das Teilen-Symbol (Quadrat mit Pfeil) tippen, dann „Zum Home-Bildschirm“. Danach immer über das neue Symbol starten. Die App läuft dann auch ohne Internet.</p></section>` : ""}
+      <p class="note">So kommst du wieder hierher: den Titel „Rechenzeitreise“ oben zwei Sekunden gedrückt halten. Oder <code>#eltern</code> an die Adresse anhängen.</p>
       <p class="note">Rechenzeitreise ${VERSION}</p>`;
     renderSaveStatus();
   }
@@ -3274,7 +3435,19 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
   }
   function openParents() { renderParents(); $("parents").hidden = false; $("parentsClose").focus(); }
   function closeParents() { $("parents").hidden = true; if (dirtyTask) { dirtyTask = false; newTask(); } }
-  $("parentsBtn").addEventListener("click", openParents);
+  // Versteckter Zugang: Titel zwei Sekunden gedrückt halten, oder die Adresse mit #eltern öffnen
+  const brand = $("brandTitle");
+  let holdT = null;
+  const holdEnd = () => { clearTimeout(holdT); holdT = null; brand.classList.remove("holding"); };
+  brand.addEventListener("pointerdown", (e) => {
+    if (e.button > 0) return;
+    holdEnd(); void brand.offsetWidth; brand.classList.add("holding");
+    holdT = setTimeout(() => { holdEnd(); openParents(); }, 2000);
+  });
+  ["pointerup", "pointerleave", "pointercancel"].forEach((ev) => brand.addEventListener(ev, holdEnd));
+  brand.addEventListener("contextmenu", (e) => e.preventDefault());
+  const hashOpen = () => { if (/^#eltern$/i.test(location.hash)) { try { history.replaceState(null, "", location.pathname + location.search); } catch (e) { /* egal */ } openParents(); } };
+  window.addEventListener("hashchange", hashOpen);
   $("parentsClose").addEventListener("click", closeParents);
   const pb = $("parentsBody");
   pb.addEventListener("change", (e) => {
@@ -3333,6 +3506,7 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
   renderProgress();
   newTask();
   initCloud();
+  hashOpen();
 
 })();
 </script>
