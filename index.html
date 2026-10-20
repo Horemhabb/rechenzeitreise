@@ -112,14 +112,22 @@ h1 { font-family: var(--font-display); font-weight: 400; font-size: 1.75rem; mar
 .s1 { background: #7a5a3a; color: #fff6e6; } .s2 { background: #d9c48b; color: #2b2118; } .s3 { background: #ece6d6; color: #2b2118; }
 .s4 { background: linear-gradient(135deg, #a98a8a, #6e5b5e 60%, #8d7676); color: #fff; } .s5 { background: linear-gradient(135deg, #ffe9a0, #e0ad2c 55%, #a87a12); color: #2b2118; }
 
-.temple-pick {
+.temple-pick, .rank-bar {
   display: flex; align-items: center; gap: 10px; text-align: left; background: var(--card2); border: 2px solid var(--ink); border-radius: 14px; padding: 6px 12px;
 }
-.temple-pick small { display: block; font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.temple-pick small, .rank-bar small { display: block; font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
 .temple-pick > span:nth-child(2) { flex: 1; min-width: 0; font-weight: 700; }
 .tp-seal { width: 34px; height: 34px; flex: none; display: grid; place-items: center; }
 .tp-seal svg { width: 34px; height: 34px; overflow: visible; }
 .tp-change { font-size: .82rem; color: var(--lapis); text-decoration: underline; white-space: nowrap; }
+/* Rangleiste: wo stehe ich, wie weit bis zum nächsten Rang */
+.rank-bar { background: var(--card); flex-wrap: wrap; row-gap: 2px; }
+.rank-bar .tp-change { margin-left: auto; }
+.rank-bar .rb-next { order: 3; flex-basis: 100%; }
+.rb-text { flex: none; } .rb-text b { font-family: var(--font-display); font-weight: 400; font-size: 1.15rem; color: var(--gold); }
+.rb-next { flex: 1; min-width: 0; font-size: .82rem; color: var(--muted); line-height: 1.3; }
+.minibar { display: block; height: 7px; border-radius: 99px; background: var(--card2); border: 1.5px solid var(--muted); overflow: hidden; margin-top: 4px; }
+.minibar > span { display: block; height: 100%; background: var(--gold-bright); }
 
 /* Aufgabe */
 .task { background: var(--card); border: 3px solid var(--ink); border-radius: 18px; box-shadow: 0 6px 0 var(--shadow); padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 12px; }
@@ -227,6 +235,9 @@ table.plan caption { text-align: left; color: var(--muted); font-size: .85rem; p
 .photo img, .photo svg { display: block; width: 100%; height: 100%; object-fit: cover; }
 .photo.gold { border: 5px solid var(--gold-bright); box-shadow: 0 0 0 3px var(--ink), 0 0 22px var(--gold-bright); }
 .photo.treasure { aspect-ratio: 1; max-width: 260px; }
+/* Großes Welpenfoto: immer das ganze Bild, nichts abgeschnitten */
+.photo.full { aspect-ratio: auto; width: fit-content; max-width: 100%; background: none; }
+.photo.full img { width: auto; height: auto; max-width: 100%; max-height: min(52vh, 400px); object-fit: contain; }
 .photo.stone { aspect-ratio: auto; border: 0; background: none; display: grid; place-items: center; }
 .stone-tile { width: 180px; height: 110px; border: 3px solid var(--ink); border-radius: 8px; display: grid; place-items: center; font-family: var(--font-display); font-size: 1.6rem; box-shadow: 0 6px 0 var(--shadow); margin: 0 auto; }
 .pup-name { font-family: var(--font-display); font-size: 1.35rem; }
@@ -267,10 +278,49 @@ table.plan caption { text-align: left; color: var(--muted); font-size: .85rem; p
 .career { display: flex; gap: 12px; align-items: center; text-align: left; width: 100%; }
 .career-art svg { width: 96px; height: auto; }
 .rank { font-family: var(--font-display); font-size: 1.5rem; margin: 0; color: var(--gold); }
-.ladder { list-style: none; padding: 0; margin: 8px 0; display: flex; flex-direction: column-reverse; gap: 4px; width: 100%; text-align: left; }
-.ladder li { padding: 4px 10px; border-radius: 8px; border: 2px solid var(--card2); color: var(--muted); }
-.ladder li.on { border-color: var(--gold); color: var(--ink); background: var(--gold-soft); font-weight: 700; }
+.ladder { list-style: none; padding: 0; margin: 4px 0; display: flex; flex-direction: column-reverse; gap: 4px; width: 100%; text-align: left; }
+.ladder li { padding: 5px 10px; border-radius: 8px; border: 2px solid var(--card2); color: var(--muted); display: flex; gap: 10px; align-items: baseline; }
+.ladder li > span:last-child { display: flex; flex-direction: column; }
+.ladder li.done { color: var(--ink); }
+.ladder li.done .lad-pts::after { content: " ✓"; color: var(--turq); }
+.ladder li.on { border-color: var(--gold); color: var(--ink); background: var(--gold-soft); }
 .ladder small { font-weight: 400; color: var(--muted); }
+.lad-pts { flex: none; width: 3.2em; font-weight: 700; font-variant-numeric: tabular-nums; }
+.lad-pts::before { content: "ab "; font-weight: 400; font-size: .8em; }
+.lad-about { margin-top: 2px; }
+/* Mein Weg */
+.coll-h { font-family: var(--font-display); font-weight: 400; font-size: 1.25rem; margin: 10px 0 0; width: 100%; text-align: left; color: var(--lapis); }
+.pts { width: 100%; text-align: left; } .pts p { margin: 6px 0 0; font-size: .92rem; }
+.pts-bar { position: relative; height: 16px; border: 2px solid var(--ink); border-radius: 99px; background: var(--card2); margin-top: 10px; }
+.pts-bar .fill { position: absolute; inset: 0 auto 0 0; border-radius: 99px; background: linear-gradient(90deg, var(--gold), var(--gold-bright)); }
+.pts-bar .tick { position: absolute; top: -6px; bottom: -6px; width: 3px; margin-left: -1.5px; background: var(--muted); border-radius: 2px; }
+.pts-bar .tick.on { background: var(--ink); }
+.speech { width: 100%; text-align: left; margin: 0; background: var(--card2); border: 2px solid var(--gold); border-radius: 12px; padding: 8px 12px; font-size: .95rem; }
+.howto { width: 100%; text-align: left; border: 2px dashed var(--muted); border-radius: 12px; padding: 6px 12px; }
+.howto summary { font-weight: 700; cursor: pointer; color: var(--lapis); }
+.how { margin: 8px 0; padding-left: 1.3em; display: flex; flex-direction: column; gap: 6px; font-size: .92rem; }
+.stars { color: var(--gold-bright); letter-spacing: .05em; white-space: nowrap; text-shadow: 0 0 1px var(--shadow); }
+.stars .off { color: var(--card2); text-shadow: 0 0 1px var(--muted); }
+.tc-text .goal { color: var(--ink); }
+.grade-steps, .skill-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 4px; font-size: .9rem; }
+.grade-steps li { padding: 3px 8px; border-radius: 8px; border: 2px solid var(--card2); color: var(--muted); }
+.grade-steps li.on { border-color: var(--gold); background: var(--gold-soft); color: var(--ink); }
+.goal-line { background: var(--lapis-soft); border-radius: 10px; padding: 6px 10px; }
+.skill-list li { display: grid; grid-template-columns: 1fr auto; gap: 0 8px; padding: 6px 0; border-bottom: 1px dashed var(--muted); }
+.skill-list li.locked { opacity: .6; }
+.sk-name small { color: var(--muted); }
+.sk-next { grid-column: 1 / -1; color: var(--muted); }
+.star-up { margin: 0; background: var(--gold-soft); border: 2px solid var(--gold); border-radius: 12px; padding: 6px 10px; }
+.star-up small { display: block; color: var(--muted); }
+/* Pharaonen */
+.ruler-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; width: 100%; }
+.ruler-card { display: flex; flex-direction: column; align-items: center; gap: 2px; border: 2px solid var(--ink); border-radius: 12px; background: var(--card2); padding: 8px; text-align: center; }
+.ruler-card small { color: var(--muted); font-size: .78rem; line-height: 1.25; }
+.rc-art svg { width: 84px; height: auto; }
+.ruler-card.locked { border-style: dashed; border-color: var(--muted); }
+.ruler-card.locked .rc-art { filter: grayscale(1) brightness(.35) opacity(.55); }
+.detail-ruler svg { width: 150px; height: auto; }
+.doc-why { display: block; margin-top: 8px; font-size: .92rem; }
 .temple-list, .temple-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 8px; width: 100%; }
 .temple-card { display: flex; align-items: center; gap: 8px; text-align: left; border: 2px solid var(--ink); border-radius: 12px; background: var(--card2); padding: 4px 8px; min-width: 0; }
 .temple-card.on { border-color: var(--lapis); box-shadow: 0 0 0 3px var(--lapis-soft); }
@@ -344,6 +394,7 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
     <button class="stufe" id="stufeBadge" type="button" aria-label="Deine Stufe"></button>
   </section>
 
+  <button class="rank-bar" id="rankBar" type="button"></button>
   <button class="temple-pick" id="templeBtn" type="button"></button>
 
   <main class="task" id="task"></main>
@@ -382,7 +433,8 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
     <div class="tabs" role="tablist">
       <button class="tab" role="tab" data-tab="pups" type="button">Welpen</button>
       <button class="tab" role="tab" data-tab="gold" type="button">Gold</button>
-      <button class="tab" role="tab" data-tab="temples" type="button">Tempel</button>
+      <button class="tab" role="tab" data-tab="weg" type="button">Mein Weg</button>
+      <button class="tab" role="tab" data-tab="pharao" type="button">Pharaonen</button>
       <button class="tab" role="tab" data-tab="docs" type="button">Urkunden</button>
     </div>
     <p class="note" id="collInfo"></p>
@@ -463,8 +515,9 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
   const frH = (n, d) => `<span class="fr"><span>${n}</span><span>${d}</span></span>`;
 
   // ===================== Das alte Ägypten: Tempel, Laufbahn, Herrscher, Goldschätze =====================
-  // Jeder Aufgabenbereich gehört zu einem Tempel. Grade je Tempel (Novizin, Priesterin, Hohepriesterin)
-  // ergeben zusammen die Laufbahn von der Schreiberschülerin bis zur Pharaonin.
+  // Jeder Aufgabenbereich gehört zu einem Tempel. Jede Aufgabenart sammelt bis zu drei Sterne,
+  // Sterne ergeben den Grad im Tempel (Novizin, Priesterin, Hohepriesterin = 1, 2, 3 Punkte),
+  // die Punkte aller Tempel zusammen die Laufbahn von der Schreiberschülerin bis zur Pharaonin.
   const TEMPLES = [
     { id: "text", god: "ra", area: "Textaufgaben", short: "Geschichten",
       why: "Ra fährt jeden Tag mit seiner Sonnenbarke über den Himmel. So reisen auch die Rechen-Geschichten durch Märkte, Gärten und Zeiten." },
@@ -512,15 +565,30 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
       story: "Die Ägypter glaubten, der Klang ihres Sistrums vertreibe schlechte Laune und alles Böse. Bei ihren Festen wurde gesungen, getanzt und gelacht." },
   };
 
-  // Laufbahn: Punkte = Summe aller Tempelgrade (je Tempel 0 bis 3)
+  // Laufbahn: Punkte = Summe aller Tempelgrade (je Tempel 0 bis 3, zusammen höchstens 24).
+  // Jeden Rang verleiht eine Herrscherin oder ein Herrscher. about: was das im alten Ägypten war.
   const RANKS = [
-    { min: 0, f: "Schreiberschülerin", m: "Schreiberschüler", ruler: null },
-    { min: 2, f: "Schreiberin", m: "Schreiber", ruler: "cheops" },
-    { min: 6, f: "Oberschreiberin", m: "Oberschreiber", ruler: "nofretete" },
-    { min: 12, f: "Wesirin", m: "Wesir", ruler: "ramses" },
-    { min: 18, f: "Pharaonin", m: "Pharao", ruler: "hatschepsut" },
+    { min: 0, f: "Schreiberschülerin", m: "Schreiberschüler", ruler: null,
+      about: "Du lernst im „Haus des Lebens“, der Schule der Schreiber: Hieroglyphen lesen, schreiben und rechnen." },
+    { min: 2, f: "Schreiberin", m: "Schreiber", ruler: "tutanchamun",
+      about: "Schreiber konnten lesen, schreiben und rechnen. Das konnten damals nur wenige. Sie zählten die Ernte und schrieben Briefe für den Pharao." },
+    { min: 5, f: "Oberschreiberin", m: "Oberschreiber", ruler: "nofretete",
+      about: "Die Oberschreiberin leitet eine ganze Schreibstube und prüft, ob alle richtig gerechnet haben." },
+    { min: 8, f: "Baumeisterin", m: "Baumeister", ruler: "cheops",
+      about: "Baumeister planten Pyramiden und Tempel. Dafür mussten sie messen, schätzen und sehr genau rechnen." },
+    { min: 12, f: "Schatzmeisterin", m: "Schatzmeister", ruler: "kleopatra",
+      about: "Die Schatzmeisterin verwaltet Gold, Korn und Steuern des ganzen Landes. Jede Zahl muss stimmen." },
+    { min: 16, f: "Wesirin", m: "Wesir", ruler: "ramses",
+      about: "Der Wesir war der wichtigste Berater des Pharaos und nach ihm der mächtigste Mensch im Land." },
+    { min: 20, f: "Pharaonin", m: "Pharao", ruler: "hatschepsut",
+      about: "Die Pharaonin regiert ganz Ägypten. Hatschepsut war eine der wenigen Frauen, die das geschafft haben." },
   ];
+  const MAX_POINTS = 24;
+  // Ränge der ersten Fassung (0 bis 4) auf die heutigen umschreiben: gleicher Name, neue Nummer
+  const OLD_RANK = [0, 1, 2, 5, 6];
   const GRADES = { f: ["", "Novizin", "Priesterin", "Hohepriesterin"], m: ["", "Novize", "Priester", "Hohepriester"] };
+  const GRADE_ABOUT = ["", "neu in den Tempel aufgenommen", "kennt sich im Tempel gut aus", "Meisterin des Tempels"];
+  const GRADE_ABOUT_M = ["", "neu in den Tempel aufgenommen", "kennt sich im Tempel gut aus", "Meister des Tempels"];
   const SEALS = ["", "Bronze", "Silber", "Gold"];
 
   const RULERS = {
@@ -606,56 +674,58 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
     { id: "yorkshire-terrier", name: "Yorkshire Terrier", credit: { author: "Kadoda 03", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File:6-month-old_Yorkshire_Terrier_on_pink_blanket.jpg" }, fact: "Stammt aus der Grafschaft Yorkshire in England, wo er früher Ratten jagte. Ausgewachsen wiegt er oft nur gut 3 kg." },
     { id: "dackel", name: "Dackel", credit: { author: "Vassarboy11", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File:Black_and_Tan_Dachshund_-_Sept_2013.jpg" }, fact: "Ein deutscher Jagdhund mit kurzen Beinen. Er sollte in Dachs- und Fuchsbaue kriechen, daher sein Name „Dachshund“." },
     { id: "labrador", name: "Labrador Retriever", credit: { author: "gene3", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File:Moose_and_Friends_006.jpg" }, fact: "Seine Vorfahren stammen aus Neufundland in Kanada, gezüchtet wurde er in England. Er schwimmt gern und arbeitet oft als Blindenführhund." },
-    { id: "border-collie", name: "Border Collie", credit: { author: "Victoria Little", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3ABordercolliepup.jpg" }, fact: "Ein Hütehund aus dem Grenzland („Border“) zwischen England und Schottland. Er gilt als einer der klügsten Hunde." },
-    { id: "jack-russell", name: "Jack Russell Terrier", credit: { author: "Drumz0rz", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3AIrishjack.jpg" }, fact: "Benannt nach dem englischen Pfarrer John Russell, der ihn für die Fuchsjagd züchtete. Klein, aber unglaublich ausdauernd." },
-    { id: "beagle", name: "Beagle", credit: { author: "Adrian Flint", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3ABeagle_puppy_6_weeks.JPG" }, fact: "Ein Laufhund aus England mit einer großartigen Nase. Früher jagte er im Rudel Hasen." },
+    { id: "border-collie", name: "Border Collie", credit: { author: "Victoria Little", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3ABordercolliepup.jpg" }, fact: "Ein Hütehund aus dem Grenzland („Border“) zwischen England und Schottland. Er gilt als einer der klügsten Hunde.", pos: "71% 50%" },
+    { id: "jack-russell", name: "Jack Russell Terrier", credit: { author: "Drumz0rz", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3AIrishjack.jpg" }, fact: "Benannt nach dem englischen Pfarrer John Russell, der ihn für die Fuchsjagd züchtete. Klein, aber unglaublich ausdauernd.", pos: "1% 50%" },
+    { id: "beagle", name: "Beagle", credit: { author: "Adrian Flint", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3ABeagle_puppy_6_weeks.JPG" }, fact: "Ein Laufhund aus England mit einer großartigen Nase. Früher jagte er im Rudel Hasen.", pos: "70% 50%" },
     { id: "australian-shepherd", name: "Australian Shepherd", credit: { author: "freedomofminds", license: "CC0", url: "https://commons.wikimedia.org/wiki/File%3AAustralian_sheperd_welpe_wh%C3%BCndin_anushka.JPG" }, fact: "Trotz seines Namens wurde er vor allem in den USA zum Hütehund für Schafe. Viele haben blaue oder verschiedenfarbige Augen." },
     { id: "zwergspitz", name: "Zwergspitz", credit: { author: "The best is great", license: "CC0", url: "https://commons.wikimedia.org/wiki/File%3ABella_at_the_beach.jpg" }, fact: "Der kleinste Spitz: Ausgewachsen wiegt er oft nur 2 bis 3 kg. Sein englischer Name kommt von der Region Pommern." },
-    { id: "franzoesische-bulldogge", name: "Französische Bulldogge", credit: { author: "Hidix at da.wikipedia", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3AFrench_bulldog_Charlie.jpg" }, fact: "Erkennbar an ihren großen Fledermausohren. Sie stammt von kleinen englischen Bulldoggen ab, die in Frankreich sehr beliebt wurden." },
-    { id: "cocker-spaniel", name: "Englischer Cocker Spaniel", credit: { author: "Carlulu", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3AEnglish_Cocker_Spaniel_100_4228.JPG" }, fact: "Sein Name kommt von „woodcock“, der Waldschnepfe, die er früher aufspürte. Er hat lange, seidige Ohren." },
-    { id: "mops", name: "Mops", credit: { author: "unbekannt", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3APabloPug.JPG" }, fact: "Eine uralte Rasse aus China. Mit seinem faltigen Gesicht war er schon vor Hunderten Jahren am Kaiserhof beliebt." },
-    { id: "rottweiler", name: "Rottweiler", credit: { author: "gabeto20", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3AKimbo%2C_Rottweiler_de_4_Meses.jpg" }, fact: "Benannt nach der Stadt Rottweil in Baden-Württemberg. Früher trieb er für Metzger Rinder zum Markt." },
-    { id: "zwergschnauzer", name: "Zwergschnauzer", credit: { author: "Matthallett", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3A20050723_LunaHallett1.jpg" }, fact: "Kommt aus Deutschland und trägt einen typischen Bart. Er ist der kleinste der drei Schnauzer-Rassen." },
+    { id: "franzoesische-bulldogge", name: "Französische Bulldogge", credit: { author: "Hidix at da.wikipedia", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3AFrench_bulldog_Charlie.jpg" }, fact: "Erkennbar an ihren großen Fledermausohren. Sie stammt von kleinen englischen Bulldoggen ab, die in Frankreich sehr beliebt wurden.", pos: "100% 50%" },
+    { id: "cocker-spaniel", name: "Englischer Cocker Spaniel", credit: { author: "Carlulu", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3AEnglish_Cocker_Spaniel_100_4228.JPG" }, fact: "Sein Name kommt von „woodcock“, der Waldschnepfe, die er früher aufspürte. Er hat lange, seidige Ohren.", pos: "90% 50%" },
+    { id: "mops", name: "Mops", credit: { author: "unbekannt", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3APabloPug.JPG" }, fact: "Eine uralte Rasse aus China. Mit seinem faltigen Gesicht war er schon vor Hunderten Jahren am Kaiserhof beliebt.", pos: "50% 30%" },
+    { id: "rottweiler", name: "Rottweiler", credit: { author: "gabeto20", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3AKimbo%2C_Rottweiler_de_4_Meses.jpg" }, fact: "Benannt nach der Stadt Rottweil in Baden-Württemberg. Früher trieb er für Metzger Rinder zum Markt.", pos: "90% 50%" },
+    { id: "zwergschnauzer", name: "Zwergschnauzer", credit: { author: "Matthallett", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3A20050723_LunaHallett1.jpg" }, fact: "Kommt aus Deutschland und trägt einen typischen Bart. Er ist der kleinste der drei Schnauzer-Rassen.", pos: "50% 5%" },
     { id: "toller", name: "Nova Scotia Duck Tolling Retriever", credit: { author: "kallerna", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3ANovaScotiaDuckTollingRetrievercub.JPG" }, fact: "Der kleinste Retriever, aus Kanada. Er lockt Enten an, indem er am Ufer spielt: „to toll“ heißt „anlocken“." },
     { id: "dogge", name: "Deutsche Dogge", credit: { author: "Vannivanni", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3ACuccioloblu.JPG" }, fact: "Einer der größten Hunde der Welt: Ein ausgewachsener Rüde misst mindestens 80 cm, und zwar nur bis zur Schulter!" },
     { id: "deutsch-kurzhaar", name: "Deutsch Kurzhaar", credit: { author: "TruckMatt", license: "CC0", url: "https://commons.wikimedia.org/wiki/File%3A10_Week_Old_German_Shorthaired_Pointer_Puppy.jpg" }, fact: "Ein deutscher Jagdhund mit feiner Nase. Entdeckt er Wild, bleibt er stocksteif stehen und zeigt mit der Nase in die Richtung." },
-    { id: "basset", name: "Basset Hound", credit: { author: "eda", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3ABasset_hound_jeune.jpg" }, fact: "Ein Laufhund mit sehr langen Ohren und kurzen Beinen. „Bas“ ist Französisch und heißt „niedrig“." },
-    { id: "cavalier", name: "Cavalier King Charles Spaniel", credit: { author: "Sarah777", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3AMaxYoung03.jpg" }, fact: "Benannt nach dem englischen König Karl II., der diese kleinen Spaniels sehr liebte." },
-    { id: "berner-sennenhund", name: "Berner Sennenhund", credit: { author: "Amilligan", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3AXena15weeks2.jpg" }, fact: "Kommt aus der Schweiz, aus der Gegend um Bern. Früher zog er kleine Karren mit Milchkannen zur Käserei." },
+    { id: "basset", name: "Basset Hound", credit: { author: "eda", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3ABasset_hound_jeune.jpg" }, fact: "Ein Laufhund mit sehr langen Ohren und kurzen Beinen. „Bas“ ist Französisch und heißt „niedrig“.", pos: "0% 50%" },
+    { id: "cavalier", name: "Cavalier King Charles Spaniel", credit: { author: "Sarah777", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3AMaxYoung03.jpg" }, fact: "Benannt nach dem englischen König Karl II., der diese kleinen Spaniels sehr liebte.", pos: "100% 50%" },
+    { id: "berner-sennenhund", name: "Berner Sennenhund", credit: { author: "Amilligan", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3AXena15weeks2.jpg" }, fact: "Kommt aus der Schweiz, aus der Gegend um Bern. Früher zog er kleine Karren mit Milchkannen zur Käserei.", pos: "50% 0%" },
     { id: "boston-terrier", name: "Boston Terrier", credit: { author: "unbekannt", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3ABoston_Terrier_puppy_resting_on_the_grass.jpg" }, fact: "Stammt aus der Stadt Boston in den USA. Wegen seines schwarz-weißen Fells nennt man ihn auch den „amerikanischen Gentleman“." },
-    { id: "chow-chow", name: "Chow-Chow", credit: { author: "unbekannt", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3AGismo_the_Chow_Chow_puppy.jpg" }, fact: "Eine sehr alte Rasse aus China. Ausgewachsen hat er eine blauschwarze Zunge, aber Welpen kommen mit rosa Zunge auf die Welt." },
-    { id: "westie", name: "West Highland White Terrier", credit: { author: "Girino Vey!", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3AWestHighlandWhiteTerrierPuppy5MonthsOld.JPG" }, fact: "Ein kleiner weißer Terrier aus dem schottischen Hochland. Früher jagte er Füchse und Dachse in ihren Bauen." },
-    { id: "collie", name: "Langhaarcollie", credit: { author: "Kate McLeod", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3A6-month-old_dog.jpg" }, fact: "Ein schottischer Hütehund mit langem, prächtigem Fell. Durch die Filmhündin Lassie wurde er weltberühmt." },
-    { id: "malamute", name: "Alaskan Malamute", credit: { author: "unbekannt", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3AMalamute_pup.JPG" }, fact: "Einer der ältesten Schlittenhunde, benannt nach dem Volk der Mahlemiut in Alaska. Er zieht schwere Lasten über weite Strecken." },
-    { id: "shiba", name: "Shiba Inu", credit: { author: "unbekannt", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3AShiba_puppy_female_100_days_old.jpg" }, fact: "Eine uralte japanische Rasse und die kleinste der japanischen Spitzrassen. Er ist flink und putzt sich fast wie eine Katze." },
+    { id: "chow-chow", name: "Chow-Chow", credit: { author: "unbekannt", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3AGismo_the_Chow_Chow_puppy.jpg" }, fact: "Eine sehr alte Rasse aus China. Ausgewachsen hat er eine blauschwarze Zunge, aber Welpen kommen mit rosa Zunge auf die Welt.", pos: "50% 0%" },
+    { id: "westie", name: "West Highland White Terrier", credit: { author: "Girino Vey!", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3AWestHighlandWhiteTerrierPuppy5MonthsOld.JPG" }, fact: "Ein kleiner weißer Terrier aus dem schottischen Hochland. Früher jagte er Füchse und Dachse in ihren Bauen.", pos: "50% 30%" },
+    { id: "collie", name: "Langhaarcollie", credit: { author: "Kate McLeod", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3A6-month-old_dog.jpg" }, fact: "Ein schottischer Hütehund mit langem, prächtigem Fell. Durch die Filmhündin Lassie wurde er weltberühmt.", pos: "50% 10%" },
+    { id: "malamute", name: "Alaskan Malamute", credit: { author: "unbekannt", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3AMalamute_pup.JPG" }, fact: "Einer der ältesten Schlittenhunde, benannt nach dem Volk der Mahlemiut in Alaska. Er zieht schwere Lasten über weite Strecken.", pos: "0% 50%" },
+    { id: "shiba", name: "Shiba Inu", credit: { author: "unbekannt", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3AShiba_puppy_female_100_days_old.jpg" }, fact: "Eine uralte japanische Rasse und die kleinste der japanischen Spitzrassen. Er ist flink und putzt sich fast wie eine Katze.", pos: "50% 0%" },
     { id: "eurasier", name: "Eurasier", credit: { author: "unbekannt", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3AEurasier-puppies.jpg" }, fact: "Eine junge Rasse aus Deutschland, ab 1960 aus Wolfsspitz, Chow-Chow und später Samojede gezüchtet." },
-    { id: "ridgeback", name: "Rhodesian Ridgeback", credit: { author: "Sattei", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3ARhodesian_Ridgeback_Elsa.jpg" }, fact: "Kommt aus dem südlichen Afrika. Auf seinem Rücken wächst ein Streifen Fell gegen den Strich, der „Ridge“." },
-    { id: "airedale", name: "Airedale Terrier", credit: { author: "TytoAlba7346", license: "CC0", url: "https://commons.wikimedia.org/wiki/File%3AAiredale_Puppies.jpg" }, fact: "Der größte Terrier, auch „König der Terrier“ genannt. Er stammt aus dem Tal des Flusses Aire in England." },
+    { id: "ridgeback", name: "Rhodesian Ridgeback", credit: { author: "Sattei", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3ARhodesian_Ridgeback_Elsa.jpg" }, fact: "Kommt aus dem südlichen Afrika. Auf seinem Rücken wächst ein Streifen Fell gegen den Strich, der „Ridge“.", pos: "0% 50%" },
+    { id: "airedale", name: "Airedale Terrier", credit: { author: "TytoAlba7346", license: "CC0", url: "https://commons.wikimedia.org/wiki/File%3AAiredale_Puppies.jpg" }, fact: "Der größte Terrier, auch „König der Terrier“ genannt. Er stammt aus dem Tal des Flusses Aire in England.", pos: "50% 0%" },
     { id: "wolfsspitz", name: "Wolfsspitz", credit: { author: "Vanessa clausen", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3AWolf_Spitz.JPG" }, fact: "Er gehört zu den Deutschen Spitzen und ist einer der größten von ihnen. In den Niederlanden heißt er „Keeshond“." },
-    { id: "sheltie", name: "Shetland Sheepdog", credit: { author: "unbekannt", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3AHalla_070.jpg" }, fact: "Ein kleiner Hütehund von den Shetlandinseln vor Schottland. Er sieht aus wie ein Collie im Kleinformat." },
-    { id: "whippet", name: "Whippet", credit: { author: "Tux-Man", license: "CC0", url: "https://commons.wikimedia.org/wiki/File%3AWhippet_male_brindle_4.jpg" }, fact: "Ein Windhund aus England. Er kann über 50 km/h schnell rennen." },
-    { id: "samojede", name: "Samojede", credit: { author: "Ixthewiz", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3ANico8weeks4.jpg" }, fact: "Benannt nach einem Volk in Sibirien, mit dem er Rentiere hütete und Schlitten zog. Seine Mundwinkel zeigen das „Samojeden-Lächeln“." },
-    { id: "kuvasz", name: "Kuvasz", credit: { author: "Vkovesz", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3AKilenchetes_kuvaszk%C3%B6ly%C3%B6k.jpg" }, fact: "Ein großer weißer Hirtenhund aus Ungarn. Früher beschützte er Schafherden vor Wölfen." },
-    { id: "windspiel", name: "Italienisches Windspiel", credit: { author: "unbekannt", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3ABjanka_piano_retro.jpg" }, fact: "Der kleinste Windhund. Er war früher an vielen Königshöfen Europas beliebt." },
-    { id: "cairn", name: "Cairn Terrier", credit: { author: "unbekannt", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3A9_week_old_cairn_puppy.jpg" }, fact: "Ein kleiner, zotteliger Terrier aus Schottland. „Cairn“ heißt Steinhaufen, zwischen solchen Steinen jagte er. Toto aus dem „Zauberer von Oz“ war ein Cairn Terrier." },
+    { id: "sheltie", name: "Shetland Sheepdog", credit: { author: "unbekannt", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3AHalla_070.jpg" }, fact: "Ein kleiner Hütehund von den Shetlandinseln vor Schottland. Er sieht aus wie ein Collie im Kleinformat.", pos: "50% 0%" },
+    { id: "whippet", name: "Whippet", credit: { author: "Tux-Man", license: "CC0", url: "https://commons.wikimedia.org/wiki/File%3AWhippet_male_brindle_4.jpg" }, fact: "Ein Windhund aus England. Er kann über 50 km/h schnell rennen.", pos: "50% 0%" },
+    { id: "samojede", name: "Samojede", credit: { author: "Ixthewiz", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3ANico8weeks4.jpg" }, fact: "Benannt nach einem Volk in Sibirien, mit dem er Rentiere hütete und Schlitten zog. Seine Mundwinkel zeigen das „Samojeden-Lächeln“.", pos: "50% 0%" },
+    { id: "kuvasz", name: "Kuvasz", credit: { author: "Vkovesz", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3AKilenchetes_kuvaszk%C3%B6ly%C3%B6k.jpg" }, fact: "Ein großer weißer Hirtenhund aus Ungarn. Früher beschützte er Schafherden vor Wölfen.", pos: "90% 50%" },
+    { id: "windspiel", name: "Italienisches Windspiel", credit: { author: "unbekannt", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3ABjanka_piano_retro.jpg" }, fact: "Der kleinste Windhund. Er war früher an vielen Königshöfen Europas beliebt.", pos: "84% 50%" },
+    { id: "cairn", name: "Cairn Terrier", credit: { author: "unbekannt", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3A9_week_old_cairn_puppy.jpg" }, fact: "Ein kleiner, zotteliger Terrier aus Schottland. „Cairn“ heißt Steinhaufen, zwischen solchen Steinen jagte er. Toto aus dem „Zauberer von Oz“ war ein Cairn Terrier.", pos: "70% 50%" },
     { id: "english-setter", name: "English Setter", credit: { author: "unbekannt", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3A3-month-old_orange_belton_puppy%2C_relaxing_in_the_backyard.jpg" }, fact: "Ein eleganter englischer Jagdhund mit gesprenkeltem Fell. Spürt er Vögel auf, duckt er sich flach, daher der Name „Setter“." },
-    { id: "coton", name: "Coton de Tuléar", credit: { author: "janbystrom", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3ACotondetulearpuppy.jpg" }, fact: "Kommt von der Insel Madagaskar. „Coton“ heißt Baumwolle, so weich ist sein Fell." },
-    { id: "golden-retriever-2", name: "Golden Retriever", credit: { author: "Catherin 888", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File:Puppy-Golden-Retriever.JPG" }, fact: "Kommt aus Schottland. „Retriever“ heißt „Zurückbringer“: Er holt gern Dinge zurück und liebt das Wasser." },
+    { id: "coton", name: "Coton de Tuléar", credit: { author: "janbystrom", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3ACotondetulearpuppy.jpg" }, fact: "Kommt von der Insel Madagaskar. „Coton“ heißt Baumwolle, so weich ist sein Fell.", pos: "80% 50%" },
+    { id: "golden-retriever-2", name: "Golden Retriever", credit: { author: "Catherin 888", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File:Puppy-Golden-Retriever.JPG" }, fact: "Kommt aus Schottland. „Retriever“ heißt „Zurückbringer“: Er holt gern Dinge zurück und liebt das Wasser.", pos: "90% 50%" },
     { id: "pudel-2", name: "Pudel", credit: { author: "janot1943", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File:Chiots_de_caniche.jpg" }, fact: "Ursprünglich ein Wasserhund, der Enten aus dem Wasser holte. Den Pudel gibt es in vier Größen, vom Toy- bis zum Großpudel." },
     { id: "yorkshire-terrier-2", name: "Yorkshire Terrier", credit: { author: "Jkraybill", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File:Sam1.jpg" }, fact: "Stammt aus der Grafschaft Yorkshire in England, wo er früher Ratten jagte. Ausgewachsen wiegt er oft nur gut 3 kg." },
-    { id: "beagle-2", name: "Beagle", credit: { author: "unbekannt", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3ABeagle_puppy_Cadet_%28cropped%29.jpg" }, fact: "Ein Laufhund aus England mit einer großartigen Nase. Früher jagte er im Rudel Hasen." },
+    { id: "beagle-2", name: "Beagle", credit: { author: "unbekannt", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3ABeagle_puppy_Cadet_%28cropped%29.jpg" }, fact: "Ein Laufhund aus England mit einer großartigen Nase. Früher jagte er im Rudel Hasen.", pos: "50% 0%" },
     { id: "labrador-2", name: "Labrador Retriever", credit: { author: "Joseph Carr", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File:Seamus_Carr.JPG" }, fact: "Seine Vorfahren stammen aus Neufundland in Kanada, gezüchtet wurde er in England. Er schwimmt gern und arbeitet oft als Blindenführhund." },
     { id: "samojede-2", name: "Samojede", credit: { author: "Jrego", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3AFilhote03.jpg" }, fact: "Benannt nach einem Volk in Sibirien, mit dem er Rentiere hütete und Schlitten zog. Seine Mundwinkel zeigen das „Samojeden-Lächeln“." },
     { id: "basset-2", name: "Basset Hound", credit: { author: "Palmarin776", license: "CC0", url: "https://commons.wikimedia.org/wiki/File%3ABasset-hound-flower_20240122_by_Palmarin776.jpg" }, fact: "Ein Laufhund mit sehr langen Ohren und kurzen Beinen. „Bas“ ist Französisch und heißt „niedrig“." },
     { id: "berner-sennenhund-2", name: "Berner Sennenhund", credit: { author: "MarcellDuchardt", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3ABernerSennenhund_Welpe_9_Tibo_vom_Niederlausitzer_Heidepark.jpg" }, fact: "Kommt aus der Schweiz, aus der Gegend um Bern. Früher zog er kleine Karren mit Milchkannen zur Käserei." },
-    { id: "toller-2", name: "Nova Scotia Duck Tolling Retriever", credit: { author: "kallerna", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3ANova_Scotia_Duck-Tolling_Retriever_cub.jpg" }, fact: "Der kleinste Retriever, aus Kanada. Er lockt Enten an, indem er am Ufer spielt: „to toll“ heißt „anlocken“." },
-    { id: "boston-terrier-2", name: "Boston Terrier", credit: { author: "Jons63", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3ABoston_Terrier_3_Months.JPG" }, fact: "Stammt aus der Stadt Boston in den USA. Wegen seines schwarz-weißen Fells nennt man ihn auch den „amerikanischen Gentleman“." },
+    { id: "toller-2", name: "Nova Scotia Duck Tolling Retriever", credit: { author: "kallerna", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3ANova_Scotia_Duck-Tolling_Retriever_cub.jpg" }, fact: "Der kleinste Retriever, aus Kanada. Er lockt Enten an, indem er am Ufer spielt: „to toll“ heißt „anlocken“.", pos: "70% 50%" },
+    { id: "boston-terrier-2", name: "Boston Terrier", credit: { author: "Jons63", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3ABoston_Terrier_3_Months.JPG" }, fact: "Stammt aus der Stadt Boston in den USA. Wegen seines schwarz-weißen Fells nennt man ihn auch den „amerikanischen Gentleman“.", pos: "50% 0%" },
     { id: "chow-chow-2", name: "Chow-Chow", credit: { author: "unbekannt", license: "gemeinfrei", url: "https://commons.wikimedia.org/wiki/File%3AChow_chow_puppy.jpg" }, fact: "Eine sehr alte Rasse aus China. Ausgewachsen hat er eine blauschwarze Zunge, aber Welpen kommen mit rosa Zunge auf die Welt." },
   ];
   // Das Webapp-Paket ersetzt diese Zeile, damit dort nur frei lizenzierte Fotos dabei sind.
   PUPS.splice(0, PUPS.length, ...PUPS.filter((p) => p.credit));
   const PUP_BY_ID = Object.fromEntries(PUPS.map((p) => [p.id, p]));
   const pupSrc = (p) => `welpen/${p.id}.jpg`;
+  // pos: Bildausschnitt für quadratische Vorschaubilder, damit der Kopf zu sehen ist
+  const pupPos = (p) => p.pos || "50% 40%";
 
   // ===================== Textaufgaben (Vorlagen) =====================
   // Jede Vorlage baut bei jedem Aufruf eine neue Aufgabe mit neuen Zahlen. level 1 bis 3 = Teilschritte und Zahlengröße.
@@ -1606,6 +1676,130 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
     };
   });
 
+  // ===== Aufträge der Pharaonen: echte Herrscher, echte Zahlen (gerundet), dazu ausgedachte Mengen „in unserer Geschichte“ =====
+  add("ph-obelisk", "pharao", 1, () => {
+    const h = pick([2, 3, 5]);
+    return {
+      story: `Pharaonin ${M("Hatschepsut")} ließ im Tempel von Karnak einen Obelisken aufstellen, der ${M("etwa 30 m")} hoch ist. Er steht dort bis heute. In unserer Geschichte stellt sich eine Kindergruppe davor auf, und jedes Kind hält ein Schild hoch, das ${M(h + " m")} über dem Boden ist.`,
+      question: `Wie viele solche Schilder müsste man übereinander stapeln, um so hoch wie der Obelisk zu kommen?`,
+      answer: { type: "num", value: 30 / h, unit: "Schilder" },
+      given: ["Obelisk etwa 30 m", `ein Schild auf ${h} m Höhe`], wanted: "wie oft die Höhe in den Obelisken passt",
+      bild: "Stell dir den rosa Granit vor, der in der Sonne glänzt. Oben auf der Spitze war früher Gold.",
+      steps: [S(`Wie oft passt ${h} m in 30 m?`, `30 m : ${h} m = ?`, 30 / h, "")],
+      sentence: `Man bräuchte ${30 / h} Schilder übereinander.`,
+    };
+  });
+  add("ph-bueste", "pharao", 1, () => {
+    const k = pick([2, 3, 4]), part = { 2: "halb", 3: "ein Drittel", 4: "ein Viertel" }[k];
+    return {
+      story: `Die bemalte Büste der Königin ${M("Nofretete")} ist ${M("48 cm")} hoch. Sie steht im Neuen Museum in Berlin. Im Museumsladen gibt es eine kleine Nachbildung, die nur ${M(part + " so hoch")} ist.`,
+      question: "Wie hoch ist die Nachbildung?",
+      answer: { type: "num", value: 48 / k, unit: "cm" },
+      given: ["Büste 48 cm hoch", `Nachbildung ${part} so hoch`], wanted: "die Höhe der Nachbildung",
+      steps: [S(`${{ 2: "Halb", 3: "Ein Drittel", 4: "Ein Viertel" }[k]} so hoch heißt: durch ${k} teilen.`, `48 cm : ${k} = ? cm`, 48 / k, "")],
+      sentence: `Die Nachbildung ist ${48 / k} cm hoch.`,
+    };
+  });
+  add("ph-punt", "pharao", 2, () => {
+    const r = R(12, 18), sacks = pick([8, 10, 12, 15]);
+    return {
+      story: `Pharaonin ${M("Hatschepsut")} schickte ${M("5 Schiffe")} in das ferne Land Punt. In unserer Geschichte sitzen auf jedem Schiff ${M(r + " Ruderer")} auf jeder Seite, also links und rechts. Jedes Schiff bringt ${M(sacks + " Säcke Weihrauch")} zurück.`,
+      question: "Wie viele Ruderer sind auf allen Schiffen zusammen?",
+      answer: { type: "num", value: 5 * 2 * r, unit: "Ruderer" },
+      given: ["5 Schiffe", `je Seite ${r} Ruderer`, "2 Seiten"], wanted: "alle Ruderer zusammen",
+      bild: "Stell dir die Schiffe vor, wie sie mit Segeln und vielen Rudern über das Meer fahren. Die Reise ist auf den Wänden ihres Tempels abgebildet.",
+      steps: [
+        S("Wie viele Ruderer sitzen auf einem Schiff?", `2 · ${r} = ? Ruderer`, 2 * r, ""),
+        S("Und auf allen 5 Schiffen?", `5 · ${2 * r} = ? Ruderer`, 10 * r, "", "Tipp: Erst mal 10, dann die Hälfte."),
+      ],
+      sentence: `Auf allen Schiffen rudern ${10 * r} Menschen. Die Weihrauchsäcke waren eine überflüssige Angabe.`,
+    };
+  });
+  add("ph-tut-schatz", "pharao", 2, () => {
+    const d = pick([20, 25, 40, 50]);
+    return {
+      story: `Im Grab von ${M("Tutanchamun")} fanden Forscher 1922 über 5000 Schätze. In unserer Geschichte schreibt das Forscherteam jeden Tag ${M(d + " Gegenstände")} in seine Liste, bis ${M("5000")} erreicht sind.`,
+      question: "Wie viele Tage braucht das Team dafür?",
+      answer: { type: "num", value: 5000 / d, unit: "Tage" },
+      given: ["5000 Gegenstände", `${d} pro Tag`], wanted: "die Zahl der Tage",
+      bild: "Stell dir die Kammer voller goldener Möbel, Wagen, Schmuck und Krüge vor, alles dicht gestapelt.",
+      steps: [S(`Wie oft passt ${d} in 5000?`, `5000 : ${d} = ? Tage`, 5000 / d, "", `Rechne erst 1000 : ${d} = ${1000 / d}, dann mal 5.`)],
+      sentence: `Das Team braucht ${5000 / d} Tage. In Wirklichkeit dauerte es fast zehn Jahre, weil jedes Stück vorsichtig gezeichnet, fotografiert und verpackt wurde.`,
+    };
+  });
+  add("ph-muenzen", "pharao", 2, () => {
+    const b = pick([4, 5, 6, 8]), m = pick([25, 40, 50, 75]), aus = 10 * R(3, Math.floor(b * m / 10) - 3);
+    return {
+      story: `Die Schatzmeisterin von ${M("Kleopatra")} zählt Silbermünzen mit dem Bild der Königin. Sie hat ${M(b + " Beutel")} mit je ${M(m + " Münzen")}. Für Getreide gibt sie ${M(aus + " Münzen")} aus.`,
+      question: "Wie viele Münzen bleiben in der Schatzkammer?",
+      answer: { type: "num", value: b * m - aus, unit: "Münzen" },
+      given: [`${b} Beutel`, `je ${m} Münzen`, `${aus} ausgegeben`], wanted: "die Münzen, die bleiben",
+      steps: [
+        S("Wie viele Münzen sind es am Anfang?", `${b} · ${m} = ? Münzen`, b * m, ""),
+        S("Wie viele bleiben nach dem Einkauf?", `${b * m} − ${aus} = ? Münzen`, b * m - aus, ""),
+      ],
+      sentence: `Es bleiben ${b * m - aus} Münzen.`,
+    };
+  });
+  add("ph-abusimbel", "pharao", 2, () => {
+    const k = pick([4, 7, 14, 28]);
+    return {
+      story: `Die Tempel von ${M("Ramses II.")} in Abu Simbel sollten in einem Stausee versinken. Darum zersägten Arbeiter sie in den 1960er-Jahren in ${M("1036 Blöcke")} und bauten sie weiter oben wieder auf. In unserer Geschichte bringen sie jeden Tag ${M(k + " Blöcke")} nach oben.`,
+      question: "Wie viele Tage dauert das?",
+      answer: { type: "num", value: 1036 / k, unit: "Tage" },
+      given: ["1036 Blöcke", `${k} Blöcke pro Tag`], wanted: "die Zahl der Tage",
+      bild: "Stell dir riesige Steinblöcke vor, jeder so schwer wie mehrere Lastwagen, die vorsichtig von Kränen gehoben werden.",
+      steps: [S(`Wie oft passt ${k} in 1036?`, `1036 : ${k} = ? Tage`, 1036 / k, "", k === 4 ? "Halbiere zweimal." : k === 28 ? "Teile erst durch 4, dann durch 7." : k === 14 ? "Teile erst durch 2, dann durch 7." : "Teile schriftlich: 10 : 7, dann 33 : 7 …")],
+      sentence: `Es dauert ${1036 / k} Tage.`,
+    };
+  });
+  add("ph-zeitleiste", "pharao", 3, () => {
+    const v = R(0, 3);
+    const info = "Vor Christi Geburt zählen die Jahre rückwärts: Das Jahr 1300 v. Chr. kommt vor dem Jahr 1200 v. Chr.";
+    if (v === 0) return {
+      story: `${M("Ramses II.")} wurde ${M("um 1279 v. Chr.")} Pharao und regierte ${M("66 Jahre")}, länger als fast jeder andere Pharao.`,
+      question: "In welchem Jahr endete seine Regierung? (Jahr vor Christus)",
+      answer: { type: "num", value: 1213, unit: "v. Chr." }, given: ["Beginn 1279 v. Chr.", "66 Jahre"], wanted: "das Jahr, in dem er starb",
+      steps: [SI(info), S("Rückwärts gezählt: 66 Jahre später ist die Jahreszahl um 66 kleiner.", "1279 − 66 = ?", 1213, "")],
+      sentence: "Seine Regierung endete um 1213 v. Chr.",
+    };
+    if (v === 1) return {
+      story: `${M("Tutanchamun")} wurde ${M("um 1332 v. Chr.")} Pharao. Da war er erst ${M("9 Jahre")} alt. Er starb ${M("um 1323 v. Chr.")}`,
+      question: "Wie alt wurde Tutanchamun ungefähr?",
+      answer: { type: "num", value: 18, unit: "Jahre" }, given: ["König 1332 v. Chr.", "da 9 Jahre alt", "gestorben 1323 v. Chr."], wanted: "sein Alter",
+      steps: [SI(info), S("Wie viele Jahre war er König?", "1332 − 1323 = ? Jahre", 9, ""), S("Wie alt war er am Ende?", "9 + 9 = ? Jahre", 18, "")],
+      sentence: "Tutanchamun wurde nur etwa 18 Jahre alt.",
+    };
+    if (v === 2) return {
+      story: `${M("Kleopatra VII.")} wurde ${M("69 v. Chr.")} geboren und starb ${M("30 v. Chr.")} Sie war die letzte Herrscherin des alten Ägypten.`,
+      question: "Wie alt wurde Kleopatra?",
+      answer: { type: "num", value: 39, unit: "Jahre" }, given: ["geboren 69 v. Chr.", "gestorben 30 v. Chr."], wanted: "ihr Alter",
+      steps: [SI(info), S("Wie viele Jahre liegen dazwischen?", "69 − 30 = ? Jahre", 39, "")],
+      sentence: "Kleopatra wurde 39 Jahre alt.",
+    };
+    return {
+      story: `${M("Cheops")} ließ die Große Pyramide bauen, ${M("um 2580 v. Chr.")} ${M("Kleopatra")} lebte ${M("um 50 v. Chr.")}`,
+      question: "Wie viele Jahre lagen ungefähr zwischen dem Bau der Pyramide und Kleopatra?",
+      answer: { type: "num", value: 2530, unit: "Jahre" }, given: ["Pyramide um 2580 v. Chr.", "Kleopatra um 50 v. Chr."], wanted: "der Abstand in Jahren",
+      steps: [SI(info), S("Rechne den Abstand:", "2580 − 50 = ? Jahre", 2530, "")],
+      sentence: "Dazwischen lagen etwa 2530 Jahre. Für Kleopatra war die Pyramide schon uralt, älter als sie es für uns ist!",
+    };
+  });
+  add("ph-pyramide", "pharao", 3, () => {
+    const j = pick([20, 25, 40]);
+    return {
+      story: `Für die Große Pyramide von ${M("Cheops")} brauchte man ungefähr ${M("2 300 000 Steinblöcke")}. Der Geschichtsschreiber Herodot erzählt, der Bau habe 20 Jahre gedauert. In unserer Geschichte dauert er ${M(j + " Jahre")}.`,
+      question: "Wie viele Blöcke müssen dann jedes Jahr verbaut werden?",
+      answer: { type: "num", value: 2300000 / j, unit: "Blöcke" },
+      given: ["2 300 000 Blöcke", `${j} Jahre`], wanted: "die Blöcke pro Jahr",
+      bild: "Stell dir die Baustelle vor: Rampen aus Lehm, Schlitten, Seile und Tausende Arbeiter.",
+      steps: j === 25
+        ? [S("Teile erst durch 100:", "2 300 000 : 100 = ?", 23000, ""), S("Dann mal 4 (denn 100 : 25 = 4):", "23 000 · 4 = ? Blöcke", 92000, "")]
+        : [S("Teile erst durch 10:", "2 300 000 : 10 = ?", 230000, ""), S(`Dann durch ${j / 10}:`, `230 000 : ${j / 10} = ? Blöcke`, 2300000 / j, "")],
+      sentence: `Das sind ${fz(2300000 / j)} Blöcke im Jahr.`,
+    };
+  });
+
   // Überflüssige Angaben für höhere Stufen: Sätze, die nichts mit der Rechnung zu tun haben
   const DISTRACT = {
     any: ["Draußen sind es 23 Grad.", "Das Haus hat 3 Stockwerke.", "Im Garten blühen 15 Tulpen.", "Der Bus hat die Nummer 61.",
@@ -1638,7 +1832,7 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
     // Höhere Stufen: eine überflüssige Angabe, die sie erkennen soll
     const pd = S >= 5 ? 0.6 : S >= 4 ? 0.4 : 0;
     if (Math.random() < pd && !t.noMarks) {
-      const d = pick(topic === "nil" ? DISTRACT.nil : DISTRACT.any);
+      const d = pick(topic === "nil" || topic === "pharao" ? DISTRACT.nil : DISTRACT.any);
       const i = t.story.search(/[.!]\s/);   // nach dem ersten Satz einfügen (ohne Lookbehind, das kennen ältere iPhones nicht)
       t.story = i >= 0 ? t.story.slice(0, i + 1) + " " + d + t.story.slice(i + 1) : t.story + " " + d;
       t.distractor = d;
@@ -1651,6 +1845,7 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
   textSkill("t_zeit", "zeit", "Zeit", "Fahrplan, Dauer, Ende", 1);
   textSkill("t_sach", "sach", "Sachaufgaben", "in Teilaufgaben zerlegen", 1);
   textSkill("t_nil", "nil", "Geschichten vom Nil", "Tausch, Ernte, Pyramiden", 2);
+  textSkill("t_pharao", "pharao", "Aufträge der Pharaonen", "Obelisk, Punt, Zeitleiste", 1);
 
   // ---------- Tempel des Thot: Einmaleins ----------
   sk("e_klein", "mal", "Kleines Einmaleins (6 bis 9)", "7 · 8", 1, () => {
@@ -1794,16 +1989,22 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
   });
   const CMP = ["kleiner <", "größer >", "gleich ="];
   const cmpOf = (x, y) => (Math.abs(x - y) < 1e-9 ? CMP[2] : x < y ? CMP[0] : CMP[1]);
+  const cmpWord = (x, y) => (Math.abs(x - y) < 1e-9 ? "genauso groß wie" : x < y ? "kleiner als" : "größer als");
   const lcm = (a, b) => (a * b) / gcd(a, b);
   sk("b_vgl", "bruch", "Brüche vergleichen", "⅔ und ¾", 2, () => {
     let d1, d2, n1, n2, L;
-    do { d1 = pick([2, 3, 4, 5, 6, 8]); d2 = pick([2, 3, 4, 5, 6, 8]); n1 = R(1, d1 - 1); n2 = R(1, d2 - 1); L = lcm(d1, d2); } while (L > 24 || (n1 === n2 && d1 === d2));
+    if (Math.random() < 0.25) {   // gleich groß: ein Bruch ist der erweiterte andere
+      do { d1 = pick([2, 3, 4, 5, 6]); n1 = R(1, d1 - 1); } while (gcd(n1, d1) !== 1);
+      const k = pick([2, 3, 4].filter((x) => d1 * x <= 12)); n2 = n1 * k; d2 = d1 * k;
+      if (Math.random() < 0.5) [n1, d1, n2, d2] = [n2, d2, n1, d1];
+      L = lcm(d1, d2);
+    } else do { d1 = pick([2, 3, 4, 5, 6, 8]); d2 = pick([2, 3, 4, 5, 6, 8]); n1 = R(1, d1 - 1); n2 = R(1, d2 - 1); L = lcm(d1, d2); } while (L > 24 || (n1 === n2 && d1 === d2));
     const steps = d1 === d2 ? [SC("Gleicher Nenner: Vergleiche nur die Zähler.", CMP, cmpOf(n1, n2))]
       : [S(`Bring beide auf den Nenner ${L}:`, `${frH(n1, d1)} = ${frH("?", L)}`, n1 * L / d1, ""),
         S("Und der zweite:", `${frH(n2, d2)} = ${frH("?", L)}`, n2 * L / d2, ""),
         SC(`Jetzt vergleiche ${n1 * L / d1} und ${n2 * L / d2} Teile:`, CMP, cmpOf(n1 / d1, n2 / d2))];
     return EQ(`${frH(n1, d1)} ☐ ${frH(n2, d2)}`, { type: "choice", options: CMP, value: cmpOf(n1 / d1, n2 / d2) }, steps,
-      { prompt: "Welches Zeichen gehört in das Kästchen?", explain: `${frH(n1, d1)} ist ${cmpOf(n1 / d1, n2 / d2).split(" ")[0]} als ${frH(n2, d2)}.` });
+      { prompt: "Welches Zeichen gehört in das Kästchen?", explain: `${frH(n1, d1)} ist ${cmpWord(n1 / d1, n2 / d2)} ${frH(n2, d2)}.` });
   });
   sk("b_gleich", "bruch", "Gleichnamige Brüche", "²⁄₇ + ³⁄₇", 2, () => {
     const d = pick([5, 6, 7, 8, 9, 10, 12]), plus = Math.random() < 0.55;
@@ -1848,14 +2049,17 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
     return EQ(`${frH(n, d)} = ?`, N(n / d), [S(d === 10 ? "Zehntel schreibt man mit einer Stelle nach dem Komma." : "Hundertstel brauchen zwei Stellen nach dem Komma.", `${frH(n, d)} = ?`, n / d, "", d === 100 && n < 10 ? `${n} Hundertstel = 0,0${n}` : null)], { prompt: "Schreib als Kommazahl." });
   });
   sk("k_vgl", "bruch", "Kommazahlen vergleichen", "0,5 und 0,45", 3, () => {
-    let x, y; do {
+    let x, y, same = Math.random() < 0.25;   // gleich: 0,5 und 0,50
+    const s2 = (v) => v.toFixed(2).replace(".", ",");
+    if (same) { x = R(0, 3) + R(1, 9) / 10; y = x; }
+    else do {
       const g = R(0, 3); const t1 = R(1, 9), h2 = R(10, 99);
       x = g + t1 / 10; y = g + h2 / 100; if (Math.random() < 0.5) [x, y] = [y, x];
     } while (Math.abs(x - y) < 1e-9);
-    const s2 = (v) => v.toFixed(2).replace(".", ",");
-    return EQ(`${fz(x)} ☐ ${fz(y)}`, { type: "choice", options: CMP, value: cmpOf(x, y) }, [
+    const sx = fz(x), sy = same ? s2(y) : fz(y), flip = same && Math.random() < 0.5;
+    return EQ(flip ? `${sy} ☐ ${sx}` : `${sx} ☐ ${sy}`, { type: "choice", options: CMP, value: cmpOf(x, y) }, [
       SI(`Hänge Nullen an, bis beide gleich viele Stellen haben: ${s2(x)} und ${s2(y)}. Jetzt kannst du die Hundertstel vergleichen: ${Math.round(x * 100)} und ${Math.round(y * 100)}.`),
-    ], { prompt: "Welches Zeichen gehört in das Kästchen?", explain: `${s2(x)} ist ${cmpOf(x, y).split(" ")[0]} als ${s2(y)}.` });
+    ], { prompt: "Welches Zeichen gehört in das Kästchen?", explain: `${s2(x)} ist ${cmpWord(x, y)} ${s2(y)}.` });
   });
   sk("k_plus", "bruch", "Kommazahlen plus und minus", "2,5 + 1,75", 4, () => {
     const plus = Math.random() < 0.55;
@@ -1946,20 +2150,21 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
     const r = hund ? Math.round(n / 100) * 100 : Math.round(n / 10) * 10, dig = hund ? Math.floor(n / 10) % 10 : n % 10;
     return EQ(`${n} ≈ ?`, N(r), [S(`Schau auf die ${hund ? "Zehner" : "Einer"}: ${dig}. Bei 0 bis 4 rundest du ab, bei 5 bis 9 auf.`, `${n} ≈ ?`, r, "")], { prompt: `Runde auf ${hund ? "Hunderter" : "Zehner"}.` });
   });
-  const opts3 = (v, step) => [`etwa ${fz(v - step)}`, `etwa ${fz(v)}`, `etwa ${fz(v + step)}`];
+  // Drei Antworten der Größe nach, die richtige an zufälliger Stelle (nicht immer in der Mitte)
+  const opts3 = (v, step) => { let k = R(0, 2); while (v - k * step <= 0) k--; return [0, 1, 2].map((i) => `etwa ${fz(v + (i - k) * step)}`); };
   sk("h_ueber", "schaetz", "Überschlagen (plus und minus)", "398 + 207 ≈ 600", 2, () => {
     const plus = Math.random() < 0.55;
     let a, b, ra, rb; do { a = R(120, 880); b = R(110, 480); ra = Math.round(a / 100) * 100; rb = Math.round(b / 100) * 100; } while ((plus ? ra + rb > 1100 : a <= b || ra - rb < 200) || Math.abs(a % 100 - 50) < 6 || Math.abs(b % 100 - 50) < 6);
     const v = plus ? ra + rb : ra - rb, o = opts3(v, 100), s = plus ? "+" : "−";
-    return EQ(`${a} ${s} ${b} ≈ ?`, { type: "choice", options: o, value: o[1] }, [
+    return EQ(`${a} ${s} ${b} ≈ ?`, { type: "choice", options: o, value: `etwa ${fz(v)}` }, [
       S(`Runde ${a} auf Hunderter:`, `${a} ≈ ?`, ra, ""), S(`Runde ${b} auf Hunderter:`, `${b} ≈ ?`, rb, ""),
       S("Jetzt rechne mit den runden Zahlen:", `${ra} ${s} ${rb} = ?`, v, ""),
     ], { prompt: "Ungefähr wie viel ist das? Überschlage, ohne genau zu rechnen.", explain: `Überschlag: ${ra} ${s} ${rb} = ${v}. Genau wären es ${plus ? a + b : a - b}.` });
   });
   sk("h_uebmal", "schaetz", "Überschlagen (mal)", "49 · 21 ≈ 1000", 3, () => {
     let a, b, ra, rb; do { a = R(12, 98); b = R(12, 98); ra = Math.round(a / 10) * 10; rb = Math.round(b / 10) * 10; } while (a % 10 === 5 || b % 10 === 5 || ra * rb < 300);
-    const v = ra * rb, o = [`etwa ${fz(v / 10)}`, `etwa ${fz(v)}`, `etwa ${fz(v * 10)}`];
-    return EQ(`${a} · ${b} ≈ ?`, { type: "choice", options: o, value: o[1] }, [
+    const v = ra * rb, k = R(0, 2), o = [0, 1, 2].map((i) => `etwa ${fz(v * 10 ** (i - k))}`);
+    return EQ(`${a} · ${b} ≈ ?`, { type: "choice", options: o, value: `etwa ${fz(v)}` }, [
       S(`Runde ${a} auf Zehner:`, `${a} ≈ ?`, ra, ""), S(`Runde ${b} auf Zehner:`, `${b} ≈ ?`, rb, ""),
       S("Rechne mit den runden Zahlen:", `${ra} · ${rb} = ?`, v, "", `${ra / 10} · ${rb / 10} = ${ra * rb / 100}, dann zwei Nullen anhängen.`),
     ], { prompt: "Ungefähr wie viel ist das?", explain: `Überschlag: ${ra} · ${rb} = ${fz(v)}. Genau wären es ${fz(a * b)}.` });
@@ -2011,6 +2216,28 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
       S(`Halbiere ${a} und verdopple ${b}. Das Ergebnis bleibt gleich!`, `${a / 2} · ${b * 2} = ?`, a * b, "", `${b * 2} ist eine glatte Zahl, damit rechnet es sich leicht.`),
     ], { op: "·", a, b, result: a * b });
   });
+  // Vergleichen ohne alles auszurechnen: oft ist „=“ die Lösung, manchmal fehlt genau 1 (oder 1 Paar)
+  sk("r_vgl", "trick", "Vergleichen mit Köpfchen", "25 · 4 ☐ 50 · 2", 2, () => {
+    const v = R(0, 2), same = Math.random() < 0.4, off = same ? 0 : pick([-1, 1]);
+    let left, right, lv, rv, tip;
+    if (v === 0) {
+      const a = R(14, 70), b = R(14, 70), k = R(2, 12);
+      left = `${a} + ${b}`; right = `${a + k} + ${b - k + off}`; lv = a + b; rv = a + b + off;
+      tip = `Die erste Zahl rechts ist um ${k} größer. Ist die zweite um genau ${k} kleiner? Dann bleibt die Summe gleich.`;
+    } else if (v === 1) {
+      const b = R(12, 60), a = b + R(15, 80), k = R(2, 15);
+      left = `${a} − ${b}`; right = `${a + k} − ${b + k + off}`; lv = a - b; rv = a - b - off;
+      tip = `Werden beide Zahlen um gleich viel größer, bleibt der Abstand gleich. Sind es rechts beide Male genau ${k} mehr?`;
+    } else {
+      const a = R(3, 25), b = 2 * R(2, 12);
+      left = `${a} · ${b}`; right = `${2 * a} · ${b / 2 + off}`; lv = a * b; rv = 2 * a * (b / 2 + off);
+      tip = `Verdoppelst du die eine Zahl und halbierst die andere, bleibt das Ergebnis gleich. Ist ${b / 2 + off} genau die Hälfte von ${b}?`;
+    }
+    if (Math.random() < 0.5) { [left, right] = [right, left]; [lv, rv] = [rv, lv]; }
+    return EQ(`${left} ☐ ${right}`, { type: "choice", options: CMP, value: cmpOf(lv, rv) }, [
+      SI(tip), SC("Welches Zeichen passt?", CMP, cmpOf(lv, rv)),
+    ], { prompt: "Welches Zeichen gehört in das Kästchen? Versuch es mit Köpfchen, ohne alles auszurechnen.", explain: `Links ${fz(lv)}, rechts ${fz(rv)}.` });
+  });
 
   const SKILL_BY_ID = Object.fromEntries(SKILLS.map((s) => [s.id, s]));
   const SKILLS_OF = (area) => SKILLS.filter((s) => s.area === area);
@@ -2021,6 +2248,7 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
     lapis: "#2a4f9e", lapisD: "#1b3570", turq: "#2a9d8f", red: "#c23b2a", black: "#1c1917", white: "#fffaf0", sand: "#e9cf94",
   };
   let artUid = 0;
+  const f1 = (n) => Math.round(n * 10) / 10;
   const line = (x1, y1, x2, y2, col, w) =>
     `<path d="M${x1} ${y1}L${x2} ${y2}" stroke="${C.ink}" stroke-width="${w + 3}" stroke-linecap="round"/><path d="M${x1} ${y1}L${x2} ${y2}" stroke="${col}" stroke-width="${w}" stroke-linecap="round"/>`;
   const ankh = (x, y, s = 1, col = C.gold) => `<g transform="translate(${x} ${y}) scale(${s})" fill="none" stroke-linecap="round">
@@ -2149,11 +2377,16 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
     let s = "";
     switch (id) {
       case "kartusche": {
-        const glyphs = hieroName(name) || "\u{132F9}\u{131F3}\u{13283}";
-        const n = [...glyphs].length, fs = Math.max(12, Math.min(30, 132 / Math.max(1, n)));
-        s = `<rect x="14" y="36" width="84" height="48" rx="24" fill="${C.linen}" stroke="${C.ink}" stroke-width="2"/><rect x="18" y="40" width="76" height="40" rx="20" fill="none" stroke="${G}" stroke-width="4"/>
-          <rect x="99" y="32" width="6" height="56" rx="2" fill="${G}" stroke="${C.ink}" stroke-width="1.6"/>
-          <text x="56" y="${60 + fs * 0.35}" text-anchor="middle" font-size="${fs}" font-family="'Noto Sans Egyptian Hieroglyphs', sans-serif" fill="${C.ink}" stroke="${C.ink}" stroke-width=".6">${glyphs}</text>`;
+        // Ab fünf Zeichen in zwei Zeilen; was dann noch zu breit ist, schiebt fitSVGText zusammen (data-fit = Innenbreite)
+        const glyphs = [...(hieroName(name) || "\u{132F9}\u{131F3}\u{13283}")], n = glyphs.length, two = n > 4;
+        const rows = two ? [glyphs.slice(0, Math.ceil(n / 2)), glyphs.slice(Math.ceil(n / 2))] : [glyphs];
+        const per = Math.max(...rows.map((r) => r.length)), fs = Math.min(two ? 24 : 30, 64 / (per * 1.15));
+        const top = two ? 24 : 36, h = two ? 72 : 48;
+        const font = `font-size="${f1(fs)}" font-family="'Noto Sans Egyptian Hieroglyphs', sans-serif" fill="${C.ink}" stroke="${C.ink}" stroke-width=".6" text-anchor="middle"`;
+        const ys = two ? [top + h * 0.36, top + h * 0.78] : [top + h / 2 + fs * 0.35];
+        s = `<rect x="12" y="${top}" width="88" height="${h}" rx="${h / 2}" fill="${C.linen}" stroke="${C.ink}" stroke-width="2"/><rect x="16" y="${top + 4}" width="80" height="${h - 8}" rx="${h / 2 - 4}" fill="none" stroke="${G}" stroke-width="4"/>
+          <rect x="101" y="${top - 4}" width="6" height="${h + 8}" rx="2" fill="${G}" stroke="${C.ink}" stroke-width="1.6"/>
+          ${rows.map((r, i) => `<text x="56" y="${f1(ys[i])}" ${font} data-fit="${two ? 62 : 66}">${r.join("")}</text>`).join("")}`;
         break;
       }
       case "maske":
@@ -2412,7 +2645,7 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
     mode: ["auto", "manual"], sicher: ["3in3", "4in5", "9in10"], frustN: [0, 2, 3, 4, 5], vol: ["leise", "mittel", "laut"],
     titel: ["f", "m"], rewardEvery: [3, 5, 10], goldEvery: [0, 50, 100],
   };
-  const DATA_GEN = 1;
+  const DATA_GEN = 2;   // 2: Laufbahn mit sieben Rängen (vorher fünf)
   const freshAreas = () => Object.fromEntries(AREAS.map((a) => [a, true]));
   const freshState = () => ({
     gen: DATA_GEN, sound: true, cfg: { ...CFG_DEF }, areas: freshAreas(), station: "",
@@ -2480,6 +2713,12 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
     })) : [];
     if (raw.tg && typeof raw.tg === "object") AREAS.forEach((a) => { const g = int(raw.tg[a], 0, 3); if (g) o.tg[a] = g; });
     o.rank = int(raw.rank, 0, RANKS.length - 1) ?? 0;
+    if (!(raw.gen >= 2)) {   // alte Laufbahn mit fünf Rängen: gleiche Namen, neue Nummern
+      o.rank = OLD_RANK[Math.min(o.rank, 4)];
+      o.docs.forEach((d) => { if (d.t === "rank") d.r = OLD_RANK[Math.min(d.r, 4)]; });
+    }
+    const pts = AREAS.reduce((x, a) => x + (o.tg[a] || 0), 0);
+    RANKS.forEach((x, i) => { if (pts >= x.min && i > o.rank) o.rank = i; });
     o.stats = cleanStats(raw.stats);
     if (raw.days && typeof raw.days === "object") Object.keys(raw.days).filter((k) => DAY_RE.test(k)).sort().slice(-120).forEach((k) => {
       const v = raw.days[k]; if (Array.isArray(v) && int(v[0], 0, 1e5) !== null && int(v[1], 0, 1e5) !== null) o.days[k] = [v[0], v[1]];
@@ -2628,7 +2867,7 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
   // ---------- Ergebnis festhalten ----------
   // code: 3 = beim 1. Versuch, 2 = ohne Hilfe, 1 = mit Hilfe (Schritte), 0 = Lösung gezeigt
   function recordResult(t, code) {
-    const id = t.skill, out = { grade: null, rank: null, stufe: 0 };
+    const id = t.skill, out = { grade: null, rank: null, stufe: 0, star: null };
     const st = state.stats[id] || (state.stats[id] = { h: "", n: 0, c: 0, l: 0, w: 0, g: 0, sd: [] });
     st.h = (st.h + code).slice(-10); st.n++;
     if (code >= 2) st.c++;
@@ -2646,7 +2885,7 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
     let g = st.c >= 3 ? 1 : 0;
     if (st.w) g = 2;
     if (st.sd.length >= 2) g = 3;
-    if (g > st.g) st.g = g;
+    if (g > st.g) { st.g = g; out.star = { id, g }; }
     // Tempelgrad und Laufbahn
     const tg = templeGradeCalc(t.area);
     if (tg > (state.tg[t.area] || 0)) { state.tg[t.area] = tg; out.grade = { a: t.area, g: tg }; state.docs.push({ t: "grade", a: t.area, g: tg, r: 0, d: day }); }
@@ -2666,6 +2905,23 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
     return 0;
   }
   const rankPoints = () => AREAS.reduce((s, a) => s + (state.tg[a] || 0), 0);
+  // Wie viele Aufgabenarten mit wie vielen Sternen braucht ein Tempelgrad? (gleiche Regeln wie templeGradeCalc)
+  function templeNeeds(area) { const n = SKILLS_OF(area).length; return [0, Math.min(2, n), Math.ceil(n * 0.35), Math.ceil(n * 0.6)]; }
+  const starsOf = (id) => (state.stats[id] ? state.stats[id].g : 0);
+  // Nächstes Ziel im Tempel: { g: nächster Grad, need, have } oder null, wenn Hohepriesterin
+  function templeNext(area) {
+    const g = (state.tg[area] || 0) + 1;
+    if (g > 3) return null;
+    return { g, need: templeNeeds(area)[g], have: SKILLS_OF(area).filter((s) => starsOf(s.id) >= g).length };
+  }
+  // Was fehlt dieser Aufgabenart zum nächsten Stern? (in Worten für das Kind)
+  function starNext(id) {
+    const st = state.stats[id], g = starsOf(id), r = RULES[state.cfg.sicher] || RULES["4in5"];
+    if (g >= 3) return "Gemeistert!";
+    if (g === 0) { const c = st ? st.c : 0; return `Noch ${3 - c}-mal ohne Hilfe richtig, dann gibt es den 1. Stern.`; }
+    if (g === 1) { const okc = st ? [...st.h.slice(-r.n)].filter(isOk).length : 0; return `Für den 2. Stern: ${r.k} von deinen letzten ${r.n} Aufgaben dieser Art ohne Hilfe richtig (gerade: ${okc} von ${Math.min(r.n, st ? st.h.length : 0)}).`; }
+    return st && st.sd.includes(todayKey()) ? "Für den 3. Stern: an einem anderen Tag noch einmal sicher rechnen." : "Für den 3. Stern: an einem zweiten Tag zeigen, dass du es sicher kannst.";
+  }
   function rankCalc() { let r = 0; RANKS.forEach((x, i) => { if (rankPoints() >= x.min) r = i; }); return r; }
 
   // Stufe: steigt nach 15 Aufgaben mit mindestens 12 ohne Hilfe, sinkt nach 10 Aufgaben mit höchstens 4 ohne Hilfe
@@ -2744,7 +3000,8 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
 
   // Lob und Ermutigung
   const PHRASES = {
-    ok: ["Super!", "Richtig!", "Klasse!", "Genau!", "Gut gemacht!", "Stark gerechnet!", "Weiter so!", "Das sitzt!", "Sauber gerechnet!", "Thot wäre stolz auf dich!"],
+    ok: ["Super!", "Richtig!", "Klasse!", "Genau!", "Gut gemacht!", "Stark gerechnet!", "Weiter so!", "Das sitzt!", "Sauber gerechnet!", "Thot wäre stolz auf dich!",
+      "Hatschepsut nickt dir zu!", "Das lässt Ramses in Stein meißeln!", "Cheops' Baumeister hätten es nicht besser gerechnet!", "Kleopatras Schatzmeisterin würde staunen!", "Nofretete lächelt!", "Tutanchamun klatscht in die Hände!"],
     hard: ["Stark, das war eine Knobelaufgabe!", "Wow, sogar die schwere Aufgabe!", "Knobel-Profi!", "Das war knifflig, und du hast es geschafft!"],
     again: ["Genau, jetzt stimmt es!", "Gut hingeschaut!", "Sauber korrigiert!"],
     stay: ["Toll, dass du drangeblieben bist!", "Geschafft! Dranbleiben lohnt sich.", "Gut, dass du nicht aufgegeben hast!", "Schritt für Schritt zum Ziel!"],
@@ -2765,7 +3022,7 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
   // ---------- LOGIK-ENDE ----------
 
   // ===================== APP: Speichern, Töne, Darstellung, Eingabe, Belohnungen, Eltern =====================
-  const VERSION = "2.1.1";
+  const VERSION = "2.2";
   const STORE_KEY = "rechenzeitreise-v1";
   const OLD_KEY = "rechen-geschichten-v1";
   const BACKUP_KEY = "rzr-backup-at";
@@ -2924,7 +3181,7 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
   function firstOpen(from) { let i = from; while (task && i < task.steps.length && task.steps[i].type === "info") i++; return i; }
 
   // ---------- Darstellung ----------
-  const TOPIC_LABEL = { geld: "Geld", laenge: "Längen", gewicht: "Gewichte", zeit: "Zeit", sach: "Sachaufgabe", nil: "Vom Nil", schaetzen: "Schätzen" };
+  const TOPIC_LABEL = { geld: "Geld", laenge: "Längen", gewicht: "Gewichte", zeit: "Zeit", sach: "Sachaufgabe", nil: "Vom Nil", pharao: "Auftrag der Pharaonen", schaetzen: "Schätzen" };
   const PAW = `<svg class="paw" viewBox="0 0 34 34" aria-hidden="true"><ellipse cx="17" cy="22.5" rx="7.6" ry="6.6"/><ellipse cx="7.6" cy="14.2" rx="3.3" ry="4.3" transform="rotate(-20 7.6 14.2)"/><ellipse cx="13.4" cy="8.4" rx="3.3" ry="4.4"/><ellipse cx="20.6" cy="8.4" rx="3.3" ry="4.4"/><ellipse cx="26.4" cy="14.2" rx="3.3" ry="4.3" transform="rotate(20 26.4 14.2)"/></svg>`;
   function renderProgress(pop) {
     const N = state.cfg.rewardEvery, n = state.sincePup;
@@ -2936,6 +3193,8 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
     $("statusText").innerHTML = `Noch <b>${toNext()}</b> bis zum nächsten Welpen` + (g ? `<br><span class="gold-line">${nextGoldIsPup() ? "Gold-Welpe" : "Goldschatz"} in <b>${g}</b></span>` : "");
     const sb = $("stufeBadge");
     sb.className = "stufe s" + state.stufe; sb.innerHTML = `<small>Stufe</small>${STUFEN[state.stufe]}`;
+    const pts = rankPoints(), nx = RANKS[state.rank + 1], lo = RANKS[state.rank].min;
+    $("rankBar").innerHTML = `<span class="rb-text"><small>Dein Rang</small><b>${rankName(state.rank)}</b></span><span class="rb-next">${pts} von ${MAX_POINTS} Punkten, ${rankNextLine()}<span class="minibar"><span style="width:${nx ? Math.min(100, (pts - lo) / (nx.min - lo) * 100) : 100}%"></span></span></span><span class="tp-change">Mein Weg</span>`;
     const found = Object.keys(state.pups).length;
     $("collBtn").textContent = `Schätze ${found + state.treasures.length}`;
     const st = state.station && state.areas[state.station] ? TEMPLE_BY_ID[state.station] : null;
@@ -3011,6 +3270,8 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
       ? `<p class="story">${storyHTML()}</p>${tableHTML(task.table)}<p class="question">${task.question}</p>${ch ? "" : `<div class="answer-row"><span class="label">Antwort:</span>${slotHTML("main")}<span class="unit">${esc(a.unit || "")}</span></div>`}`
       : eqHTML();
     const sol = ui.solved ? `<p class="solution"><b>${ui.revealed ? "Lösung" : "Richtig"}:</b> ${task.sentence || solutionLine()}</p>` : "";
+    const sk = ui.star ? SKILL_BY_ID[ui.star.id] : null;
+    const starH = sk ? `<p class="star-up">${STAR(ui.star.g)} <b>Neuer Stern</b> für „${esc(sk.label)}“ im Tempel ${godArticle(TEMPLE_BY_ID[sk.area].god)} ${GODS[TEMPLE_BY_ID[sk.area].god].name}. <small>${esc(starNext(sk.id))}</small></p>` : "";
     const nextLabel = ui.queue.length ? { pup: "Weiter zum Welpen", treasure: "Weiter zum Goldschatz", grade: "Weiter zur Urkunde", rank: "Weiter zur Urkunde", stufe: "Weiter" }[ui.queue[0].type] : "Nächste Aufgabe";
     const canRead = hasSpeech && state.cfg.readBtn && task.kind === "text";
     const actions = `<div class="actions">
@@ -3019,7 +3280,7 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
       ${ui.solved ? `<button type="button" class="btn go" id="nextBtn">${nextLabel}</button>` : ""}</div>`;
     const offer = ui.offer ? `<div class="offer"><p>Das waren ein paar knifflige Aufgaben. Soll als Nächstes etwas Leichteres kommen?</p><div class="btn-row"><button class="btn go" type="button" data-offer="1">Ja, gern</button><button class="btn" type="button" data-offer="0">Nein, weiter so</button></div></div>` : "";
     $("task").className = "task" + (task.kind === "text" ? " is-text" : " is-eq");
-    $("task").innerHTML = `${tags}${bodyH}<p class="feedback ${ui.fb[1]}">${ui.fb[0]}</p>${sol}${offer}${actions}${ui.helperOpen ? helperHTML() : ""}`;
+    $("task").innerHTML = `${tags}${bodyH}<p class="feedback ${ui.fb[1]}">${ui.fb[0]}</p>${sol}${starH}${offer}${actions}${ui.helperOpen ? helperHTML() : ""}`;
     const mc = $("mainChoices");
     mc.hidden = !ch;
     if (ch) mc.innerHTML = choicesHTML(a.options, a.value, "main", ui.solved, ui.wrongPick && ui.wrongPick.scope === "main" ? ui.wrongPick.val : null);
@@ -3081,6 +3342,7 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
     const msg = praise(code, task.hard);
     ui.fb = [code === 0 ? msg : msg + (ui.queue.length && ui.queue[0].type === "pup" ? " Ein Welpe wartet auf dich!" : ui.queue.length && ui.queue[0].type === "treasure" ? " Ein Goldschatz wartet!" : ""), "good"];
     if (task.answer.type === "choice" && task.explain && task.kind === "text") ui.fb[0] += " " + task.explain;
+    if (rec.star) ui.star = rec.star;
     if (code >= 1) { (ui.queue.some((q) => q.gold || q.type === "treasure") ? SFX.gold : ui.queue.length ? SFX.pup : () => SFX.ok(mem.streak))(); speak(msg); }
     else SFX.soft();
     if (needOffer()) ui.offer = true;
@@ -3159,17 +3421,39 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
   }
 
   // ---------- Belohnungen ----------
-  const overlayOpen = () => ["reward", "doc", "coll", "detail", "temples", "parents"].some((id) => !$(id).hidden);
-  function pupPhoto(p, gold) { return `<div class="photo${gold ? " gold" : ""}"><img src="${pupSrc(p)}" alt="Welpe: ${esc(p.name)}" loading="lazy"></div>`; }
+  const OVERLAYS = ["reward", "doc", "coll", "detail", "temples", "parents"];
+  const overlayOpen = () => OVERLAYS.some((id) => !$(id).hidden);
+  // Was zuletzt geöffnet wurde, liegt immer oben (z. B. eine Urkunde über der Sammlung)
+  let zTop = 10;
+  function openOverlay(id) { const el = $(id); el.style.zIndex = String(++zTop); el.hidden = false; fitSVGText(el); }
+  const topOverlay = () => OVERLAYS.filter((id) => !$(id).hidden).sort((a, b) => (+$(b).style.zIndex || 0) - (+$(a).style.zIndex || 0))[0];
+  // Hieroglyphen in Kartuschen: zu breite Zeilen auf die Breite der Kartusche zusammenschieben
+  function fitSVGText(root) {
+    (root || document).querySelectorAll("text[data-fit]").forEach((t) => {
+      t.removeAttribute("textLength"); t.removeAttribute("lengthAdjust");
+      let w = 0; try { w = t.getComputedTextLength(); } catch (e) { return; }
+      if (w > +t.dataset.fit) { t.setAttribute("textLength", t.dataset.fit); t.setAttribute("lengthAdjust", "spacingAndGlyphs"); }
+    });
+  }
+  try { document.fonts.ready.then(() => fitSVGText()); } catch (e) { /* ältere Browser */ }
+  // Fotos: groß immer ganz (nichts abgeschnitten), als Vorschau quadratisch mit dem Kopf im Bild
+  const pupImg = (p, thumb) => `<img src="${pupSrc(p)}" alt="Welpe: ${esc(p.name)}"${thumb ? ` loading="lazy" style="object-position:${pupPos(p)}"` : ""}>`;
+  const pupPhoto = (p, gold, thumb) => `<div class="photo${gold ? " gold" : ""}${thumb ? "" : " full"}">${pupImg(p, thumb)}</div>`;
   const credit = (p) => !p.credit ? "" : p.credit.author === "unbekannt" ? `Foto: Wikimedia Commons, ${esc(p.credit.license)}` : `Foto: ${esc(p.credit.author)}, Wikimedia Commons, ${esc(p.credit.license)}`;
+  const STAR = (g, max = 3) => `<span class="stars" aria-label="${g} von ${max} Sternen">${"★".repeat(g)}<span class="off">${"★".repeat(max - g)}</span></span>`;
+  const zur = () => (state.cfg.titel === "m" ? "zum" : "zur");
+  const ptsWord = (n) => `${n} ${n === 1 ? "Punkt" : "Punkte"}`;
+  function rankNextLine() {
+    const pts = rankPoints(), nx = RANKS[state.rank + 1];
+    return nx ? `noch ${ptsWord(Math.max(0, nx.min - pts))} bis ${rankName(state.rank + 1)}` : "höchster Rang erreicht";
+  }
   function showQueued(q) {
     if (q.type === "pup") {
       const p = PUP_BY_ID[q.id], seen = Object.keys(state.pups).length;
       $("rewardSheet").className = "sheet reward-sheet" + (q.gold ? " is-gold" : "");
       $("rewardNew").hidden = !q.isNew;
       $("rewardTitle").textContent = q.gold ? `Goldbild! ${state.cfg.goldEvery} Aufgaben geschafft` : `${state.cfg.rewardEvery} richtig! Ein Welpe für dich:`;
-      $("rewardPhoto").innerHTML = pupPhoto(p, q.gold).replace(/^<div class="photo[^"]*">|<\/div>$/g, "");
-      $("rewardPhoto").className = "photo" + (q.gold ? " gold" : "");
+      $("rewardPhoto").className = "photo full" + (q.gold ? " gold" : ""); $("rewardPhoto").innerHTML = pupImg(p, false);
       $("rewardName").textContent = (q.gold ? "Gold-Welpe: " : "") + p.name;
       $("rewardFact").textContent = p.fact;
       $("rewardMore").textContent = `${seen} von ${PUPS.length} Welpen entdeckt.`;
@@ -3193,23 +3477,24 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
       $("rewardPhoto").className = "photo stone"; $("rewardPhoto").innerHTML = `<div class="stone-tile s${q.s}"><span>${STUFEN[q.s]}</span></div>`;
       $("rewardName").textContent = "";
       $("rewardFact").textContent = "Du hast so sicher gerechnet, dass es jetzt ein bisschen kniffliger wird. Die Baumeister am Nil fingen auch mit Nilschlamm-Ziegeln an und bauten am Ende mit Granit und Gold.";
-      $("rewardMore").textContent = ""; $("rewardCredit").textContent = "";
+      $("rewardMore").textContent = "Neue Aufgabenarten sind dazugekommen. Mit ihnen kannst du weitere Sterne sammeln."; $("rewardCredit").textContent = "";
       speak(`Neue Stufe: ${STUFEN[q.s]}!`); SFX.pup();
     } else { showDoc(q); return; }
-    $("reward").hidden = false; $("rewardClose").focus();
+    openOverlay("reward"); $("rewardClose").focus();
   }
   function docText(q) {
-    const who = state.cfg.name || "du";
+    const who = state.cfg.name || "du", pts = rankPoints();
     if (q.type === "grade") {
-      const t = TEMPLE_BY_ID[q.a], g = GODS[t.god];
-      return { title: q.g === 1 ? "Aufnahme in den Tempel" : q.g === 2 ? "Weihe zur " + gradeName(2) : "Weihe zur " + gradeName(3),
+      const t = TEMPLE_BY_ID[q.a], g = GODS[t.god], about = (state.cfg.titel === "m" ? GRADE_ABOUT_M : GRADE_ABOUT)[q.g];
+      return { title: q.g === 1 ? "Aufnahme in den Tempel" : q.g === 2 ? `Weihe ${zur()} ` + gradeName(2) : `Weihe ${zur()} ` + gradeName(3),
         art: `<div class="doc-god">${godSVG(t.god)}</div><div class="doc-seal">${sealSVG(t.id, q.g)}</div>`,
-        text: `${cap(who)} ${who === "du" ? "bist" : "ist"} nun <b>${gradeName(q.g)}</b> im Tempel ${godArticle(t.god)} ${g.name}. Bereich: ${t.area}. Siegel aus ${SEALS[q.g]}.`,
+        text: `${cap(who)} ${who === "du" ? "bist" : "ist"} nun <b>${gradeName(q.g)}</b> im Tempel ${godArticle(t.god)} ${g.name} (${about}). Bereich: ${t.area}. Siegel aus ${SEALS[q.g]}.`
+          + `<span class="doc-why">Das bringt ${ptsWord(q.g)} in diesem Tempel. Auf deinem Weg ${zur()} ${rankName(RANKS.length - 1)} hast du jetzt ${pts} von ${MAX_POINTS} Punkten, ${rankNextLine()}.</span>`,
         say: `${gradeName(q.g)} im Tempel ${godArticle(t.god)} ${g.name}!` };
     }
     const r = RANKS[q.r], ru = r.ruler ? RULERS[r.ruler] : null;
     return { title: rankName(q.r), art: ru ? `<div class="doc-ruler">${rulerSVG(r.ruler)}</div>` : "",
-      text: ru ? `${ru.name} ernennt ${who === "du" ? "dich" : who} zur Würde: <b>${rankName(q.r)}</b>.${q.r === RANKS.length - 1 ? " Wie Hatschepsut regierst du nun selbst!" : ""} ${ru.fact}` : `${cap(who)} beginnt als ${rankName(q.r)}.`,
+      text: ru ? `${ru.name} ernennt ${who === "du" ? "dich" : who} zur Würde: <b>${rankName(q.r)}</b>.${q.r === RANKS.length - 1 ? " Wie Hatschepsut regierst du nun selbst!" : ""} ${esc(r.about)}<span class="doc-why">${ru.name} ist jetzt in deiner Sammlung bei den Pharaonen. ${cap(rankNextLine())}.</span>` : `${cap(who)} beginnt als ${rankName(q.r)}.`,
       say: `Du bist jetzt ${rankName(q.r)}!` };
   }
   const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
@@ -3218,7 +3503,7 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
     $("docTitle").textContent = d.title; $("docArt").innerHTML = d.art; $("docText").innerHTML = d.text;
     const n = state.cfg.name; $("docCart").textContent = hieroName(n); $("docCart").hidden = !n;
     $("docDate").textContent = q.d ? new Date(q.d + "T12:00").toLocaleDateString("de-DE") : new Date().toLocaleDateString("de-DE");
-    $("doc").hidden = false; $("docClose").focus();
+    openOverlay("doc"); $("docClose").focus();
     if (!quiet) { SFX.doc(); speak(d.say); }
   }
   function closeReward() { $("reward").hidden = true; afterOverlay(); }
@@ -3226,8 +3511,48 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
   $("rewardClose").addEventListener("click", closeReward);
   $("docClose").addEventListener("click", () => { $("doc").hidden = true; if ($("coll").hidden) afterOverlay(); });
 
-  // ---------- Sammlung ----------
+  // ---------- Sammlung: Welpen, Gold, Mein Weg, Pharaonen, Urkunden ----------
   let collTab = "pups";
+  const rulerOrder = RANKS.map((r, i) => ({ id: r.ruler, rank: i })).filter((x) => x.id);
+  function wegHTML() {
+    const pts = rankPoints(), cur = RANKS[state.rank], nx = RANKS[state.rank + 1], R_ = RULES[state.cfg.sicher] || RULES["4in5"];
+    const speech = nx ? `<p class="speech"><b>${RULERS[nx.ruler].name}:</b> „${nx.min - pts <= 0 ? "Gleich ist es so weit" : `Sammle noch ${ptsWord(nx.min - pts)}`}, dann ernenne ich dich ${zur()} ${rankName(state.rank + 1)}.“</p>`
+      : `<p class="speech"><b>Hatschepsut:</b> „Du regierst nun selbst. Sammle weiter Sterne, bis du in allen Tempeln ${gradeName(3)} bist.“</p>`;
+    const ticks = RANKS.slice(1).map((r) => `<span class="tick${pts >= r.min ? " on" : ""}" style="left:${r.min / MAX_POINTS * 100}%" title="${rankName(RANKS.indexOf(r))}"></span>`).join("");
+    const temples = TEMPLES.map((t) => {
+      const g = state.tg[t.id] || 0, nt = templeNext(t.id);
+      const goal = nt ? `Für ${gradeName(nt.g)}: ${nt.have} von ${nt.need} Aufgabenarten mit ${"★".repeat(nt.g)}` : "Höchster Grad erreicht";
+      return `<button type="button" class="temple-card" data-temple="${t.id}"><span class="tc-god">${godSVG(t.god)}</span>
+        <span class="tc-text"><b>${GODS[t.god].name}: ${t.short}</b><small>${g ? `${gradeName(g)} · ${ptsWord(g)}` : "Noch kein Grad"}</small><small class="goal">${goal}</small>
+        ${nt ? `<span class="minibar"><span style="width:${Math.min(100, nt.have / nt.need * 100)}%"></span></span>` : ""}</span><span class="tc-seal">${sealSVG(t.id, g)}</span></button>`;
+    }).join("");
+    return `<div class="career"><div class="career-art">${cur.ruler ? rulerSVG(cur.ruler) : godSVG("thot")}</div><div>
+        <p class="note">Dein Rang</p><p class="rank">${rankName(state.rank)}</p>${state.cfg.name ? `<span class="cartouche">${hieroName(state.cfg.name)}</span>` : ""}
+        <p class="note">${esc(cur.about)}</p></div></div>
+      <div class="pts"><div class="pts-bar" role="img" aria-label="${pts} von ${MAX_POINTS} Punkten"><span class="fill" style="width:${pts / MAX_POINTS * 100}%"></span>${ticks}</div>
+        <p><b>${pts} von ${MAX_POINTS} Punkten</b> · ${rankNextLine()}</p></div>
+      ${speech}
+      <details class="howto"${state.rank < 2 ? " open" : ""}><summary>So hängt alles zusammen</summary>
+        <ol class="how">
+          <li><b>Sterne für jede Aufgabenart.</b> ${STAR(1)} 3-mal ohne Hilfe richtig. ${STAR(2)} ${R_.k} von deinen letzten ${R_.n} Aufgaben dieser Art ohne Hilfe richtig, dann kannst du es sicher. ${STAR(3)} an zwei verschiedenen Tagen sicher.</li>
+          <li><b>Sterne machen dich ${zur()} ${gradeName(2)}.</b> In jedem der 8 Tempel steigst du auf: ${gradeName(1)} = 1 Punkt, ${gradeName(2)} = 2 Punkte, ${gradeName(3)} = 3 Punkte. Wie viele Sterne ein Tempel verlangt, steht bei jedem Tempel.</li>
+          <li><b>Punkte bringen dir einen neuen Rang.</b> Die Punkte aller Tempel zählen zusammen, höchstens ${MAX_POINTS}. Bei genug Punkten ernennt dich eine Pharaonin oder ein Pharao, bis du selbst ${rankName(RANKS.length - 1)} bist.</li>
+        </ol>
+        <p class="note">Das läuft nebenher: Jede richtige Aufgabe ist eine Pfote, ${state.cfg.rewardEvery} Pfoten sind ein Welpe${state.cfg.goldEvery ? `, alle ${state.cfg.goldEvery} Aufgaben gibt es Gold` : ""}. Die <b>Stufe</b> (${STUFEN.slice(1).join(", ")}) zeigt nur, wie schwer die Aufgaben gerade sind.</p>
+      </details>
+      <h3 class="coll-h">Die Ränge</h3>
+      <ol class="ladder">${RANKS.map((r, i) => `<li class="${i < state.rank ? "done" : i === state.rank ? "on" : ""}"><span class="lad-pts">${r.min}</span><span><b>${rankName(i)}</b>${r.ruler ? ` <small>verliehen von ${RULERS[r.ruler].name}</small>` : ""}${i === state.rank || i === state.rank + 1 ? `<small class="lad-about">${esc(r.about)}</small>` : ""}</span></li>`).join("")}</ol>
+      <h3 class="coll-h">Deine Tempel</h3><p class="note">Tipp auf einen Tempel: Dort siehst du jede Aufgabenart mit ihren Sternen.</p>
+      <div class="temple-list">${temples}</div>`;
+  }
+  function pharaoHTML() {
+    const pts = rankPoints();
+    return `<div class="ruler-grid">${rulerOrder.map(({ id, rank }) => {
+      const r = RULERS[id], open = state.rank >= rank;
+      return open ? `<button type="button" class="ruler-card" data-ruler="${id}"><span class="rc-art">${rulerSVG(id)}</span><b>${r.name}</b><small>${r.years}</small><small>hat dich ${zur()} ${rankName(rank)} ernannt</small></button>`
+        : `<div class="ruler-card locked"><span class="rc-art">${rulerSVG(id)}</span><b>${r.name}</b><small>${r.years}</small><small>trifft dich, wenn du ${rankName(rank)} wirst (noch ${ptsWord(Math.max(0, RANKS[rank].min - pts))})</small></div>`;
+    }).join("")}</div>`;
+  }
   function showColl(tab) {
     collTab = tab || collTab;
     document.querySelectorAll("#coll .tab").forEach((b) => { b.classList.toggle("on", b.dataset.tab === collTab); b.setAttribute("aria-selected", String(b.dataset.tab === collTab)); });
@@ -3236,44 +3561,60 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
       const seen = Object.keys(state.pups).length;
       info.textContent = seen ? `${seen} von ${PUPS.length} Welpen entdeckt. Tipp auf ein Foto, dann erfährst du mehr.` : `Noch leer. Löse ${state.cfg.rewardEvery} Aufgaben, dann kommt der erste Welpe!`;
       body.innerHTML = `<div class="grid">${PUPS.map((p) => state.pups[p.id]
-        ? `<button type="button" class="item" data-pup="${p.id}">${pupPhoto(p, state.pups[p.id].g > 0)}<span>${esc(p.name)}</span></button>`
+        ? `<button type="button" class="item" data-pup="${p.id}">${pupPhoto(p, state.pups[p.id].g > 0, true)}<span>${esc(p.name)}</span></button>`
         : `<div class="item locked"><div class="lock">?</div><span>Noch nicht entdeckt</span></div>`).join("")}</div>`;
     } else if (collTab === "gold") {
       info.textContent = `${state.treasures.length} von ${TREASURES.length} Goldschätzen gefunden. Alle ${state.cfg.goldEvery || 50} Aufgaben gibt es Gold, abwechselnd einen Gold-Welpen und einen Goldschatz.`;
       body.innerHTML = `<div class="grid">${TREASURES.map((t) => state.treasures.includes(t.id)
         ? `<button type="button" class="item" data-treasure="${t.id}"><div class="photo treasure">${treasureSVG(t.id, state.cfg.name)}</div><span>${esc(t.name)}</span></button>`
         : `<div class="item locked"><div class="lock">?</div><span>Noch verborgen</span></div>`).join("")}</div>`;
-    } else if (collTab === "temples") {
-      const pts = rankPoints(), nx = RANKS[state.rank + 1];
+    } else if (collTab === "weg") {
       info.textContent = "";
-      body.innerHTML = `<div class="career"><div class="career-art">${RANKS[state.rank].ruler ? rulerSVG(RANKS[state.rank].ruler) : godSVG("thot")}</div><div>
-          <p class="note">Deine Laufbahn</p><p class="rank">${rankName(state.rank)}</p>${state.cfg.name ? `<span class="cartouche">${hieroName(state.cfg.name)}</span>` : ""}
-          <p class="note">${nx ? `Noch ${nx.min - pts} Tempel-${nx.min - pts === 1 ? "Grad" : "Grade"} bis ${rankName(state.rank + 1)}.` : "Du hast den höchsten Rang erreicht!"}</p></div></div>
-        <ol class="ladder">${RANKS.map((r, i) => `<li class="${i <= state.rank ? "on" : ""}">${rankName(i)}${r.ruler ? ` <small>verliehen von ${RULERS[r.ruler].name}</small>` : ""}</li>`).join("")}</ol>
-        <div class="temple-list">${TEMPLES.map((t) => { const g = state.tg[t.id] || 0; return `<button type="button" class="temple-card" data-temple="${t.id}">
-          <span class="tc-god">${godSVG(t.god)}</span><span class="tc-text"><b>${GODS[t.god].name}</b><small>${t.area}</small><small>${g ? gradeName(g) : "Noch kein Grad"}</small></span><span class="tc-seal">${sealSVG(t.id, g)}</span></button>`; }).join("")}</div>`;
+      body.innerHTML = wegHTML();
+    } else if (collTab === "pharao") {
+      info.textContent = "Sechs berühmte Herrscherinnen und Herrscher begleiten deinen Weg. Jede und jeder verleiht dir einen Rang. Tipp auf ein Bild, dann erfährst du ihre Geschichte.";
+      body.innerHTML = pharaoHTML();
     } else {
       const docs = state.docs.slice().reverse();
-      info.textContent = docs.length ? "Alle deine Urkunden. Tipp darauf, um sie noch einmal anzusehen." : "Noch keine Urkunde. Urkunden gibt es für neue Grade in den Tempeln und für jeden Aufstieg in der Laufbahn.";
+      info.textContent = docs.length ? "Alle deine Urkunden. Tipp darauf, um sie noch einmal anzusehen." : "Noch keine Urkunde. Urkunden gibt es für jeden neuen Grad in einem Tempel und für jeden neuen Rang.";
       body.innerHTML = `<ul class="doc-list">${docs.map((d, i) => `<li><button type="button" class="link-btn" data-doc="${docs.length - 1 - i}">${d.t === "grade" ? `${gradeName(d.g)} im Tempel ${godArticle(TEMPLE_BY_ID[d.a].god)} ${GODS[TEMPLE_BY_ID[d.a].god].name}` : rankName(d.r)}</button> <small>${d.d ? new Date(d.d + "T12:00").toLocaleDateString("de-DE") : ""}</small></li>`).join("")}</ul>`;
     }
-    $("coll").hidden = false;
+    openOverlay("coll");
   }
-  $("collBtn").addEventListener("click", () => { showColl(); $("collClose").focus(); });
+  // Sammlung oben beginnen lassen (der Fokus auf dem Knopf ganz unten würde sonst nach unten scrollen)
+  const openColl = (tab) => { showColl(tab); $("coll").scrollTop = 0; $("collClose").focus({ preventScroll: true }); };
+  $("collBtn").addEventListener("click", () => openColl());
+  $("rankBar").addEventListener("click", () => openColl("weg"));
   $("collClose").addEventListener("click", () => { $("coll").hidden = true; afterOverlay(); });
-  document.querySelector("#coll .tabs").addEventListener("click", (e) => { const b = e.target.closest("[data-tab]"); if (b) showColl(b.dataset.tab); });
+  document.querySelector("#coll .tabs").addEventListener("click", (e) => { const b = e.target.closest("[data-tab]"); if (b) { showColl(b.dataset.tab); $("coll").scrollTop = 0; } });
   $("collBody").addEventListener("click", (e) => {
-    const p = e.target.closest("[data-pup]"), t = e.target.closest("[data-treasure]"), tp = e.target.closest("[data-temple]"), d = e.target.closest("[data-doc]");
-    if (p) { const x = PUP_BY_ID[p.dataset.pup]; detail(x.name, pupPhoto(x, state.pups[x.id].g > 0), `<p>${esc(x.fact)}</p><p class="credit">${credit(x)}</p>`); }
+    const p = e.target.closest("[data-pup]"), t = e.target.closest("[data-treasure]"), tp = e.target.closest("[data-temple]"), d = e.target.closest("[data-doc]"), ru = e.target.closest("[data-ruler]");
+    if (p) { const x = PUP_BY_ID[p.dataset.pup]; detail(x.name, pupPhoto(x, state.pups[x.id].g > 0, false), `<p>${esc(x.fact)}</p><p class="credit">${credit(x)}</p>`); }
     if (t) { const x = TREASURE_BY_ID[t.dataset.treasure]; detail(x.name, `<div class="photo treasure">${treasureSVG(x.id, state.cfg.name)}</div>`, `<p>${esc(x.fact)}</p>${x.ruler ? `<p><b>${RULERS[x.ruler].name}</b> (${RULERS[x.ruler].years}): ${esc(RULERS[x.ruler].fact)} ${state.cfg.mythen ? esc(RULERS[x.ruler].story) : ""}</p>` : ""}`); }
     if (tp) templeDetail(tp.dataset.temple);
     if (d) showDoc(state.docs[+d.dataset.doc], true);
+    if (ru) rulerDetail(ru.dataset.ruler);
   });
+  function rulerDetail(id) {
+    const r = RULERS[id], rank = rulerOrder.find((x) => x.id === id).rank, tr = TREASURES.filter((x) => x.ruler === id);
+    detail(r.name, `<div class="detail-ruler">${rulerSVG(id)}</div>`,
+      `<p class="note">${r.years} · verleiht den Rang ${rankName(rank)}</p><p>${esc(r.fact)}</p>${state.cfg.mythen ? `<p class="myth">${esc(r.story)}</p>` : ""}`
+      + (tr.length ? `<p class="note">Goldschatz: ${tr.map((x) => `${esc(x.name)} ${state.treasures.includes(x.id) ? "(gefunden)" : "(noch verborgen)"}`).join(", ")}</p>` : ""));
+  }
   function templeDetail(id) {
-    const t = TEMPLE_BY_ID[id], g = GODS[t.god], list = SKILLS_OF(id), sure = list.filter((s) => statusOf(s.id) === "sicher").length;
+    const t = TEMPLE_BY_ID[id], g = GODS[t.god], list = SKILLS_OF(id), nt = templeNext(id), cur = state.tg[id] || 0;
+    const rows = list.map((s) => {
+      const locked = s.lv > state.stufe, n = starsOf(s.id);
+      return `<li class="${locked ? "locked" : ""}"><span class="sk-name">${esc(s.label)} <small>${esc(s.ex)}</small></span>${STAR(n)}
+        <small class="sk-next">${locked ? `Kommt ab Stufe ${STUFEN[s.lv]}.` : esc(starNext(s.id))}</small></li>`;
+    }).join("");
+    const needs = templeNeeds(id);
     detail(`Tempel ${godArticle(t.god)} ${g.name}`, `<div class="detail-god">${godSVG(t.god)}</div>`,
       `<p><b>${g.name}</b>, ${g.title}. ${esc(g.fact)}</p>${state.cfg.mythen ? `<p class="myth">${esc(g.story)}</p>` : ""}<p class="note">${esc(t.why)}</p>
-       <p>Hier übst du: <b>${t.area}</b>. ${sure} von ${list.length} Aufgabenarten sitzen sicher. Dein Grad: <b>${state.tg[id] ? gradeName(state.tg[id]) : "noch keiner"}</b>.</p>`,
+       <p>Hier übst du: <b>${t.area}</b>. Dein Grad: <b>${cur ? gradeName(cur) : "noch keiner"}</b> (${ptsWord(cur)}).</p>
+       <ul class="grade-steps">${[1, 2, 3].map((k) => `<li class="${cur >= k ? "on" : ""}"><b>${gradeName(k)}</b> (${ptsWord(k)}): ${needs[k]} ${needs[k] === 1 ? "Aufgabenart" : "Aufgabenarten"} mit ${"★".repeat(k)}</li>`).join("")}</ul>
+       ${nt ? `<p class="goal-line">Dein nächstes Ziel: <b>${gradeName(nt.g)}</b>. Du hast ${nt.have} von ${nt.need}.</p>` : `<p class="goal-line">Du bist ${gradeName(3)} in diesem Tempel!</p>`}
+       <ul class="skill-list">${rows}</ul>`,
       state.areas[id] ? [[`In diesem Tempel rechnen`, () => { setStation(id); }]] : []);
   }
   function detail(title, art, text, btns = []) {
@@ -3284,7 +3625,7 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
       b.addEventListener("click", () => { $("detail").hidden = true; if (fn) fn(); });
       box.append(b);
     });
-    $("detail").hidden = false; box.firstChild.focus();
+    openOverlay("detail"); $("detail").scrollTop = 0; box.firstChild.focus({ preventScroll: true });
   }
 
   // ---------- Tempel wählen ----------
@@ -3297,7 +3638,7 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
     $("templeGrid").innerHTML = `<button type="button" class="temple-card${state.station ? "" : " on"}" data-pick=""><span class="tc-god auto"><svg viewBox="-12 -18 24 38" aria-hidden="true">${ankh(0, 0, 1.3, "var(--gold-bright)")}</svg></span><span class="tc-text"><b>Automatik</b><small>Alle Tempel gemischt, die App wählt nach deinem Lernstand.</small></span></button>` +
       TEMPLES.filter((t) => state.areas[t.id]).map((t) => `<button type="button" class="temple-card${state.station === t.id ? " on" : ""}" data-pick="${t.id}">
         <span class="tc-god">${godSVG(t.god)}</span><span class="tc-text"><b>${GODS[t.god].name}</b><small>${t.area}</small></span><span class="tc-seal">${sealSVG(t.id, state.tg[t.id] || 0)}</span></button>`).join("");
-    $("temples").hidden = false; $("templesClose").focus();
+    openOverlay("temples"); $("templesClose").focus();
   });
   $("templeGrid").addEventListener("click", (e) => { const b = e.target.closest("[data-pick]"); if (b) setStation(b.dataset.pick); });
   $("templesClose").addEventListener("click", () => { $("temples").hidden = true; });
@@ -3305,15 +3646,17 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
     `<p>Es gibt fünf Stufen: ${STUFEN.slice(1).join(", ")}. Je sicherer du rechnest, desto höher steigst du, wie beim Bau einer Pyramide.</p>`));
 
   // ---------- Klicks und Tasten ----------
+  // Schließt das oberste Fenster (Escape oder Tipp daneben)
   function closeTop() {
-    if (!$("detail").hidden) { $("detail").hidden = true; return; }
-    if (!$("doc").hidden) { $("docClose").click(); return; }
-    if (!$("reward").hidden) { closeReward(); return; }
-    if (!$("temples").hidden) { $("temples").hidden = true; return; }
-    if (!$("coll").hidden) { $("collClose").click(); return; }
-    if (!$("parents").hidden) { $("parentsClose").click(); }
+    const id = topOverlay();
+    if (id === "detail") $("detail").hidden = true;
+    else if (id === "doc") $("docClose").click();
+    else if (id === "reward") closeReward();
+    else if (id === "temples") $("temples").hidden = true;
+    else if (id === "coll") $("collClose").click();
+    else if (id === "parents") $("parentsClose").click();
   }
-  ["reward", "doc", "coll", "detail", "temples", "parents"].forEach((id) => $(id).addEventListener("click", (e) => { if (e.target.id === id) closeTop(); }));
+  OVERLAYS.forEach((id) => $(id).addEventListener("click", (e) => { if (e.target.id === id) closeTop(); }));
   document.addEventListener("click", (e) => {
     if (!ui) return;
     const slot = e.target.closest("[data-slot]");
@@ -3433,7 +3776,7 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
     }
     el.textContent = t;
   }
-  function openParents() { renderParents(); $("parents").hidden = false; $("parentsClose").focus(); }
+  function openParents() { renderParents(); openOverlay("parents"); $("parentsClose").focus(); }
   function closeParents() { $("parents").hidden = true; if (dirtyTask) { dirtyTask = false; newTask(); } }
   // Versteckter Zugang: Titel zwei Sekunden gedrückt halten, oder die Adresse mit #eltern öffnen
   const brand = $("brandTitle");
