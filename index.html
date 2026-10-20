@@ -3022,7 +3022,7 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
   // ---------- LOGIK-ENDE ----------
 
   // ===================== APP: Speichern, Töne, Darstellung, Eingabe, Belohnungen, Eltern =====================
-  const VERSION = "2.2";
+  const VERSION = "2.3";
   const STORE_KEY = "rechenzeitreise-v1";
   const OLD_KEY = "rechen-geschichten-v1";
   const BACKUP_KEY = "rzr-backup-at";
@@ -3077,6 +3077,27 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
     } finally { cloud.busy = false; if (cloud.dirty && cloud.status === "on") cloud.timer = setTimeout(flushCloud, 600); }
   }
   document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") { clearTimeout(cloud.timer); flushCloud(); } });
+  // ---------- Protokoll: jede Aufgabe mit allen Eingaben, nur auf diesem Gerät und ohne Namen ----------
+  // Eltern können es kopieren und Claude zur Auswertung geben (Elternbereich → Protokoll).
+  const LOG_KEY = "rechenzeitreise-log-v1", LOG_MAX = 500;
+  let logList = [];
+  try { const r = JSON.parse(localStorage.getItem(LOG_KEY) || "[]"); if (Array.isArray(r)) logList = r.filter((x) => x && typeof x === "object").slice(-LOG_MAX); } catch (e) { /* leer anfangen */ }
+  function logPush(e) {
+    logList.push(e); if (logList.length > LOG_MAX) logList = logList.slice(-LOG_MAX);
+    try { localStorage.setItem(LOG_KEY, JSON.stringify(logList)); } catch (err) { /* Speicher voll: Protokoll ist nicht wichtig genug */ }
+  }
+  const logText = (h) => plain(String(h || "")).replace(/[⟦⟧]/g, "").replace(/\s+/g, " ").trim();
+  // end: "ok" (gelöst) oder "offen" (verlassen, nachdem schon etwas eingegeben war)
+  function logTask(end) {
+    if (!task || !ui || ui.logged) return;
+    ui.logged = true;
+    logPush({
+      t: Date.now(), s: task.skill, st: state.stufe, p: task.pool || "", e: end, c: end === "ok" ? codeNow() : -1,
+      q: task.kind === "text" ? logText(task.story + " " + task.question).slice(0, 500) : logText((task.prompt ? task.prompt + " " : "") + task.eq),
+      a: logText(shown(task.answer)), w: ui.wrongs.slice(0, 10), h: ui.usedHelp ? 1 : 0, sw: ui.stepWrongs,
+      d: Math.min(3600, Math.round((Date.now() - ui.t0) / 1000)), x: task.distractor ? 1 : 0, tp: state.station || "",
+    });
+  }
   function adopt(next) {
     state = next;
     try { localStorage.setItem(STORE_KEY, JSON.stringify(stored())); } catch (e) { localOk = false; }
@@ -3169,12 +3190,14 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
 
   // ---------- Aufgabe stellen ----------
   function newTask() {
+    if (ui && !ui.solved && (ui.wrongs.length || ui.usedHelp || ui.stepWrongs)) logTask("offen");
     const t = nextTask();
     const norm = (o) => { if (typeof o.value === "number" && o.type !== "frac") o.value = round2(o.value); };   // Brüche nicht runden (11/12)
     norm(t.answer); t.steps.forEach(norm);
     task = t;
     ui = { inputs: { main: "" }, active: "main", tries: 0, stepTries: t.steps.map(() => 0), stepIdx: firstOpen(0), shownSteps: t.steps.map(() => false),
-      helperOpen: false, usedHelp: false, revealed: false, solved: false, queue: [], fb: ["", ""], stepFb: {}, tipOn: {}, shake: null, wrongPick: null, nudge: false, offer: false };
+      helperOpen: false, usedHelp: false, revealed: false, solved: false, queue: [], fb: ["", ""], stepFb: {}, tipOn: {}, shake: null, wrongPick: null, nudge: false, offer: false,
+      wrongs: [], stepWrongs: 0, t0: Date.now(), logged: false };
     render();
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
@@ -3329,6 +3352,7 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
   function solveMain() {
     ui.solved = true; ui.helperOpen = ui.helperOpen && !ui.revealed ? ui.helperOpen : ui.helperOpen;
     const code = codeNow(), rec = recordResult(task, code);
+    logTask("ok");
     let pop;
     if (code >= 1) {
       const rw = countReward();
@@ -3351,7 +3375,7 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
   }
   function checkMain(val) {
     if (matches(val, task.answer)) { solveMain(); return; }
-    ui.tries++; SFX.soft();
+    ui.tries++; SFX.soft(); ui.wrongs.push(display(val));
     ui.inputs.main = ""; ui.shake = "main";
     const pv = parse(val, task.answer.type), hint = state.cfg.detektiv && ui.tries === 1 && typeof pv === "number" ? diagnose(task, pv) : null;
     if (hint) state.err[hint.kind] = (state.err[hint.kind] || 0) + 1;
@@ -3383,7 +3407,7 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
   }
   function failStep(i) {
     const st = task.steps[i];
-    ui.stepTries[i]++; SFX.soft();
+    ui.stepTries[i]++; ui.stepWrongs++; SFX.soft();
     if (st.type !== "choice") { ui.inputs["s" + i] = ""; ui.shake = "s" + i; }
     if (ui.stepTries[i] === 1) ui.stepFb[i] = "Noch nicht. Rechne in Ruhe noch einmal.";
     else if (ui.stepTries[i] === 2) { ui.stepFb[i] = "Noch einmal, mit diesem Tipp:"; ui.tipOn[i] = true; }
@@ -3400,7 +3424,7 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
       if (ui.solved) return;
       if (val === task.answer.value) { solveMain(); return; }
       // Bei wenigen Möglichkeiten wäre der nächste Versuch geraten: Erklärung zeigen, die Aufgabe zählt nicht.
-      ui.revealed = true; ui.wrongPick = { scope, val }; SFX.soft();
+      ui.revealed = true; ui.wrongPick = { scope, val }; ui.wrongs.push(val); SFX.soft();
       ui.fb = [`Nicht ganz. ${task.explain || "Die richtige Antwort ist markiert."}`, "try"];
       solveMain(); return;
     }
@@ -3744,6 +3768,13 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
         <p>Letzte 7 Tage: <b>${wk}</b> Aufgaben, davon <b>${wkOk}</b> ohne Hilfe. Insgesamt <b>${state.correct}</b> gelöst. Laufbahn: <b>${rankName(state.rank)}</b>.</p>
         ${lern}
       </section>
+      <section class="psec"><h3>Protokoll für Claude</h3>
+        <p class="note">Die App merkt sich die letzten ${LOG_MAX} Aufgaben mit allen Eingaben, nur auf diesem Gerät und ohne Namen. Zum Auswerten: kopieren und in einen Chat mit Claude einfügen. Dazu kommt der Lernstand je Aufgabenart.</p>
+        <p class="note" id="logInfo">${logList.length ? `${logList.length} Aufgaben seit ${new Date(logList[0].t).toLocaleDateString("de-DE")}.` : "Noch leer. Es füllt sich ab jetzt mit jeder Aufgabe."}</p>
+        <div class="btn-row"><button class="btn go" id="logCopyBtn" type="button">Protokoll kopieren</button>${navigator.share ? `<button class="btn" id="logShareBtn" type="button">Teilen</button>` : ""}<button class="link-btn" id="logClearBtn" type="button">Protokoll löschen</button></div>
+        <p class="note" id="logMsg" role="status"></p>
+        <div id="logBox" hidden><textarea id="logOut" rows="5" readonly aria-label="Protokoll"></textarea></div>
+      </section>
       <section class="psec"><h3>Spielstand</h3>
         <p class="note" id="saveStatus"></p>
         <div class="btn-row"><button class="btn go" id="backupBtn" type="button">Sicherung speichern</button><button class="btn" id="codeShowBtn" type="button">Code anzeigen</button><button class="btn" id="codeEnterBtn" type="button">Code eingeben</button></div>
@@ -3758,6 +3789,31 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
       <p class="note">So kommst du wieder hierher: den Titel „Rechenzeitreise“ oben zwei Sekunden gedrückt halten. Oder <code>#eltern</code> an die Adresse anhängen.</p>
       <p class="note">Rechenzeitreise ${VERSION}</p>`;
     renderSaveStatus();
+  }
+  // Protokoll als Text, gut lesbar für Menschen und für Claude. Der Name des Kindes kommt nicht vor.
+  const CODE_WORD = { 3: "beim 1. Versuch richtig", 2: "richtig nach Fehlversuch", 1: "richtig mit Schritten", 0: "Lösung gezeigt", "-1": "verlassen, nicht gelöst" };
+  function exportLog() {
+    const p2 = (n) => String(n).padStart(2, "0"), when = (t) => { const d = new Date(t); return `${d.getFullYear()}-${p2(d.getMonth() + 1)}-${p2(d.getDate())} ${p2(d.getHours())}:${p2(d.getMinutes())}`; };
+    const c = state.cfg, L = [];
+    L.push(`Rechenzeitreise ${VERSION}: Protokoll zur Auswertung (exportiert ${when(Date.now())})`);
+    L.push(`Einstellungen: ${c.mode === "auto" ? "Automatik" : "manuell"}, Stufe ${state.stufe} (${STUFEN[state.stufe]})${c.lock ? " gesperrt" : ""}, Übungsanteil ${c.anteil} %, Textanteil ${c.textShare} %, sicher = ${c.sicher}, Bereiche: ${AREAS.filter((a) => state.areas[a]).join(", ")}${state.station ? `, gewählter Tempel: ${state.station}` : ""}`);
+    L.push(`Stand: ${state.correct} Aufgaben richtig, Rang ${rankName(state.rank)}, ${rankPoints()} von ${MAX_POINTS} Punkten, Tempelgrade: ${AREAS.map((a) => `${a} ${state.tg[a] || 0}`).join(", ")}`);
+    L.push("Codes: 3 = beim 1. Versuch richtig, 2 = nach Fehlversuch ohne Hilfe, 1 = mit Schritten, 0 = Lösung gezeigt. Pool: ueb = Übung, mix = gemischt, erfolg = leicht (nach Fehlern), retry = Wiederholung.");
+    L.push("", "== Lernstand je Aufgabenart (letzte 10 Codes, älteste zuerst) ==");
+    SKILLS.filter((s) => state.stats[s.id]).forEach((s) => { const st = state.stats[s.id]; L.push(`${s.id} ${s.label}: ${st.h} · ${st.n} Aufgaben, ${st.c} ohne Hilfe · ${st.g} Sterne · ${statusOf(s.id)}`); });
+    const errs = Object.entries(state.err);
+    if (errs.length) L.push("", "== Fehlerdetektiv (Anzahl je Fehlerart) ==", errs.map(([k, v]) => `${k}: ${v}`).join(", "));
+    const days = Object.keys(state.days).sort();
+    if (days.length) L.push("", "== Tage (Aufgaben / davon ohne Hilfe) ==", days.map((k) => `${k}: ${state.days[k][0]}/${state.days[k][1]}`).join(", "));
+    L.push("", `== Aufgaben (${logList.length}, älteste zuerst) ==`);
+    logList.forEach((e) => {
+      const sk = SKILL_BY_ID[e.s];
+      L.push(`${when(e.t)} · ${e.d} s · ${e.s}${sk ? ` (${sk.label})` : ""} · Stufe ${e.st} · ${e.p || "?"}${e.tp ? ` · Tempel ${e.tp}` : ""}${e.x ? " · mit überflüssiger Angabe" : ""}`
+        + `\n   Aufgabe: ${e.q}\n   Lösung: ${e.a} · Falsche Eingaben: ${e.w.length ? e.w.join(" | ") : "keine"} · Schritte ${e.h ? "geöffnet" : "nicht geöffnet"}${e.sw ? `, ${e.sw} falsche Schritt-Eingaben` : ""} · Ergebnis: ${CODE_WORD[e.c] || e.c}`);
+    });
+    let out = L.join("\n");
+    if (c.name) out = out.split(c.name).join("[Name]");   // zur Sicherheit, falls der Name doch irgendwo steht
+    return out;
   }
   const clockTime = (t) => new Date(t).toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" });
   const backupAt = () => { try { return Number(localStorage.getItem(BACKUP_KEY)) || 0; } catch (e) { return 0; } };
@@ -3820,7 +3876,16 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
       catch (err) { if (err && err.name === "AbortError") { msg.textContent = "Abgebrochen. Es wurde nichts gesichert."; return; } }
       try { await navigator.clipboard.writeText(code); markBackup(); msg.textContent = "Code kopiert. Jetzt in einer Notiz einfügen und aufbewahren."; }
       catch (err) { $("codeShowBtn").click(); msg.textContent = "Kopiere den Code unten und bewahre ihn auf."; }
-    } else if (id === "codeShowBtn") { $("codeInBox").hidden = true; $("codeOut").value = exportCode(); $("codeBox").hidden = false; $("codeOut").select(); }
+    } else if (id === "logCopyBtn") {
+      const txt = exportLog(), msg = $("logMsg");
+      try { await navigator.clipboard.writeText(txt); msg.textContent = `Kopiert (${logList.length} Aufgaben). Jetzt in einen Chat mit Claude einfügen.`; }
+      catch (err) { $("logOut").value = txt; $("logBox").hidden = false; $("logOut").select(); msg.textContent = "Der Text ist unten markiert. Jetzt kopieren."; }
+    } else if (id === "logShareBtn") {
+      try { await navigator.share({ title: "Rechenzeitreise Protokoll", text: exportLog() }); $("logMsg").textContent = "Geteilt."; }
+      catch (err) { $("logMsg").textContent = err && err.name === "AbortError" ? "Abgebrochen." : "Teilen ging nicht. Nimm „Protokoll kopieren“."; }
+    } else if (id === "logClearBtn") { $("logMsg").innerHTML = `Wirklich löschen? Der Lernstand bleibt. <button class="link-btn danger" id="logClearYes" type="button">Ja, löschen</button>`; }
+    else if (id === "logClearYes") { logList = []; try { localStorage.removeItem(LOG_KEY); } catch (err) { /* egal */ } renderParents(); }
+    else if (id === "codeShowBtn") { $("codeInBox").hidden = true; $("codeOut").value = exportCode(); $("codeBox").hidden = false; $("codeOut").select(); }
     else if (id === "codeCopyBtn") {
       const done = () => { $("codeCopyMsg").textContent = "Kopiert."; markBackup(); }, fb = () => { $("codeOut").select(); $("codeCopyMsg").textContent = "Markiert. Jetzt kopieren."; };
       try { navigator.clipboard.writeText($("codeOut").value).then(done, fb); } catch (err) { fb(); }
@@ -3834,13 +3899,13 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
     } else if (id === "codeNo") { pendingImport = null; $("codeConfirm").hidden = true; }
     else if (id === "codeYes" && pendingImport) { const nx = pendingImport; pendingImport = null; state = nx; save(); dirtyTask = true; syncTop(); renderProgress(); renderParents(); $("backupMsg").textContent = "Spielstand geladen."; }
     else if (id === "resetBtn") $("resetRow").innerHTML = `<span class="note">Wirklich alles zurücksetzen? Die Einstellungen bleiben.</span> <button class="link-btn danger" id="resetYes" type="button">Ja, zurücksetzen</button> <button class="link-btn" id="resetNo" type="button">Abbrechen</button>`;
-    else if (id === "resetYes") { const keep = { cfg: state.cfg, areas: state.areas, sound: state.sound }; state = { ...freshState(), ...keep }; save(); dirtyTask = true; syncTop(); renderProgress(); renderParents(); }
+    else if (id === "resetYes") { logList = []; try { localStorage.removeItem(LOG_KEY); } catch (err) { /* egal */ } const keep = { cfg: state.cfg, areas: state.areas, sound: state.sound }; state = { ...freshState(), ...keep }; save(); dirtyTask = true; syncTop(); renderProgress(); renderParents(); }
     else if (id === "resetNo") renderParents();
   });
   let pendingImport = null;
 
   // Für automatische Tests
-  window.__rzr = { SKILLS, T, state: () => state, setState: (s) => { state = s; }, nextTask, recordResult, countReward, sanitize, mem, cur: () => ({ task, ui }), clock, statusOf, templeGradeCalc, newTask };
+  window.__rzr = { exportLog, log: () => logList, SKILLS, T, state: () => state, setState: (s) => { state = s; }, nextTask, recordResult, countReward, sanitize, mem, cur: () => ({ task, ui }), clock, statusOf, templeGradeCalc, newTask };
 
   // ---------- Start ----------
   try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) { /* kein Problem */ }
