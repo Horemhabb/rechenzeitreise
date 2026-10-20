@@ -3022,7 +3022,7 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
   // ---------- LOGIK-ENDE ----------
 
   // ===================== APP: Speichern, Töne, Darstellung, Eingabe, Belohnungen, Eltern =====================
-  const VERSION = "2.3";
+  const VERSION = "2.3.1";
   const STORE_KEY = "rechenzeitreise-v1";
   const OLD_KEY = "rechen-geschichten-v1";
   const BACKUP_KEY = "rzr-backup-at";
@@ -3079,7 +3079,10 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
   document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") { clearTimeout(cloud.timer); flushCloud(); } });
   // ---------- Protokoll: jede Aufgabe mit allen Eingaben, nur auf diesem Gerät und ohne Namen ----------
   // Eltern können es kopieren und Claude zur Auswertung geben (Elternbereich → Protokoll).
-  const LOG_KEY = "rechenzeitreise-log-v1", LOG_MAX = 500;
+  const LOG_KEY = "rechenzeitreise-log-v1", LOG_MAX = 2000, LOG_EXP_KEY = "rechenzeitreise-log-exp-v1";
+  // Zeitpunkt des letzten Exports: so lassen sich bequem nur die neuen Aufgaben kopieren
+  const logExpAt = () => { try { return +localStorage.getItem(LOG_EXP_KEY) || 0; } catch (e) { return 0; } };
+  const logExpSet = (t) => { try { localStorage.setItem(LOG_EXP_KEY, String(t)); } catch (e) { /* egal */ } };
   let logList = [];
   try { const r = JSON.parse(localStorage.getItem(LOG_KEY) || "[]"); if (Array.isArray(r)) logList = r.filter((x) => x && typeof x === "object").slice(-LOG_MAX); } catch (e) { /* leer anfangen */ }
   function logPush(e) {
@@ -3769,9 +3772,9 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
         ${lern}
       </section>
       <section class="psec"><h3>Protokoll für Claude</h3>
-        <p class="note">Die App merkt sich die letzten ${LOG_MAX} Aufgaben mit allen Eingaben, nur auf diesem Gerät und ohne Namen. Zum Auswerten: kopieren und in einen Chat mit Claude einfügen. Dazu kommt der Lernstand je Aufgabenart.</p>
-        <p class="note" id="logInfo">${logList.length ? `${logList.length} Aufgaben seit ${new Date(logList[0].t).toLocaleDateString("de-DE")}.` : "Noch leer. Es füllt sich ab jetzt mit jeder Aufgabe."}</p>
-        <div class="btn-row"><button class="btn go" id="logCopyBtn" type="button">Protokoll kopieren</button>${navigator.share ? `<button class="btn" id="logShareBtn" type="button">Teilen</button>` : ""}<button class="link-btn" id="logClearBtn" type="button">Protokoll löschen</button></div>
+        <p class="note">Die App merkt sich die letzten ${LOG_MAX} Aufgaben mit allen Eingaben, nur auf diesem Gerät und ohne Namen. Zum Auswerten: kopieren und in einen Chat mit Claude einfügen. Dazu kommt der Lernstand je Aufgabenart. Am besten einmal pro Woche die neuen Aufgaben kopieren.</p>
+        <p class="note" id="logInfo">${logList.length ? `${logList.length} Aufgaben seit ${new Date(logList[0].t).toLocaleDateString("de-DE")}, davon ${logList.filter((e) => e.t > logExpAt()).length} noch nicht exportiert.` : "Noch leer. Es füllt sich ab jetzt mit jeder Aufgabe."}</p>
+        <div class="btn-row"><button class="btn go" id="logCopyBtn" type="button">Neue Aufgaben kopieren</button><button class="btn" id="logAllBtn" type="button">Alles kopieren</button>${navigator.share ? `<button class="btn" id="logShareBtn" type="button">Teilen</button>` : ""}<button class="link-btn" id="logClearBtn" type="button">Protokoll löschen</button></div>
         <p class="note" id="logMsg" role="status"></p>
         <div id="logBox" hidden><textarea id="logOut" rows="5" readonly aria-label="Protokoll"></textarea></div>
       </section>
@@ -3792,7 +3795,8 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
   }
   // Protokoll als Text, gut lesbar für Menschen und für Claude. Der Name des Kindes kommt nicht vor.
   const CODE_WORD = { 3: "beim 1. Versuch richtig", 2: "richtig nach Fehlversuch", 1: "richtig mit Schritten", 0: "Lösung gezeigt", "-1": "verlassen, nicht gelöst" };
-  function exportLog() {
+  function exportLog(all) {
+    const since = all ? 0 : logExpAt(), list = logList.filter((e) => e.t > since);
     const p2 = (n) => String(n).padStart(2, "0"), when = (t) => { const d = new Date(t); return `${d.getFullYear()}-${p2(d.getMonth() + 1)}-${p2(d.getDate())} ${p2(d.getHours())}:${p2(d.getMinutes())}`; };
     const c = state.cfg, L = [];
     L.push(`Rechenzeitreise ${VERSION}: Protokoll zur Auswertung (exportiert ${when(Date.now())})`);
@@ -3805,8 +3809,8 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
     if (errs.length) L.push("", "== Fehlerdetektiv (Anzahl je Fehlerart) ==", errs.map(([k, v]) => `${k}: ${v}`).join(", "));
     const days = Object.keys(state.days).sort();
     if (days.length) L.push("", "== Tage (Aufgaben / davon ohne Hilfe) ==", days.map((k) => `${k}: ${state.days[k][0]}/${state.days[k][1]}`).join(", "));
-    L.push("", `== Aufgaben (${logList.length}, älteste zuerst) ==`);
-    logList.forEach((e) => {
+    L.push("", `== Aufgaben (${list.length}${since ? ` neue seit ${when(since)}` : ""}, älteste zuerst) ==`);
+    list.forEach((e) => {
       const sk = SKILL_BY_ID[e.s];
       L.push(`${when(e.t)} · ${e.d} s · ${e.s}${sk ? ` (${sk.label})` : ""} · Stufe ${e.st} · ${e.p || "?"}${e.tp ? ` · Tempel ${e.tp}` : ""}${e.x ? " · mit überflüssiger Angabe" : ""}`
         + `\n   Aufgabe: ${e.q}\n   Lösung: ${e.a} · Falsche Eingaben: ${e.w.length ? e.w.join(" | ") : "keine"} · Schritte ${e.h ? "geöffnet" : "nicht geöffnet"}${e.sw ? `, ${e.sw} falsche Schritt-Eingaben` : ""} · Ergebnis: ${CODE_WORD[e.c] || e.c}`);
@@ -3876,12 +3880,13 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
       catch (err) { if (err && err.name === "AbortError") { msg.textContent = "Abgebrochen. Es wurde nichts gesichert."; return; } }
       try { await navigator.clipboard.writeText(code); markBackup(); msg.textContent = "Code kopiert. Jetzt in einer Notiz einfügen und aufbewahren."; }
       catch (err) { $("codeShowBtn").click(); msg.textContent = "Kopiere den Code unten und bewahre ihn auf."; }
-    } else if (id === "logCopyBtn") {
-      const txt = exportLog(), msg = $("logMsg");
-      try { await navigator.clipboard.writeText(txt); msg.textContent = `Kopiert (${logList.length} Aufgaben). Jetzt in einen Chat mit Claude einfügen.`; }
+    } else if (id === "logCopyBtn" || id === "logAllBtn") {
+      const all = id === "logAllBtn", txt = exportLog(all), msg = $("logMsg"), n = logList.filter((e) => all || e.t > logExpAt()).length;
+      if (!n) { msg.textContent = "Keine neuen Aufgaben seit dem letzten Export. „Alles kopieren“ nimmt alle."; return; }
+      try { await navigator.clipboard.writeText(txt); logExpSet(Date.now()); msg.textContent = `Kopiert (${n} Aufgaben). Jetzt in einen Chat mit Claude einfügen.`; $("logInfo").textContent = "Alles exportiert."; }
       catch (err) { $("logOut").value = txt; $("logBox").hidden = false; $("logOut").select(); msg.textContent = "Der Text ist unten markiert. Jetzt kopieren."; }
     } else if (id === "logShareBtn") {
-      try { await navigator.share({ title: "Rechenzeitreise Protokoll", text: exportLog() }); $("logMsg").textContent = "Geteilt."; }
+      try { await navigator.share({ title: "Rechenzeitreise Protokoll", text: exportLog(false) }); logExpSet(Date.now()); $("logMsg").textContent = "Geteilt (nur die neuen Aufgaben)."; }
       catch (err) { $("logMsg").textContent = err && err.name === "AbortError" ? "Abgebrochen." : "Teilen ging nicht. Nimm „Protokoll kopieren“."; }
     } else if (id === "logClearBtn") { $("logMsg").innerHTML = `Wirklich löschen? Der Lernstand bleibt. <button class="link-btn danger" id="logClearYes" type="button">Ja, löschen</button>`; }
     else if (id === "logClearYes") { logList = []; try { localStorage.removeItem(LOG_KEY); } catch (err) { /* egal */ } renderParents(); }
