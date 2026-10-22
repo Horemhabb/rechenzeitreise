@@ -56,3 +56,7 @@ Alle Fotos stammen von Wikimedia Commons und sind gemeinfrei oder CC0:
 - Nova Scotia Duck Tolling Retriever: kallerna, gemeinfrei, https://commons.wikimedia.org/wiki/File%3ANova_Scotia_Duck-Tolling_Retriever_cub.jpg
 - Boston Terrier: Jons63, gemeinfrei, https://commons.wikimedia.org/wiki/File%3ABoston_Terrier_3_Months.JPG
 - Chow-Chow: unbekannt, gemeinfrei, https://commons.wikimedia.org/wiki/File%3AChow_chow_puppy.jpg
+
+## Schriften
+
+Andika, Marcellus und Noto Sans Egyptian Hieroglyphs (SIL Open Font License 1.1, siehe fonts/LIZENZ.md). Sie werden von der App selbst ausgeliefert.

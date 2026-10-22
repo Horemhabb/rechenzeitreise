@@ -13,16 +13,17 @@
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-180.png">
 <title>Rechenzeitreise</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Marcellus&family=Noto+Sans+Egyptian+Hieroglyphs&display=swap">
 <style>
+@font-face { font-family: "Andika"; font-weight: 400; font-display: swap; src: url(fonts/andika-400.woff2) format("woff2"); }
+@font-face { font-family: "Andika"; font-weight: 700; font-display: swap; src: url(fonts/andika-700.woff2) format("woff2"); }
+@font-face { font-family: "Marcellus"; font-weight: 400; font-display: swap; src: url(fonts/marcellus.woff2) format("woff2"); }
+@font-face { font-family: "Noto Sans Egyptian Hieroglyphs"; font-weight: 400; font-display: swap; src: url(fonts/hiero.woff2) format("woff2"); }
 /* Layout: eine Spalte auf Papyrus – oben ein Fries in den Farben ägyptischer Wandmalerei, Fortschritt mit Pfoten und Steinstufe,
    Tempelwahl, Aufgabenkarte mit Schritt-Hilfe, steinernes Ziffernfeld. Nachts: Nil unter Sternen. */
 :root {
   --bg: #f1e3bf; --fiber: rgba(150, 110, 50, .09); --card: #fbf4e2; --card2: #f4e8cc; --ink: #2b2118; --muted: #6b5a42;
   --lapis: #2a4f9e; --lapis-soft: #dfe6f3; --turq: #1d8579; --turq-soft: #d4ede6; --carn: #b5442a; --carn-soft: #f6dccf;
-  --gold: #b9860f; --gold-bright: #e0ad2c; --gold-soft: #f6e7b8; --mark: #fde9a1; --on: #ffffff; --veil: rgba(43, 33, 24, .62); --shadow: #2b2118;
+  --gold: #b9860f; --gold-ink: #7a5806; --gold-bright: #e0ad2c; --gold-soft: #f6e7b8; --mark: #fde9a1; --on: #ffffff; --veil: rgba(43, 33, 24, .62); --shadow: #2b2118;
   --font-display: "Marcellus", "Palatino Linotype", Georgia, serif;
   --font-body: "Andika", "Trebuchet MS", system-ui, sans-serif;
   --font-hiero: "Noto Sans Egyptian Hieroglyphs", "Segoe UI Historic", "Apple Symbols", sans-serif;
@@ -33,7 +34,7 @@
   :root:not([data-theme="light"]) {
     --bg: #121a2c; --fiber: rgba(255, 255, 255, .025); --card: #1c2539; --card2: #222c43; --ink: #efe3c4; --muted: #b2a78d;
     --lapis: #8fb0ef; --lapis-soft: #263559; --turq: #5cc6b8; --turq-soft: #16393a; --carn: #f08d6c; --carn-soft: #452a21;
-    --gold: #e8c158; --gold-bright: #e8c158; --gold-soft: #3c3119; --mark: #4a3e1a; --on: #111827; --veil: rgba(4, 7, 15, .74); --shadow: #05070d;
+    --gold: #e8c158; --gold-ink: #e8c158; --gold-bright: #e8c158; --gold-soft: #3c3119; --mark: #4a3e1a; --on: #111827; --veil: rgba(4, 7, 15, .74); --shadow: #05070d;
     --temple: var(--temple-night); --temple-op: .55;
     color-scheme: dark;
   }
@@ -41,7 +42,7 @@
 :root[data-theme="dark"] {
   --bg: #121a2c; --fiber: rgba(255, 255, 255, .025); --card: #1c2539; --card2: #222c43; --ink: #efe3c4; --muted: #b2a78d;
   --lapis: #8fb0ef; --lapis-soft: #263559; --turq: #5cc6b8; --turq-soft: #16393a; --carn: #f08d6c; --carn-soft: #452a21;
-  --gold: #e8c158; --gold-bright: #e8c158; --gold-soft: #3c3119; --mark: #4a3e1a; --on: #111827; --veil: rgba(4, 7, 15, .74); --shadow: #05070d;
+  --gold: #e8c158; --gold-ink: #e8c158; --gold-bright: #e8c158; --gold-soft: #3c3119; --mark: #4a3e1a; --on: #111827; --veil: rgba(4, 7, 15, .74); --shadow: #05070d;
   --temple: var(--temple-night); --temple-op: .55;
   color-scheme: dark;
 }
@@ -89,7 +90,7 @@ h1 { font-family: var(--font-display); font-weight: 400; font-size: 1.75rem; mar
   font-size: 1.6rem; text-shadow: 0 0 .5px currentColor, 0 0 .5px currentColor, 0 0 .5px currentColor;
 }
 .top-actions { display: flex; gap: 6px; flex-wrap: wrap; }
-.chip { background: var(--card); border: 2px solid var(--ink); border-radius: 999px; padding: 5px 11px; font-weight: 700; font-size: .88rem; white-space: nowrap; }
+.chip { background: var(--card); border: 2px solid var(--ink); border-radius: 999px; min-height: 44px; padding: 5px 14px; font-weight: 700; font-size: .88rem; white-space: nowrap; }
 .chip:active { transform: translateY(1px); }
 
 /* Fortschritt */
@@ -103,7 +104,7 @@ h1 { font-family: var(--font-display); font-weight: 400; font-size: 1.75rem; mar
 .paw.pop { animation: pop .45s ease-out; }
 .status-text { font-size: .82rem; color: var(--muted); line-height: 1.3; min-width: 0; }
 .status-text b { color: var(--ink); font-variant-numeric: tabular-nums; }
-.gold-line { color: var(--gold); font-weight: 700; }
+.gold-line { color: var(--gold-ink); font-weight: 700; }
 .stufe {
   border: 2px solid var(--ink); border-radius: 6px; padding: 3px 9px; font-family: var(--font-display); font-size: .95rem; line-height: 1.1; text-align: center;
   display: flex; flex-direction: column; box-shadow: 0 3px 0 var(--shadow); min-width: 78px;
@@ -124,7 +125,7 @@ h1 { font-family: var(--font-display); font-weight: 400; font-size: 1.75rem; mar
 .rank-bar { background: var(--card); flex-wrap: wrap; row-gap: 2px; }
 .rank-bar .tp-change { margin-left: auto; }
 .rank-bar .rb-next { order: 3; flex-basis: 100%; }
-.rb-text { flex: none; } .rb-text b { font-family: var(--font-display); font-weight: 400; font-size: 1.15rem; color: var(--gold); }
+.rb-text { flex: none; } .rb-text b { font-family: var(--font-display); font-weight: 400; font-size: 1.15rem; color: var(--gold-ink); }
 .rb-next { flex: 1; min-width: 0; font-size: .82rem; color: var(--muted); line-height: 1.3; }
 .minibar { display: block; height: 7px; border-radius: 99px; background: var(--card2); border: 1.5px solid var(--muted); overflow: hidden; margin-top: 4px; }
 .minibar > span { display: block; height: 100%; background: var(--gold-bright); }
@@ -277,7 +278,7 @@ table.plan caption { text-align: left; color: var(--muted); font-size: .85rem; p
 .lock { width: 100%; aspect-ratio: 1; border-radius: 12px; border: 2px dashed var(--muted); display: grid; place-items: center; font-family: var(--font-display); font-size: 2.4rem; color: var(--muted); background: var(--card2); }
 .career { display: flex; gap: 12px; align-items: center; text-align: left; width: 100%; }
 .career-art svg { width: 96px; height: auto; }
-.rank { font-family: var(--font-display); font-size: 1.5rem; margin: 0; color: var(--gold); }
+.rank { font-family: var(--font-display); font-size: 1.5rem; margin: 0; color: var(--gold-ink); }
 .ladder { list-style: none; padding: 0; margin: 4px 0; display: flex; flex-direction: column-reverse; gap: 4px; width: 100%; text-align: left; }
 .ladder li { padding: 5px 10px; border-radius: 8px; border: 2px solid var(--card2); color: var(--muted); display: flex; gap: 10px; align-items: baseline; }
 .ladder li > span:last-child { display: flex; flex-direction: column; }
@@ -361,7 +362,7 @@ table.plan caption { text-align: left; color: var(--muted); font-size: .85rem; p
 .lern li { display: flex; justify-content: space-between; gap: 8px; font-size: .9rem; border-bottom: 1px dashed var(--card2); padding-bottom: 3px; }
 .lern small { color: var(--muted); }
 .pill { white-space: nowrap; font-size: .78rem; font-weight: 700; border-radius: 999px; padding: 1px 8px; background: var(--card2); }
-.pill.sicher { background: var(--turq-soft); color: var(--turq); } .pill.uebend { background: var(--gold-soft); color: var(--gold); } .pill.wackelig { background: var(--carn-soft); color: var(--carn); }
+.pill.sicher { background: var(--turq-soft); color: var(--turq); } .pill.uebend { background: var(--gold-soft); color: var(--gold-ink); } .pill.wackelig { background: var(--carn-soft); color: var(--carn); }
 details summary { cursor: pointer; font-weight: 700; } details summary small { color: var(--muted); font-weight: 400; }
 .reset-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 
@@ -370,6 +371,33 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
 @keyframes nudge { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.06); } }
 @media (max-width: 380px) { h1 { font-size: 1.5rem; } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+
+/* Mein Weg: die Kette Sterne, Tempel, Punkte, Rang */
+.chain { display: flex; align-items: stretch; gap: 4px; width: 100%; }
+.chain-box { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; text-align: center; background: var(--card2); border: 2px solid var(--ink); border-radius: 12px; padding: 6px 2px; line-height: 1.2; }
+.chain-box b { font-family: var(--font-display); font-weight: 400; font-size: 1.7rem; color: var(--gold-ink); }
+.chain-box span { font-size: .8rem; font-weight: 700; display: flex; flex-direction: column; }
+.chain-box small { font-weight: 400; color: var(--muted); font-size: .72rem; }
+.chain-box.rank { border-color: var(--gold); background: var(--gold-soft); }
+.chain-arrow { align-self: center; color: var(--muted); font-weight: 700; }
+.merk { width: 100%; margin: 0; text-align: left; font-size: .95rem; background: var(--lapis-soft); border-radius: 10px; padding: 8px 12px; }
+.stars { font-size: 1.05em; }
+
+/* Elternbereich: Lernverlauf */
+.psec h4 { margin: 8px 0 0; font-size: .95rem; }
+.chart { width: 100%; height: auto; max-width: 420px; }
+.chart .b-all { fill: var(--card2); stroke: var(--muted); stroke-width: 1.5; }
+.chart .b-ok { fill: var(--turq); }
+.chart .b-none { fill: var(--muted); opacity: .5; }
+.chart .b-base { stroke: var(--muted); stroke-width: 1.5; }
+.chart text { fill: var(--ink); font-family: var(--font-body); text-anchor: middle; }
+.chart .b-num { font-size: 9px; } .chart .b-day { font-size: 10px; fill: var(--muted); } .chart .b-day.now { fill: var(--ink); font-weight: 700; }
+.legend .sw { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: -1px; margin-right: 4px; border: 1.5px solid var(--muted); }
+.legend .sw.ok { background: var(--turq); } .legend .sw.all { background: var(--card2); margin-left: 10px; }
+.tstars { list-style: none; padding: 0; margin: 4px 0 0; display: flex; flex-direction: column; gap: 4px; font-size: .88rem; }
+.tstars li { display: grid; grid-template-columns: 9.5em 1fr 3.4em; gap: 8px; align-items: center; }
+.tstars .minibar { margin: 0; } .tstars small { text-align: right; color: var(--muted); }
+.lern .pill { align-self: flex-start; }
 </style>
 </head>
 <body>
@@ -2645,6 +2673,7 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
     mode: ["auto", "manual"], sicher: ["3in3", "4in5", "9in10"], frustN: [0, 2, 3, 4, 5], vol: ["leise", "mittel", "laut"],
     titel: ["f", "m"], rewardEvery: [3, 5, 10], goldEvery: [0, 50, 100],
   };
+  const STAR_DAYS_KEEP = 6;   // so viele Übungstage merkt sich jede Aufgabenart
   const DATA_GEN = 2;   // 2: Laufbahn mit sieben Rängen (vorher fünf)
   const freshAreas = () => Object.fromEntries(AREAS.map((a) => [a, true]));
   const freshState = () => ({
@@ -2680,7 +2709,7 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
         h: typeof e.h === "string" && /^[0-3]*$/.test(e.h) ? e.h.slice(-10) : "",
         n: int(e.n, 0, 1e6) ?? 0, c: int(e.c, 0, 1e6) ?? 0, l: int(e.l, 0, 1e9) ?? 0,
         w: e.w ? 1 : 0, g: int(e.g, 0, 3) ?? 0,
-        sd: Array.isArray(e.sd) ? e.sd.filter((x) => typeof x === "string" && DAY_RE.test(x)).slice(-3) : [],
+        sd: Array.isArray(e.sd) ? e.sd.filter((x) => typeof x === "string" && DAY_RE.test(x)).slice(-STAR_DAYS_KEEP) : [],
       };
     }
     return out;
@@ -2732,6 +2761,9 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
 
   // ---------- Lernstand je Aufgabenart ----------
   const RULES = { "3in3": { k: 3, n: 3 }, "4in5": { k: 4, n: 5 }, "9in10": { k: 9, n: 10 } };
+  // Sterne je Aufgabenart: 1 = 5-mal ohne Hilfe richtig, 2 = sicher (Regel oben) und schon 12 Aufgaben dieser Art mit mindestens 9 ohne Hilfe,
+  // 3 = an vier verschiedenen Tagen sicher. Ein Stern geht nie verloren.
+  const STAR_RULE = { s1: 5, s2n: 12, s2c: 9, days: 4 };
   const isOk = (ch) => ch === "2" || ch === "3";   // 3 = beim 1. Versuch, 2 = ohne Hilfe, 1 = mit Hilfe, 0 = Lösung gezeigt
   function statusOf(id) {
     const st = state.stats[id], h = st ? st.h : "";
@@ -2876,15 +2908,15 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
     d[0]++; if (code >= 2) d[1]++;
     const keys = Object.keys(state.days).sort();
     if (keys.length > 120) keys.slice(0, keys.length - 120).forEach((k) => delete state.days[k]);
-    if (statusOf(id) === "sicher") { st.w = 1; if (!st.sd.includes(day)) st.sd = [...st.sd, day].slice(-3); }
+    if (statusOf(id) === "sicher") { st.w = 1; if (!st.sd.includes(day)) st.sd = [...st.sd, day].slice(-STAR_DAYS_KEEP); }
     mem.codes.push(code); if (mem.codes.length > 30) mem.codes.shift();
     mem.miss = code === 0 ? mem.miss + 1 : 0;   // Schritte nutzen ist kein Misserfolg, nur das Zeigen der Lösung
     mem.streak = code >= 2 ? mem.streak + 1 : 0;
     if (code <= 1 && state.cfg.retry && !t.retried) mem.retry.push({ skill: id, due: state.seq + R(5, 8) });
-    // Grad je Aufgabenart: 1 = 3 ohne Hilfe, 2 = sicher, 3 = an zwei Tagen sicher. Er sinkt nie.
-    let g = st.c >= 3 ? 1 : 0;
-    if (st.w) g = 2;
-    if (st.sd.length >= 2) g = 3;
+    // Sterne dieser Aufgabenart. Sie sinken nie.
+    let g = st.c >= STAR_RULE.s1 ? 1 : 0;
+    if (st.w && st.n >= STAR_RULE.s2n && st.c >= STAR_RULE.s2c) g = Math.max(g, 2);
+    if (g >= 2 && st.sd.length >= STAR_RULE.days) g = 3;
     if (g > st.g) { st.g = g; out.star = { id, g }; }
     // Tempelgrad und Laufbahn
     const tg = templeGradeCalc(t.area);
@@ -2899,14 +2931,15 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
   function templeGradeCalc(area) {
     const list = SKILLS_OF(area), n = list.length, gs = list.map((s) => (state.stats[s.id] ? state.stats[s.id].g : 0));
     const cnt = (k) => gs.filter((g) => g >= k).length;
-    if (cnt(3) >= Math.ceil(n * 0.6)) return 3;
-    if (cnt(2) >= Math.ceil(n * 0.35)) return 2;
-    if (cnt(1) >= Math.min(2, n)) return 1;
+    const need = templeNeeds(area);
+    if (cnt(3) >= need[3]) return 3;
+    if (cnt(2) >= need[2]) return 2;
+    if (cnt(1) >= need[1]) return 1;
     return 0;
   }
   const rankPoints = () => AREAS.reduce((s, a) => s + (state.tg[a] || 0), 0);
   // Wie viele Aufgabenarten mit wie vielen Sternen braucht ein Tempelgrad? (gleiche Regeln wie templeGradeCalc)
-  function templeNeeds(area) { const n = SKILLS_OF(area).length; return [0, Math.min(2, n), Math.ceil(n * 0.35), Math.ceil(n * 0.6)]; }
+  function templeNeeds(area) { const n = SKILLS_OF(area).length; return [0, Math.min(3, n), Math.ceil(n * 0.5), Math.ceil(n * 0.85)]; }
   const starsOf = (id) => (state.stats[id] ? state.stats[id].g : 0);
   // Nächstes Ziel im Tempel: { g: nächster Grad, need, have } oder null, wenn Hohepriesterin
   function templeNext(area) {
@@ -2918,9 +2951,14 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
   function starNext(id) {
     const st = state.stats[id], g = starsOf(id), r = RULES[state.cfg.sicher] || RULES["4in5"];
     if (g >= 3) return "Gemeistert!";
-    if (g === 0) { const c = st ? st.c : 0; return `Noch ${3 - c}-mal ohne Hilfe richtig, dann gibt es den 1. Stern.`; }
-    if (g === 1) { const okc = st ? [...st.h.slice(-r.n)].filter(isOk).length : 0; return `Für den 2. Stern: ${r.k} von deinen letzten ${r.n} Aufgaben dieser Art ohne Hilfe richtig (gerade: ${okc} von ${Math.min(r.n, st ? st.h.length : 0)}).`; }
-    return st && st.sd.includes(todayKey()) ? "Für den 3. Stern: an einem anderen Tag noch einmal sicher rechnen." : "Für den 3. Stern: an einem zweiten Tag zeigen, dass du es sicher kannst.";
+    if (g === 0) { const c = st ? st.c : 0; return `Noch ${STAR_RULE.s1 - c}-mal ohne Hilfe richtig, dann gibt es den 1. Stern.`; }
+    if (g === 1) {
+      const okc = st ? [...st.h.slice(-r.n)].filter(isOk).length : 0, n = st ? st.n : 0, c = st ? st.c : 0;
+      return `Für den 2. Stern: ${r.k} von deinen letzten ${r.n} Aufgaben dieser Art ohne Hilfe richtig (gerade: ${okc} von ${Math.min(r.n, st ? st.h.length : 0)})`
+        + (n < STAR_RULE.s2n || c < STAR_RULE.s2c ? `, und insgesamt mindestens ${STAR_RULE.s2c} ohne Hilfe in ${STAR_RULE.s2n} Aufgaben (bisher ${c} von ${n}).` : ".");
+    }
+    const days = st ? st.sd.length : 0;
+    return `Für den 3. Stern: an ${STAR_RULE.days} verschiedenen Tagen sicher rechnen (bisher ${days}). Komm morgen wieder!`;
   }
   function rankCalc() { let r = 0; RANKS.forEach((x, i) => { if (rankPoints() >= x.min) r = i; }); return r; }
 
@@ -3022,7 +3060,7 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
   // ---------- LOGIK-ENDE ----------
 
   // ===================== APP: Speichern, Töne, Darstellung, Eingabe, Belohnungen, Eltern =====================
-  const VERSION = "2.3.1";
+  const VERSION = "2.4";
   const STORE_KEY = "rechenzeitreise-v1";
   const OLD_KEY = "rechen-geschichten-v1";
   const BACKUP_KEY = "rzr-backup-at";
@@ -3541,14 +3579,17 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
   // ---------- Sammlung: Welpen, Gold, Mein Weg, Pharaonen, Urkunden ----------
   let collTab = "pups";
   const rulerOrder = RANKS.map((r, i) => ({ id: r.ruler, rank: i })).filter((x) => x.id);
+  const starsIn = (area) => SKILLS_OF(area).reduce((s, k) => s + starsOf(k.id), 0);
+  const starsMax = (area) => SKILLS_OF(area).length * 3;
   function wegHTML() {
     const pts = rankPoints(), cur = RANKS[state.rank], nx = RANKS[state.rank + 1], R_ = RULES[state.cfg.sicher] || RULES["4in5"];
+    const sTot = AREAS.reduce((s, a) => s + starsIn(a), 0), sMax = AREAS.reduce((s, a) => s + starsMax(a), 0), tOpen = AREAS.filter((a) => (state.tg[a] || 0) > 0).length;
     const speech = nx ? `<p class="speech"><b>${RULERS[nx.ruler].name}:</b> „${nx.min - pts <= 0 ? "Gleich ist es so weit" : `Sammle noch ${ptsWord(nx.min - pts)}`}, dann ernenne ich dich ${zur()} ${rankName(state.rank + 1)}.“</p>`
       : `<p class="speech"><b>Hatschepsut:</b> „Du regierst nun selbst. Sammle weiter Sterne, bis du in allen Tempeln ${gradeName(3)} bist.“</p>`;
     const ticks = RANKS.slice(1).map((r) => `<span class="tick${pts >= r.min ? " on" : ""}" style="left:${r.min / MAX_POINTS * 100}%" title="${rankName(RANKS.indexOf(r))}"></span>`).join("");
     const temples = TEMPLES.map((t) => {
       const g = state.tg[t.id] || 0, nt = templeNext(t.id);
-      const goal = nt ? `Für ${gradeName(nt.g)}: ${nt.have} von ${nt.need} Aufgabenarten mit ${"★".repeat(nt.g)}` : "Höchster Grad erreicht";
+      const goal = `${STAR(Math.min(3, Math.round(starsIn(t.id) / starsMax(t.id) * 3)))} ${starsIn(t.id)} von ${starsMax(t.id)} Sternen<br>` + (nt ? `Für ${gradeName(nt.g)}: ${nt.have} von ${nt.need} Aufgabenarten mit ${"★".repeat(nt.g)}` : "Höchster Grad erreicht");
       return `<button type="button" class="temple-card" data-temple="${t.id}"><span class="tc-god">${godSVG(t.god)}</span>
         <span class="tc-text"><b>${GODS[t.god].name}: ${t.short}</b><small>${g ? `${gradeName(g)} · ${ptsWord(g)}` : "Noch kein Grad"}</small><small class="goal">${goal}</small>
         ${nt ? `<span class="minibar"><span style="width:${Math.min(100, nt.have / nt.need * 100)}%"></span></span>` : ""}</span><span class="tc-seal">${sealSVG(t.id, g)}</span></button>`;
@@ -3559,11 +3600,18 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
       <div class="pts"><div class="pts-bar" role="img" aria-label="${pts} von ${MAX_POINTS} Punkten"><span class="fill" style="width:${pts / MAX_POINTS * 100}%"></span>${ticks}</div>
         <p><b>${pts} von ${MAX_POINTS} Punkten</b> · ${rankNextLine()}</p></div>
       ${speech}
+      <div class="chain" aria-label="So hängt alles zusammen">
+        <div class="chain-box"><b>${sTot}</b><span>Sterne ${STAR(1, 1)}<small>von ${sMax}</small></span></div><span class="chain-arrow" aria-hidden="true">→</span>
+        <div class="chain-box"><b>${tOpen}</b><span>Tempel<small>mit Grad, von 8</small></span></div><span class="chain-arrow" aria-hidden="true">→</span>
+        <div class="chain-box"><b>${pts}</b><span>Punkte<small>von ${MAX_POINTS}</small></span></div><span class="chain-arrow" aria-hidden="true">→</span>
+        <div class="chain-box rank"><b>${state.rank + 1}</b><span>Rang<small>von ${RANKS.length}</small></span></div>
+      </div>
+      <p class="merk">Sterne sind <b>Steine</b>. Punkte sind <b>Etagen</b>. Mit vielen Steinen baust du eine Etage, mit vielen Etagen wirst du ${rankName(RANKS.length - 1)}.</p>
       <details class="howto"${state.rank < 2 ? " open" : ""}><summary>So hängt alles zusammen</summary>
         <ol class="how">
-          <li><b>Sterne für jede Aufgabenart.</b> ${STAR(1)} 3-mal ohne Hilfe richtig. ${STAR(2)} ${R_.k} von deinen letzten ${R_.n} Aufgaben dieser Art ohne Hilfe richtig, dann kannst du es sicher. ${STAR(3)} an zwei verschiedenen Tagen sicher.</li>
-          <li><b>Sterne machen dich ${zur()} ${gradeName(2)}.</b> In jedem der 8 Tempel steigst du auf: ${gradeName(1)} = 1 Punkt, ${gradeName(2)} = 2 Punkte, ${gradeName(3)} = 3 Punkte. Wie viele Sterne ein Tempel verlangt, steht bei jedem Tempel.</li>
-          <li><b>Punkte bringen dir einen neuen Rang.</b> Die Punkte aller Tempel zählen zusammen, höchstens ${MAX_POINTS}. Bei genug Punkten ernennt dich eine Pharaonin oder ein Pharao, bis du selbst ${rankName(RANKS.length - 1)} bist.</li>
+          <li><b>1. Sterne ${STAR(3)} gibt es für jede Aufgabenart</b>, zum Beispiel für die 7er-Reihe. Nur Aufgaben ohne Hilfe zählen.<br>${STAR(1)} ${STAR_RULE.s1}-mal ohne Hilfe richtig.<br>${STAR(2)} Du kannst es sicher: ${R_.k} von den letzten ${R_.n} richtig, und schon ${STAR_RULE.s2n} Aufgaben dieser Art geübt.<br>${STAR(3)} An ${STAR_RULE.days} verschiedenen Tagen sicher. Dafür musst du an mehreren Tagen kommen.</li>
+          <li><b>2. Aus Sternen wird ein Grad im Tempel.</b> Hast du in einem Tempel genug Sterne, steigst du auf: ${gradeName(1)}, ${gradeName(2)}, ${gradeName(3)}. Dafür gibt es <b>Punkte: 1, 2 oder 3 pro Tempel</b>. Sie werden nicht addiert: ${gradeName(3)} sind 3 Punkte, nicht 6.</li>
+          <li><b>3. Aus Punkten wird ein Rang.</b> Die Punkte aller 8 Tempel zählen zusammen, höchstens ${MAX_POINTS}. Bei genug Punkten ernennt dich eine Pharaonin oder ein Pharao, bis du selbst ${rankName(RANKS.length - 1)} bist.</li>
         </ol>
         <p class="note">Das läuft nebenher: Jede richtige Aufgabe ist eine Pfote, ${state.cfg.rewardEvery} Pfoten sind ein Welpe${state.cfg.goldEvery ? `, alle ${state.cfg.goldEvery} Aufgaben gibt es Gold` : ""}. Die <b>Stufe</b> (${STUFEN.slice(1).join(", ")}) zeigt nur, wie schwer die Aufgaben gerade sind.</p>
       </details>
@@ -3721,6 +3769,39 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
   const STATUS_WORD = { neu: "neu", uebend: "übt noch", sicher: "sicher", wackelig: "wackelt" };
   const opt = (v, cur, label) => `<option value="${v}"${String(v) === String(cur) ? " selected" : ""}>${label}</option>`;
   const chk = (key, label, note) => `<label class="row-check"><input type="checkbox" id="cfg-${key}" data-cfg="${key}"${state.cfg[key] ? " checked" : ""}><span>${label}${note ? `<small>${note}</small>` : ""}</span></label>`;
+  // ---------- Lernverlauf: zwei Wochen als Säulen, Vergleich der Wochen, Wackelkandidaten, Fehlerarten, Sterne je Tempel ----------
+  const ERR_WORD = { op: "Rechenzeichen verwechselt", copy: "Zahl aus der Aufgabe abgeschrieben", dig: "Ziffern vertauscht", row: "Reihe um eins verrechnet", ten: "Zehner- oder Hunderterübergang", one: "um 1 daneben" };
+  function dayKeys(n) {
+    const out = [], p = (x) => String(x).padStart(2, "0");
+    for (let i = n - 1; i >= 0; i--) { const d = new Date(); d.setHours(12, 0, 0, 0); d.setDate(d.getDate() - i); out.push(`${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`); }
+    return out;
+  }
+  function progressHTML() {
+    const keys = dayKeys(14), vals = keys.map((k) => state.days[k] || [0, 0]);
+    const sum = (a) => a.reduce((x, v) => [x[0] + v[0], x[1] + v[1]], [0, 0]), thisW = sum(vals.slice(7)), lastW = sum(vals.slice(0, 7));
+    const pct = (v) => (v[0] ? Math.round(v[1] / v[0] * 100) : 0);
+    const max = Math.max(10, ...vals.map((v) => v[0])), W = 336, H = 120, bw = 18, gap = (W - 14 * bw) / 14, top = 16, base = H - 18, hh = base - top;
+    const wd = ["S", "M", "D", "M", "D", "F", "S"];
+    const bars = vals.map((v, i) => {
+      const x = gap / 2 + i * (bw + gap), h = v[0] / max * hh, ho = v[1] / max * hh, d = new Date(keys[i] + "T12:00");
+      return `<g>${v[0] ? `<rect class="b-all" x="${x.toFixed(1)}" y="${(base - h).toFixed(1)}" width="${bw}" height="${h.toFixed(1)}" rx="3"/><rect class="b-ok" x="${x.toFixed(1)}" y="${(base - ho).toFixed(1)}" width="${bw}" height="${ho.toFixed(1)}" rx="3"/><text class="b-num" x="${(x + bw / 2).toFixed(1)}" y="${(base - h - 3).toFixed(1)}">${v[0]}</text>` : `<rect class="b-none" x="${x.toFixed(1)}" y="${base - 2}" width="${bw}" height="2"/>`}<text class="b-day${i === 13 ? " now" : ""}" x="${(x + bw / 2).toFixed(1)}" y="${H - 4}">${wd[d.getDay()]}</text></g>`;
+    }).join("");
+    const label = `Aufgaben pro Tag in den letzten 14 Tagen: ` + keys.map((k, i) => `${new Date(k + "T12:00").toLocaleDateString("de-DE", { day: "numeric", month: "numeric" })} ${vals[i][0]}`).join(", ");
+    const trend = lastW[0] && thisW[0] ? (pct(thisW) > pct(lastW) + 2 ? "besser als letzte Woche" : pct(thisW) < pct(lastW) - 2 ? "etwas schwächer als letzte Woche" : "so wie letzte Woche") : "";
+    const wobbly = SKILLS.filter((s) => { const st = state.stats[s.id]; return st && ((statusOf(s.id) === "wackelig") || (st.n >= 6 && rate10(s.id) < 0.6)); })
+      .sort((a, b) => rate10(a.id) - rate10(b.id)).slice(0, 6);
+    const errs = Object.entries(state.err).filter(([k]) => ERR_WORD[k]).sort((a, b) => b[1] - a[1]).slice(0, 4);
+    const tbars = TEMPLES.map((t) => { const a = starsIn(t.id), m = starsMax(t.id); return `<li><span>${GODS[t.god].name}: ${t.short}</span><span class="minibar"><span style="width:${m ? a / m * 100 : 0}%"></span></span><small>${a}/${m}</small></li>`; }).join("");
+    return `<section class="psec"><h3>Lernverlauf</h3>
+        <p>Diese Woche: <b>${thisW[0]}</b> Aufgaben, <b>${pct(thisW)} %</b> ohne Hilfe${trend ? ` (${trend})` : ""}. Letzte Woche: ${lastW[0]} Aufgaben${lastW[0] ? `, ${pct(lastW)} %` : ""}.</p>
+        <svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(label)}"><line class="b-base" x1="0" x2="${W}" y1="${base}" y2="${base}"/>${bars}</svg>
+        <p class="note legend"><span class="sw ok"></span>ohne Hilfe richtig <span class="sw all"></span>alle Aufgaben des Tages. Wochentage unten, heute ganz rechts.</p>
+        <h4>Sterne je Tempel</h4><ul class="tstars">${tbars}</ul>
+        <h4>Das wackelt gerade</h4>
+        ${wobbly.length ? `<ul class="lern">${wobbly.map((s) => `<li><span>${esc(s.label)} <small>${esc(s.ex)}</small></span><span class="pill wackelig">${Math.round(rate10(s.id) * 100)} % ohne Hilfe</span></li>`).join("")}</ul><p class="note">Diese Arten kommen in der Automatik öfter als Übung dran.</p>` : `<p class="note">Im Moment wackelt nichts. Das ist ein gutes Zeichen.</p>`}
+        ${errs.length ? `<h4>Häufigste Fehlerarten</h4><p class="note">Vom Fehlerdetektiv erkannt:</p><ul class="lern">${errs.map(([k, v]) => `<li><span>${ERR_WORD[k]}</span><span class="pill">${v}×</span></li>`).join("")}</ul>` : ""}
+      </section>`;
+  }
   function renderParents() {
     const c = state.cfg, last7 = Object.keys(state.days).sort().slice(-7), wk = last7.reduce((s, k) => s + state.days[k][0], 0), wkOk = last7.reduce((s, k) => s + state.days[k][1], 0);
     const standalone = window.matchMedia && window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
@@ -3767,6 +3848,7 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
         ${chk("speech", "Gesprochenes Lob", hasSpeech ? "Die Stimme kommt vom Gerät." : "Dieses Gerät hat keine Sprachausgabe.")}
         ${chk("readBtn", "Knopf „Vorlesen“ bei Textaufgaben")}
       </section>
+      ${progressHTML()}
       <section class="psec"><h3>Lernstand</h3>
         <p>Letzte 7 Tage: <b>${wk}</b> Aufgaben, davon <b>${wkOk}</b> ohne Hilfe. Insgesamt <b>${state.correct}</b> gelöst. Laufbahn: <b>${rankName(state.rank)}</b>.</p>
         ${lern}
