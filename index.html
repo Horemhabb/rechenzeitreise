@@ -398,6 +398,45 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
 .tstars li { display: grid; grid-template-columns: 9.5em 1fr 3.4em; gap: 8px; align-items: center; }
 .tstars .minibar { margin: 0; } .tstars small { text-align: right; color: var(--muted); }
 .lern .pill { align-self: flex-start; }
+
+/* Version 3: Tagesziel, Prüfung, Merkkarten, Bilder, Ehren */
+.status { grid-template-areas: "paws stufe" "text stufe" "goal goal"; }
+.goal-row { grid-area: goal; display: flex; flex-wrap: wrap; align-items: center; gap: 2px 10px; font-size: .85rem; border-top: 1.5px dashed var(--muted); padding-top: 6px; margin-top: 2px; }
+.goal-row[hidden] { display: none !important; }
+.goal-txt { flex: none; } .goal-serie { flex: none; color: var(--gold-ink); font-weight: 700; margin-left: auto; }
+.goal-track { position: relative; flex: 1 1 120px; height: 10px; border-radius: 99px; background: var(--card2); border: 1.5px solid var(--muted); margin: 8px 14px 8px 0; }
+.goal-fill { position: absolute; inset: 0 auto 0 0; border-radius: 99px; background: linear-gradient(90deg, var(--gold), var(--gold-bright)); }
+.goal-boat { position: absolute; top: 50%; transform: translate(-50%, -62%); width: 30px; transition: left .6s ease; }
+.goal-boat svg { display: block; width: 30px; height: auto; }
+.exam-bar { display: flex; align-items: center; gap: 10px; background: var(--gold-soft); border: 2px solid var(--gold); border-radius: 14px; padding: 6px 12px; }
+.exam-bar small { display: block; font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.exam-bar > span:nth-child(2) { flex: 1; font-weight: 700; }
+.exam-bar .tp-seal svg, .exam-medal svg { width: 40px; height: 40px; }
+.tag.pruef { background: var(--gold-soft); color: var(--gold-ink); }
+.merk-card { margin: 0 0 8px; background: var(--lapis-soft); border-left: 5px solid var(--lapis); border-radius: 8px; padding: 6px 10px; font-size: .95rem; }
+.step-pic { margin-top: 6px; }
+.strahl, .strips { display: block; width: 100%; max-width: 420px; height: auto; margin: 0 auto; }
+.pic .strahl { max-width: 460px; }
+.sl-axis, .sl-tick { stroke: var(--ink); stroke-width: 2; } .sl-tick.big { stroke-width: 3; }
+.sl-tip { fill: var(--ink); }
+.sl-lab, .sl-mark, .sl-q, .st-lab { font-family: var(--font-body); text-anchor: middle; fill: var(--ink); }
+.sl-lab { font-size: 13px; font-weight: 700; } .sl-mark { font-size: 12px; font-weight: 700; } .sl-q { font-size: 15px; font-weight: 700; fill: var(--lapis); }
+.sl-arrow { fill: var(--lapis); }
+.sl-dot.m0, .sl-pin.m0 { fill: var(--carn); stroke: var(--carn); } .sl-dot.m1, .sl-pin.m1 { fill: var(--turq); stroke: var(--turq); }
+.sl-pin { stroke-width: 1.5; stroke-dasharray: 3 2; } .sl-mark.m0 { fill: var(--carn); } .sl-mark.m1 { fill: var(--turq); }
+.st-lab { font-size: 14px; font-weight: 700; text-anchor: end; }
+.strips rect { stroke: var(--ink); stroke-width: 2; } .st-off { fill: var(--card); } .st-on.s0 { fill: var(--carn); } .st-on.s1 { fill: var(--turq); }
+.medal-grid, .honor-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 10px; width: 100%; }
+.medal-item, .honor-item { display: flex; flex-direction: column; align-items: center; gap: 2px; text-align: center; background: none; border: 0; padding: 0; font-size: .8rem; }
+.medal-item svg, .honor-item svg { width: 76px; height: 76px; }
+.medal-item small, .honor-item small { color: var(--muted); }
+.honor-item b { font-size: .8rem; line-height: 1.2; }
+.honor.none, .medal.none { filter: grayscale(1); opacity: .45; }
+.honor-item.locked b { color: var(--muted); font-weight: 400; }
+.doc-medal svg { width: 130px; height: 130px; }
+.exam-info { display: flex; gap: 10px; align-items: flex-start; background: var(--gold-soft); border-radius: 10px; padding: 8px 10px; }
+.exam-info p { margin: 0; font-size: .9rem; }
+@media (prefers-reduced-motion: reduce) { .goal-boat { transition: none; } }
 </style>
 </head>
 <body>
@@ -420,10 +459,12 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
     <div class="paws" id="paws"></div>
     <div class="status-text" id="statusText"></div>
     <button class="stufe" id="stufeBadge" type="button" aria-label="Deine Stufe"></button>
+    <div class="goal-row" id="goalRow"></div>
   </section>
 
   <button class="rank-bar" id="rankBar" type="button"></button>
   <button class="temple-pick" id="templeBtn" type="button"></button>
+  <div class="exam-bar" id="examBar" hidden></div>
 
   <main class="task" id="task"></main>
   <div class="choices main" id="mainChoices" hidden></div>
@@ -463,6 +504,7 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
       <button class="tab" role="tab" data-tab="gold" type="button">Gold</button>
       <button class="tab" role="tab" data-tab="weg" type="button">Mein Weg</button>
       <button class="tab" role="tab" data-tab="pharao" type="button">Pharaonen</button>
+      <button class="tab" role="tab" data-tab="ehren" type="button">Ehren</button>
       <button class="tab" role="tab" data-tab="docs" type="button">Urkunden</button>
     </div>
     <p class="note" id="collInfo"></p>
@@ -535,7 +577,7 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
   const SM = (text, calc, value, tip) => ({ text, calc, value, unit: "€", tip, type: "money" });
   const ST = (text, calc, value, tip) => ({ text, calc, value, unit: "Uhr", tip, type: "time" });
   const SC = (text, options, value, tip) => ({ text, options, value, tip, type: "choice" });
-  const SI = (text) => ({ text, type: "info" });
+  const SI = (text, pic) => ({ text, pic, type: "info" });   // pic: Bild-HTML (Zahlenstrahl, Bruchstreifen)
   const SF = (text, calc, n, d, tip) => ({ text, calc, value: n / d, frac: [n, d], tip, type: "frac" });
   const SR = (text, calc, q, r, tip) => ({ text, calc, value: q, rest: r, tip, type: "rest" });
 
@@ -668,6 +710,33 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
       fact: "Ihr Tempel in Deir el-Bahari hat drei große Terrassen und lehnt sich an eine steile Felswand." },
   ];
   const TREASURE_BY_ID = Object.fromEntries(TREASURES.map((t) => [t.id, t]));
+
+  // Ehrenzeichen: für Ausdauer und Prüfungen, unabhängig von Sternen und Rang (tragen auch nach der Pharaonin weiter)
+  // kind: serie = Tagesziel so viele Tage in Folge, tage = an so vielen Tagen gerechnet, auf = so viele Aufgaben richtig,
+  // pruef = in so vielen Tempeln eine Prüfung bestanden, gold = so viele Prüfungen in Gold
+  const HONORS = [
+    { id: "serie3", kind: "serie", n: 3, tier: 0, name: "Drei Sonnentage", unit: "in Folge" },
+    { id: "serie7", kind: "serie", n: 7, tier: 1, name: "Eine Woche wie Ra", unit: "in Folge" },
+    { id: "serie14", kind: "serie", n: 14, tier: 2, name: "Zwei Wochen am Nil", unit: "in Folge" },
+    { id: "serie30", kind: "serie", n: 30, tier: 3, name: "Ein ganzer Mond", unit: "in Folge" },
+    { id: "tage10", kind: "tage", n: 10, tier: 0, name: "Die Binse ist gespitzt", unit: "Rechentage" },
+    { id: "tage30", kind: "tage", n: 30, tier: 1, name: "Ein Monat Papyrus", unit: "Rechentage" },
+    { id: "tage60", kind: "tage", n: 60, tier: 2, name: "Zwei Monde Tempeldienst", unit: "Rechentage" },
+    { id: "tage100", kind: "tage", n: 100, tier: 3, name: "Hundert Tage am Nil", unit: "Rechentage" },
+    { id: "auf500", kind: "auf", n: 500, tier: 0, name: "Ein Korb voll Rechnungen", unit: "Aufgaben", small: true },
+    { id: "auf1000", kind: "auf", n: 1000, tier: 1, name: "Ein Kornspeicher voll", unit: "Aufgaben", small: true },
+    { id: "auf2500", kind: "auf", n: 2500, tier: 2, name: "Ein Obelisk aus Zahlen", unit: "Aufgaben", small: true },
+    { id: "auf5000", kind: "auf", n: 5000, tier: 3, name: "Eine Pyramide aus Zahlen", unit: "Aufgaben", small: true },
+    { id: "pruef1", kind: "pruef", n: 1, tier: 0, name: "Die erste Prüfung", unit: "Tempel" },
+    { id: "pruef4", kind: "pruef", n: 4, tier: 1, name: "Vier Tempel geprüft", unit: "Tempel" },
+    { id: "pruef8", kind: "pruef", n: 8, tier: 2, name: "Alle Tempel geprüft", unit: "Tempel" },
+    { id: "gold8", kind: "gold", n: 8, tier: 3, name: "Gold in allen Tempeln", unit: "in Gold" },
+  ];
+  HONORS.forEach((h) => { h.big = String(h.n); });
+  const HONOR_BY_ID = Object.fromEntries(HONORS.map((h) => [h.id, h]));
+  const HONOR_KIND = { serie: "Tagesziel an so vielen Tagen in Folge geschafft", tage: "An so vielen verschiedenen Tagen gerechnet", auf: "So viele Aufgaben richtig gelöst", pruef: "In so vielen Tempeln eine Prüfung bestanden", gold: "So viele Prüfungen mit Gold bestanden" };
+  // Prüfung: 10 Aufgaben aus einem Tempel, zählt nur ohne Hilfe. 8 = Bronze, 9 = Silber, 10 = Gold. Einmal pro Tag und Tempel.
+  const EXAM_N = 10, EXAM_PASS = 8;
 
   // Stufen (für alles eine): Sie sieht den Namen, Eltern sehen auch die Zahl
   const STUFEN = ["", "Nilschlamm", "Papyrus", "Kalkstein", "Granit", "Gold"];
@@ -2027,8 +2096,9 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
       if (Math.random() < 0.5) [n1, d1, n2, d2] = [n2, d2, n1, d1];
       L = lcm(d1, d2);
     } else do { d1 = pick([2, 3, 4, 5, 6, 8]); d2 = pick([2, 3, 4, 5, 6, 8]); n1 = R(1, d1 - 1); n2 = R(1, d2 - 1); L = lcm(d1, d2); } while (L > 24 || (n1 === n2 && d1 === d2));
-    const steps = d1 === d2 ? [SC("Gleicher Nenner: Vergleiche nur die Zähler.", CMP, cmpOf(n1, n2))]
-      : [S(`Bring beide auf den Nenner ${L}:`, `${frH(n1, d1)} = ${frH("?", L)}`, n1 * L / d1, ""),
+    const pic = SI("So sehen beide Brüche als gleich lange Streifen aus:", stripsSVG([{ n: n1, d: d1 }, { n: n2, d: d2 }]));
+    const steps = d1 === d2 ? [pic, SC("Gleicher Nenner: Vergleiche nur die Zähler.", CMP, cmpOf(n1, n2))]
+      : [pic, S(`Bring beide auf den Nenner ${L}:`, `${frH(n1, d1)} = ${frH("?", L)}`, n1 * L / d1, ""),
         S("Und der zweite:", `${frH(n2, d2)} = ${frH("?", L)}`, n2 * L / d2, ""),
         SC(`Jetzt vergleiche ${n1 * L / d1} und ${n2 * L / d2} Teile:`, CMP, cmpOf(n1 / d1, n2 / d2))];
     return EQ(`${frH(n1, d1)} ☐ ${frH(n2, d2)}`, { type: "choice", options: CMP, value: cmpOf(n1 / d1, n2 / d2) }, steps,
@@ -2070,7 +2140,9 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
   });
   sk("k_stelle", "bruch", "Kommazahlen und Zehntel", "0,7 = ?⁄10", 3, () => {
     const v = R(0, 2);
-    if (v === 0) { const z = R(1, 9); return EQ(`0,${z} = ${frH("?", 10)}`, N(z), [S("Die erste Stelle nach dem Komma sind die Zehntel.", `0,${z} = ? Zehntel`, z, "")], {}); }
+    if (v === 0) { const z = R(1, 9); return EQ(`0,${z} = ${frH("?", 10)}`, N(z), [
+      SI("Am Zahlenstrahl: Von 0 bis 1 sind es 10 gleiche Schritte. Jeder Schritt ist ein Zehntel.", strahlSVG({ a: 0, b: 1, step: 0.1, labels: [0, 1], marks: [{ v: z / 10, label: `0,${z}` }], label: `Zahlenstrahl von 0 bis 1, markiert ist 0,${z}` })),
+      S("Die erste Stelle nach dem Komma sind die Zehntel.", `0,${z} = ? Zehntel`, z, "")], {}); }
     if (v === 1) { let h; do { h = R(1, 99); } while (h % 10 === 0); const s = String(h).padStart(2, "0");
       return EQ(`0,${s} = ${frH("?", 100)}`, N(h), [S("Zwei Stellen nach dem Komma sind Hundertstel.", `0,${s} = ? Hundertstel`, h, "", h < 10 ? `0,0${h}: Die erste Stelle ist 0 Zehntel.` : null)], {}); }
     const z = R(1, 99), d = z % 10 === 0 ? 10 : 100, n = d === 10 ? z / 10 : z;
@@ -2087,7 +2159,25 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
     const sx = fz(x), sy = same ? s2(y) : fz(y), flip = same && Math.random() < 0.5;
     return EQ(flip ? `${sy} ☐ ${sx}` : `${sx} ☐ ${sy}`, { type: "choice", options: CMP, value: cmpOf(x, y) }, [
       SI(`Hänge Nullen an, bis beide gleich viele Stellen haben: ${s2(x)} und ${s2(y)}. Jetzt kannst du die Hundertstel vergleichen: ${Math.round(x * 100)} und ${Math.round(y * 100)}.`),
+      SI("So liegen beide am Zahlenstrahl. Weiter rechts ist größer.", (() => { const g = Math.floor(Math.min(x, y)); return strahlSVG({ a: g, b: g + 1, step: 0.1, labels: [g, g + 0.5, g + 1], marks: same ? [{ v: x, label: `${sx} = ${sy}` }] : [{ v: x, label: sx }, { v: y, label: sy }], label: `Zahlenstrahl von ${g} bis ${g + 1} mit ${sx} und ${sy}` }); })()),
     ], { prompt: "Welches Zeichen gehört in das Kästchen?", explain: `${s2(x)} ist ${cmpWord(x, y)} ${s2(y)}.` });
+  });
+  // Kommazahlen am Zahlenstrahl ablesen: erst Zehntel zwischen 0 und 1, später Hundertstel in einem kleinen Ausschnitt
+  sk("k_strahl", "bruch", "Kommazahlen am Zahlenstrahl", "Wo zeigt der Pfeil hin?", 2, (lvl) => {
+    if (lvl < 4 || Math.random() < 0.4) {
+      const g = lvl < 3 ? 0 : R(0, 4), z = R(1, 9), v = g + z / 10;
+      return EQ("?", N(v), [
+        SI(`Zwischen ${g} und ${g + 1} sind es 10 gleiche Schritte. Jeder Schritt ist 0,1 (ein Zehntel).`),
+        S("Wie viele Schritte ist der Pfeil rechts von " + g + "?", "? Schritte", z, "", "Zähle die kleinen Striche ab dem beschrifteten Strich."),
+        S("Also:", `${g} + ${z} · 0,1 = ?`, v, ""),
+      ], { pic: { kind: "strahl", a: g, b: g + 1, step: 0.1, labels: [g, g + 1], arrow: v }, prompt: "Welche Zahl zeigt der Pfeil? Schreib mit Komma." });
+    }
+    const lo = Math.round((R(0, 4) + R(0, 9) / 10) * 10) / 10, h = R(1, 9), v = Math.round((lo + h / 100) * 100) / 100;
+    return EQ("?", N(v), [
+      SI(`Hier ist ein Stück zwischen ${fz(lo)} und ${fz(Math.round((lo + 0.1) * 10) / 10)} vergrößert. Es hat 10 Schritte, jeder ist 0,01 (ein Hundertstel).`),
+      S(`Wie viele Schritte ist der Pfeil rechts von ${fz(lo)}?`, "? Schritte", h, ""),
+      S("Also:", `${fz(lo)} + ${h} · 0,01 = ?`, v, ""),
+    ], { pic: { kind: "strahl", a: lo, b: Math.round((lo + 0.1) * 10) / 10, step: 0.01, labels: [lo, Math.round((lo + 0.1) * 10) / 10], arrow: v }, prompt: "Welche Zahl zeigt der Pfeil? Schreib mit Komma." });
   });
   sk("k_plus", "bruch", "Kommazahlen plus und minus", "2,5 + 1,75", 4, () => {
     const plus = Math.random() < 0.55;
@@ -2266,6 +2356,47 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
       SI(tip), SC("Welches Zeichen passt?", CMP, cmpOf(lv, rv)),
     ], { prompt: "Welches Zeichen gehört in das Kästchen? Versuch es mit Köpfchen, ohne alles auszurechnen.", explain: `Links ${fz(lv)}, rechts ${fz(rv)}.` });
   });
+
+  // Merkkarten: eine kurze Regel je Aufgabenart. Steht über den Schritten und kommt nach einem Fehlversuch.
+  const MERK_TEXT = "Lies zuerst die Frage: Was ist gesucht? Dann suche nur die Zahlen, die du dafür brauchst.";
+  const MERK_BIG1x1 = "Zerlege die große Zahl: 14 · 7 = 10 · 7 + 4 · 7 = 70 + 28 = 98.";
+  const MERK_PM = "Erst die Hunderter, dann die Zehner, dann die Einer. Über den Zehner: erst bis zur vollen Zehnerzahl, dann den Rest.";
+  const MERK_TEIL = "Teilen ist Malnehmen rückwärts: 56 : 7 = ? heißt 7 · ? = 56.";
+  const MERK_SCHRIFT = "Stellen genau untereinander: Einer unter Einer, Zehner unter Zehner. Von rechts nach links rechnen, den Übertrag klein notieren.";
+  const MERK_UEBER = "Überschlagen: Erst runden, dann im Kopf rechnen. Das Ergebnis ist ungefähr, nicht genau.";
+  const MERK = {
+    e_klein: "Fünfmal geht schnell: 5 · 7 = 35. Von dort aus weiterzählen oder zurückzählen.",
+    p_h: MERK_PM, p_hz: MERK_PM, p_ze: MERK_PM, p_hu: MERK_PM, p_2: MERK_PM, p_3: MERK_PM,
+    p_erg: "Ergänzen: Was fehlt bis zur nächsten vollen Zahl? 650 + 50 = 700, dann + 300 = 1000. Zusammen 350.",
+    d_klein: MERK_TEIL, d_gross: MERK_TEIL, d_null: "Mit Nullen: 240 : 6 ist wie 24 : 6 = 4, dann die Null wieder dran: 40.",
+    d_rest: "Teilen mit Rest: Wie oft passt der Teiler ganz hinein? Was übrig bleibt, ist der Rest. Er ist immer kleiner als der Teiler.",
+    b_bild: "Der Nenner (unten) sagt, in wie viele gleiche Teile das Ganze geteilt ist. Der Zähler (oben) sagt, wie viele Teile du nimmst.",
+    b_von: "¾ von 20: erst durch den Nenner teilen (20 : 4 = 5), dann mal den Zähler (5 · 3 = 15).",
+    b_erw: "Erweitern und Kürzen: Zähler und Nenner mit derselben Zahl malnehmen oder teilen. Der Bruch bleibt gleich groß.",
+    b_kuerz: "Kürzen: Zähler und Nenner durch dieselbe Zahl teilen, so lange, bis nur noch 1 beide teilt.",
+    b_vgl: "Gleicher Nenner: Der größere Zähler ist größer. Verschiedene Nenner: Erst auf denselben Nenner bringen.",
+    b_gleich: "Gleicher Nenner: Nur die Zähler rechnen. Der Nenner bleibt, wie er ist.",
+    b_ungl: "Erst einen gemeinsamen Nenner suchen, dann beide Brüche erweitern, dann die Zähler rechnen.",
+    k_stelle: "Nach dem Komma: Die erste Stelle sind Zehntel, die zweite Hundertstel. 0,7 = 7 Zehntel, 0,07 = 7 Hundertstel.",
+    k_vgl: "Hänge Nullen an, bis beide gleich viele Stellen nach dem Komma haben: 0,5 = 0,50. Dann vergleichst du wie ganze Zahlen: 50 und 45.",
+    k_strahl: "Zähle die Schritte ab dem letzten beschrifteten Strich. Zwischen zwei ganzen Zahlen sind es 10 Schritte, jeder ist 0,1.",
+    k_plus: "Komma unter Komma. Fehlende Stellen mit 0 auffüllen: 2,5 = 2,50. Dann rechnen wie immer, das Komma rutscht mit nach unten.",
+    s_add: MERK_SCHRIFT, s_sub: MERK_SCHRIFT,
+    s_mul1: "Von rechts nach links malnehmen und den Übertrag dazuzählen.",
+    s_mul2: "Zwei Zeilen: erst mit den Zehnern, dann mit den Einern malnehmen, eine Stelle versetzt. Dann beide Zeilen addieren.",
+    s_div: "Schriftlich teilen: Wie oft passt der Teiler in die ersten Ziffern? Malnehmen, abziehen, die nächste Ziffer herunterholen.",
+    h_kann: "Stell es dir vor: Ist die Zahl für so etwas viel zu groß oder viel zu klein?",
+    h_runden: "Schau auf die Ziffer rechts von der Stelle, auf die du rundest: 0 bis 4 abrunden, 5 bis 9 aufrunden.",
+    h_ueber: MERK_UEBER, h_uebmal: MERK_UEBER, h_check: MERK_UEBER,
+    r_nah: "Plus 99: plus 100, dann 1 weniger. Minus 99: minus 100, dann 1 dazu.",
+    r_5: "Mal 5: erst mal 10, dann halbieren. 48 · 5 = 480 : 2 = 240.",
+    r_9: "Mal 9: erst mal 10, dann die Zahl einmal abziehen. 23 · 9 = 230 − 23 = 207.",
+    r_11: "Mal 11: mal 10 und die Zahl noch einmal dazu. 34 · 11 = 340 + 34 = 374.",
+    r_25: "Mal 25: erst mal 100, dann durch 4. 36 · 25 = 3600 : 4 = 900.",
+    r_dopp: "Halbieren und verdoppeln: Eine Zahl halb, die andere doppelt, das Ergebnis bleibt gleich.",
+    r_vgl: "Wird eine Zahl um etwas größer und die andere um genauso viel kleiner, bleibt die Summe gleich.",
+  };
+  const merkOf = (id) => MERK[id] || (/^e_/.test(id) ? MERK_BIG1x1 : /^t_/.test(id) ? MERK_TEXT : "");
 
   const SKILL_BY_ID = Object.fromEntries(SKILLS.map((s) => [s.id, s]));
   const SKILLS_OF = (area) => SKILLS.filter((s) => s.area === area);
@@ -2517,6 +2648,52 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
       `<rect x="${10 + i * w}" y="10" width="${w}" height="40" fill="${i < n ? "var(--lapis)" : "var(--card)"}" stroke="var(--ink)" stroke-width="2.2"/>`).join("")}</svg>`;
   }
 
+  // ---------- Bilder für Aufgaben und Schritte (Farben aus den Tokens, passen sich hell und dunkel an) ----------
+  // Zahlenstrahl von a bis b mit Strichen im Abstand step. labels: beschriftete Werte, marks: Punkte mit Text, arrow: Pfeil mit „?“
+  function strahlSVG(o) {
+    const { a, b, step } = o, n = Math.round((b - a) / step), x = (v) => 22 + (v - a) / (b - a) * 296, fmt = (v) => fz(Math.round(v * 1000) / 1000);
+    let s = `<line x1="14" y1="54" x2="330" y2="54" class="sl-axis"/><path d="M330 49L338 54L330 59Z" class="sl-tip"/>`;
+    for (let i = 0; i <= n; i++) {
+      const v = a + i * step, big = (o.labels || []).some((l) => Math.abs(l - v) < step / 10), mid = o.mid && i === n / 2;
+      s += `<line x1="${x(v).toFixed(1)}" x2="${x(v).toFixed(1)}" y1="${big ? 42 : mid ? 46 : 48}" y2="${big ? 66 : mid ? 62 : 60}" class="sl-tick${big ? " big" : ""}"/>`;
+      if (big) s += `<text x="${x(v).toFixed(1)}" y="82" class="sl-lab">${fmt(v)}</text>`;
+    }
+    (o.marks || []).forEach((m, i) => { const X = x(m.v).toFixed(1), y = i % 2 ? 14 : 28; s += `<line x1="${X}" x2="${X}" y1="${y + 4}" y2="50" class="sl-pin m${i}"/><circle cx="${X}" cy="54" r="5" class="sl-dot m${i}"/><text x="${X}" y="${y}" class="sl-mark m${i}">${m.label}</text>`; });
+    if (o.arrow !== undefined) { const X = x(o.arrow); s += `<path d="M${(X - 8).toFixed(1)} 22L${(X + 8).toFixed(1)} 22L${X.toFixed(1)} 40Z" class="sl-arrow"/><text x="${X.toFixed(1)}" y="16" class="sl-q">?</text>`; }
+    return `<svg class="strahl" viewBox="0 0 344 90" role="img" aria-label="${esc(o.label || "Zahlenstrahl")}">${s}</svg>`;
+  }
+  // Bruchstreifen untereinander: gleich lang, damit man die Größe direkt vergleichen kann
+  function stripsSVG(rows) {
+    const W = 250, H = 30;
+    const s = rows.map((r, j) => {
+      const y = 6 + j * (H + 12), w = W / r.d;
+      return `<text x="34" y="${y + H / 2 + 6}" class="st-lab">${r.n}/${r.d}</text>` + Array.from({ length: r.d }, (_, i) => `<rect x="${(46 + i * w).toFixed(1)}" y="${y}" width="${w.toFixed(1)}" height="${H}" class="${i < r.n ? `st-on s${j}` : "st-off"}"/>`).join("");
+    }).join("");
+    return `<svg class="strips" viewBox="0 0 304 ${rows.length * (H + 12) + 4}" role="img" aria-label="${rows.map((r) => `${r.n} von ${r.d} Teilen`).join(" und ")}">${s}</svg>`;
+  }
+  // Prüfungsmedaille: der Gott des Tempels in einem Ring aus Bronze, Silber oder Gold (g = 0: noch keine)
+  const MEDAL = ["#9b8a74", "#b9763a", "#a9b3bd", "#e0ad2c"], MEDAL_D = ["#6b5a42", "#7c4a1d", "#6c7680", "#a87a12"];
+  function medalSVG(area, g) {
+    // Gott als Gruppe einpassen (kein verschachteltes svg, damit allgemeine Bildregeln nichts verziehen)
+    const raw = godSVG(TEMPLE_BY_ID[area].god), m = raw.match(/viewBox="([^"]+)"[^>]*>([\s\S]*)<\/svg>\s*$/);
+    const [vx, vy, vw, vh] = m[1].split(/\s+/).map(Number), k = Math.min(40 / vw, 88 / vh);
+    const god = `<g transform="translate(${(40 + (40 - vw * k) / 2 - vx * k).toFixed(2)} ${(16 + (88 - vh * k) / 2 - vy * k).toFixed(2)}) scale(${k.toFixed(4)})">${m[2]}</g>`;
+    return `<svg class="medal${g ? "" : " none"}" viewBox="0 0 120 120" role="img" aria-label="Prüfungsmedaille ${GODS[TEMPLE_BY_ID[area].god].name}${g ? " in " + SEALS[g] : ", noch offen"}">
+      <circle cx="60" cy="60" r="56" fill="${MEDAL[g]}" stroke="${C.ink}" stroke-width="3"/><circle cx="60" cy="60" r="46" fill="${C.linen}" stroke="${MEDAL_D[g]}" stroke-width="5"/>${god}</svg>`;
+  }
+  // Ehrenzeichen: runde Plakette mit großer Zahl, Farbe nach Stufe (Bronze, Silber, Gold, Lapis)
+  function honorSVG(h, got) {
+    const col = ["#b9763a", "#a9b3bd", "#e0ad2c", "#2a4f9e"][h.tier], txt = h.tier === 3 ? "#fff" : C.ink;
+    return `<svg class="honor${got ? "" : " none"}" viewBox="0 0 120 120" role="img" aria-label="${esc(h.name)}">
+      <path d="M60 4L72 18L90 12L94 30L112 36L104 52L116 66L100 76L102 96L84 96L74 112L60 102L46 112L36 96L18 96L20 76L4 66L16 52L8 36L26 30L30 12L48 18Z" fill="${col}" stroke="${C.ink}" stroke-width="3" stroke-linejoin="round"/>
+      <circle cx="60" cy="60" r="34" fill="none" stroke="${txt}" stroke-width="2" opacity=".6"/>
+      <text x="60" y="${h.small ? 64 : 70}" text-anchor="middle" font-family="Marcellus, Georgia, serif" font-size="${h.small ? 22 : 32}" fill="${txt}">${h.big}</text>
+      <text x="60" y="88" text-anchor="middle" font-family="Andika, sans-serif" font-size="11" font-weight="700" fill="${txt}">${h.unit}</text></svg>`;
+  }
+  // Sonnenbarke für das Tagesziel
+  const BARQUE = `<svg class="barque" viewBox="0 0 48 30" aria-hidden="true"><circle cx="24" cy="10" r="7" fill="#e0ad2c" stroke="#2b2118" stroke-width="2"/><path d="M3 18Q24 30 45 18L41 24Q24 30 7 24Z" fill="#b9763a" stroke="#2b2118" stroke-width="2" stroke-linejoin="round"/><path d="M3 18L1 13M45 18L47 13" stroke="#2b2118" stroke-width="2" stroke-linecap="round"/></svg>`;
+
+
   // ---------- Hintergrund: Tempel von Luxor als Wachsmalstift-Zeichnung ----------
   // Blick über die Sphinx-Allee auf den Pylon mit Obelisk, zwei Sitzfiguren und Fahnenmasten,
   // dahinter die Papyrus-Säulen des Kolonnadenhofs, links der Nil, rechts Palmen.
@@ -2667,11 +2844,11 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
     mode: "auto", anteil: 40, sicher: "4in5", textShare: 40, lock: false,
     detektiv: true, frustN: 3, uebTag: true, retry: true,
     fx: true, vol: "mittel", speech: true, readBtn: true, name: "", titel: "f",
-    rewardEvery: 5, goldEvery: 50, mythen: true,
+    rewardEvery: 5, goldEvery: 50, mythen: true, goal: 20,
   };
   const CFG_RULE = {
     mode: ["auto", "manual"], sicher: ["3in3", "4in5", "9in10"], frustN: [0, 2, 3, 4, 5], vol: ["leise", "mittel", "laut"],
-    titel: ["f", "m"], rewardEvery: [3, 5, 10], goldEvery: [0, 50, 100],
+    titel: ["f", "m"], rewardEvery: [3, 5, 10], goldEvery: [0, 50, 100], goal: [0, 10, 15, 20, 30, 50],
   };
   const STAR_DAYS_KEEP = 6;   // so viele Übungstage merkt sich jede Aufgabenart
   const DATA_GEN = 2;   // 2: Laufbahn mit sieben Rängen (vorher fünf)
@@ -2681,6 +2858,7 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
     stufe: 2, lvl: "", lvlSince: 0,
     correct: 0, sincePup: 0, goldN: 0, bag: [], lastPup: "", pups: {}, treasures: [], docs: [], tg: {}, rank: 0,
     stats: {}, days: {}, err: {}, seq: 0, recentT: [], savedAt: 0,
+    exams: {}, honors: [], dayCount: 0, goalDay: "",
   });
   let state = freshState();
 
@@ -2737,8 +2915,9 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
       if (ids.has(id) && e && typeof e === "object") o.pups[id] = { n: int(e.n, 0, 1e5) ?? 1, g: int(e.g, 0, 1e5) ?? 0 };
     }
     o.treasures = Array.isArray(raw.treasures) ? raw.treasures.filter((x) => TREASURE_BY_ID[x]).slice(0, 200) : [];
-    o.docs = Array.isArray(raw.docs) ? raw.docs.filter((d) => d && typeof d === "object" && ["grade", "rank"].includes(d.t)).slice(-100).map((d) => ({
+    o.docs = Array.isArray(raw.docs) ? raw.docs.filter((d) => d && typeof d === "object" && ["grade", "rank", "exam", "honor"].includes(d.t) && (d.t !== "honor" || HONOR_BY_ID[d.h])).slice(-150).map((d) => ({
       t: d.t, a: AREAS.includes(d.a) ? d.a : "", g: int(d.g, 0, 3) ?? 0, r: int(d.r, 0, RANKS.length - 1) ?? 0, d: typeof d.d === "string" && DAY_RE.test(d.d) ? d.d : "",
+      ...(d.t === "honor" ? { h: d.h } : {}), ...(d.t === "exam" ? { ok: int(d.ok, 0, EXAM_N) ?? 0 } : {}),
     })) : [];
     if (raw.tg && typeof raw.tg === "object") AREAS.forEach((a) => { const g = int(raw.tg[a], 0, 3); if (g) o.tg[a] = g; });
     o.rank = int(raw.rank, 0, RANKS.length - 1) ?? 0;
@@ -2756,6 +2935,10 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
     o.seq = int(raw.seq, 0, 1e9) ?? 0;
     o.recentT = Array.isArray(raw.recentT) ? raw.recentT.filter((x) => typeof x === "string").slice(-30) : [];
     o.savedAt = typeof raw.savedAt === "number" && raw.savedAt > 0 ? raw.savedAt : 0;
+    if (raw.exams && typeof raw.exams === "object") AREAS.forEach((a) => { const e = raw.exams[a]; if (e && typeof e === "object") o.exams[a] = { g: int(e.g, 0, 3) ?? 0, d: typeof e.d === "string" && DAY_RE.test(e.d) ? e.d : "" }; });
+    o.honors = Array.isArray(raw.honors) ? [...new Set(raw.honors.filter((h) => HONOR_BY_ID[h]))] : [];
+    o.dayCount = Math.max(int(raw.dayCount, 0, 1e5) ?? 0, Object.keys(o.days).length);
+    o.goalDay = typeof raw.goalDay === "string" && DAY_RE.test(raw.goalDay) ? raw.goalDay : "";
     return o;
   }
 
@@ -2873,6 +3056,7 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
     if (t.tid) { state.recentT = [...state.recentT.filter((x) => x !== t.tid), t.tid].slice(-30); }
   }
   function nextTask() {
+    if (exam) return examTask();
     mem.cool = Math.max(0, mem.cool - 1);
     const all = enabledSkills();
     let plan = "normal", retry = null;
@@ -2904,7 +3088,9 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
     st.h = (st.h + code).slice(-10); st.n++;
     if (code >= 2) st.c++;
     st.l = ++state.seq;
-    const day = todayKey(), d = state.days[day] || (state.days[day] = [0, 0]);
+    const day = todayKey();
+    if (!state.days[day]) state.dayCount++;
+    const d = state.days[day] || (state.days[day] = [0, 0]);
     d[0]++; if (code >= 2) d[1]++;
     const keys = Object.keys(state.days).sort();
     if (keys.length > 120) keys.slice(0, keys.length - 120).forEach((k) => delete state.days[k]);
@@ -2912,7 +3098,7 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
     mem.codes.push(code); if (mem.codes.length > 30) mem.codes.shift();
     mem.miss = code === 0 ? mem.miss + 1 : 0;   // Schritte nutzen ist kein Misserfolg, nur das Zeigen der Lösung
     mem.streak = code >= 2 ? mem.streak + 1 : 0;
-    if (code <= 1 && state.cfg.retry && !t.retried) mem.retry.push({ skill: id, due: state.seq + R(5, 8) });
+    if (code <= 1 && state.cfg.retry && !t.retried && !exam) mem.retry.push({ skill: id, due: state.seq + R(5, 8) });
     // Sterne dieser Aufgabenart. Sie sinken nie.
     let g = st.c >= STAR_RULE.s1 ? 1 : 0;
     if (st.w && st.n >= STAR_RULE.s2n && st.c >= STAR_RULE.s2c) g = Math.max(g, 2);
@@ -2923,7 +3109,8 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
     if (tg > (state.tg[t.area] || 0)) { state.tg[t.area] = tg; out.grade = { a: t.area, g: tg }; state.docs.push({ t: "grade", a: t.area, g: tg, r: 0, d: day }); }
     const rk = rankCalc();
     if (rk > state.rank) { state.rank = rk; out.rank = rk; state.docs.push({ t: "rank", a: "", g: 0, r: rk, d: day }); }
-    out.stufe = stufeStep(code);
+    out.stufe = exam ? 0 : stufeStep(code);
+    out.honors = checkHonors();
     return out;
   }
 
@@ -2965,7 +3152,7 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
   // Stufe: steigt nach 15 Aufgaben mit mindestens 12 ohne Hilfe, sinkt nach 10 Aufgaben mit höchstens 4 ohne Hilfe
   function stufeStep(code) {
     state.lvl = (state.lvl + code).slice(-20); state.lvlSince++;
-    if (state.cfg.lock || state.cfg.mode !== "auto" || state.station) return 0;
+    if (state.cfg.lock || state.cfg.mode !== "auto" || state.station || exam) return 0;
     const last = (n) => state.lvl.slice(-n), okc = (s) => [...s].filter(isOk).length;
     if (state.lvlSince >= 15 && state.stufe < 5 && okc(last(15)) >= 12) { state.stufe++; state.lvl = ""; state.lvlSince = 0; return 1; }
     if (state.lvlSince >= 10 && state.stufe > 1 && okc(last(10)) <= 4) { state.stufe--; state.lvl = ""; state.lvlSince = 0; return -1; }
@@ -3016,13 +3203,78 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
   const toGold = () => { const G = state.cfg.goldEvery; return G ? G - (state.correct % G) : 0; };
   const nextGoldIsPup = () => state.goldN % 2 === 0 && PUPS.length > 0;
 
+  // ---------- Tagesziel und Serie ----------
+  const todayCount = () => (state.days[todayKey()] || [0, 0])[0];
+  function dayBefore(k) { const d = new Date(k + "T12:00"); d.setDate(d.getDate() - 1); const p = (n) => String(n).padStart(2, "0"); return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`; }
+  // Tage in Folge mit erreichtem Tagesziel. Heute zählt mit, sobald das Ziel geschafft ist; sonst endet die Serie gestern (ohne Druck).
+  function goalStreak() {
+    const G = state.cfg.goal; if (!G) return 0;
+    let k = todayKey(), n = 0;
+    if (!((state.days[k] || [0])[0] >= G)) k = dayBefore(k);
+    while ((state.days[k] || [0])[0] >= G) { n++; k = dayBefore(k); }
+    return n;
+  }
+  // Einmal am Tag melden, wenn das Ziel gerade erreicht wurde
+  function goalJustReached() {
+    const G = state.cfg.goal, k = todayKey();
+    if (!G || state.goalDay === k || todayCount() < G) return false;
+    state.goalDay = k; return true;
+  }
+
+  // ---------- Ehrenzeichen ----------
+  const passedExams = () => AREAS.filter((a) => state.exams[a] && state.exams[a].g >= 1).length;
+  const goldExams = () => AREAS.filter((a) => state.exams[a] && state.exams[a].g >= 3).length;
+  function honorValue(kind) { return kind === "serie" ? goalStreak() : kind === "tage" ? state.dayCount : kind === "auf" ? state.correct : kind === "pruef" ? passedExams() : goldExams(); }
+  function checkHonors() {
+    const got = [];
+    HONORS.forEach((h) => { if (!state.honors.includes(h.id) && honorValue(h.kind) >= h.n) { state.honors.push(h.id); state.docs.push({ t: "honor", a: "", g: 0, r: 0, d: todayKey(), h: h.id }); got.push(h.id); } });
+    return got;
+  }
+
+  // ---------- Prüfung: 10 Aufgaben aus einem Tempel, nur ohne Hilfe zählt ----------
+  let exam = null;
+  const examSkills = (area) => { const l = SKILLS_OF(area), ok = l.filter((s) => s.lv <= state.stufe); return ok.length ? ok : l.filter((s) => s.lv === Math.min(...l.map((x) => x.lv))); };
+  function canExam(area) {
+    if (!state.areas[area]) return { ok: false, why: "Dieser Tempel ist im Elternbereich abgeschaltet." };
+    if (!(state.tg[area] >= 1)) return { ok: false, why: `Die Prüfung gibt es, sobald du hier ${gradeName(1)} bist.` };
+    if (state.exams[area] && state.exams[area].d === todayKey()) return { ok: false, why: "Heute hast du hier schon eine Prüfung gemacht. Morgen geht es wieder." };
+    return { ok: true };
+  }
+  function examStart(area) { exam = { area, i: 0, ok: 0 }; mem.retry = []; mem.easy = 0; }
+  function examCancel() { exam = null; }
+  // Nach jeder Prüfungsaufgabe. Liefert am Ende das Ergebnis.
+  function examAnswer(code) {
+    if (!exam) return null;
+    exam.i++; if (code >= 2) exam.ok++;
+    if (exam.i < EXAM_N) return null;
+    const { area, ok } = exam, g = ok >= EXAM_N ? 3 : ok >= EXAM_N - 1 ? 2 : ok >= EXAM_PASS ? 1 : 0, prev = state.exams[area] ? state.exams[area].g : 0;
+    state.exams[area] = { g: Math.max(prev, g), d: todayKey() };
+    exam = null;
+    if (g) state.docs.push({ t: "exam", a: area, g, r: 0, d: todayKey(), ok });
+    return { area, ok, g, better: g > prev, honors: checkHonors() };
+  }
+  function examTask() {
+    const list = examSkills(exam.area), last = mem.skills[mem.skills.length - 1];
+    const pool = list.length > 1 ? list.filter((s) => s.id !== last) : list;
+    let t = null;
+    for (let k = 0; k < 20; k++) { t = makeFor(pick(pool)); if (acceptable(t, k < 12 ? 0 : 2)) break; }
+    t.pool = "pruef"; commit(t); return t;
+  }
+
   // Frustschutz
-  const needOffer = () => state.cfg.frustN > 0 && mem.miss >= state.cfg.frustN && mem.cool <= 0;
+  const needOffer = () => !exam && state.cfg.frustN > 0 && mem.miss >= state.cfg.frustN && mem.cool <= 0;
   const offerAnswered = (accepted) => { if (accepted) mem.easy = 2; mem.miss = 0; mem.cool = 8; };
 
   // Fehler-Detektiv: typische Flüchtigkeitsfehler bei Rechenaufgaben, ohne die Lösung zu verraten
   const OPNAME = { "+": "Plus", "−": "Minus", "·": "Mal", ":": "Geteilt" };
   function diagnose(t, val) {
+    // Kommazahlen: Ziffern richtig, Komma an falscher Stelle
+    if (/^k_/.test(t.skill) && Number.isFinite(val) && t.answer && typeof t.answer.value === "number") {
+      const r = t.answer.value, near = (x) => Math.abs(x - r) < 1e-9;
+      if (val !== r && [10, 100, 0.1, 0.01].some((f) => near(val * f))) return t.skill === "k_plus"
+        ? { kind: "komma", text: "Fast! Die Ziffern stimmen, aber das Komma ist verrutscht. Schreib Komma unter Komma und fülle mit Nullen auf." }
+        : { kind: "stelle", text: "Die Ziffern stimmen, aber die Stelle nicht: Zehntel stehen an der 1. Stelle nach dem Komma, Hundertstel an der 2." };
+    }
     if (!t.op || t.gap || !Number.isFinite(val) || val === t.result) return null;
     const a = t.a, b = t.b, r = t.result, d = val - r;
     const alt = t.op === "+" ? [a - b, a * b] : t.op === "−" ? [a + b] : t.op === "·" ? [a + b] : [a - b, a * b];
@@ -3060,7 +3312,7 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
   // ---------- LOGIK-ENDE ----------
 
   // ===================== APP: Speichern, Töne, Darstellung, Eingabe, Belohnungen, Eltern =====================
-  const VERSION = "2.4";
+  const VERSION = "3.0";
   const STORE_KEY = "rechenzeitreise-v1";
   const OLD_KEY = "rechen-geschichten-v1";
   const BACKUP_KEY = "rzr-backup-at";
@@ -3257,6 +3509,17 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
     $("statusText").innerHTML = `Noch <b>${toNext()}</b> bis zum nächsten Welpen` + (g ? `<br><span class="gold-line">${nextGoldIsPup() ? "Gold-Welpe" : "Goldschatz"} in <b>${g}</b></span>` : "");
     const sb = $("stufeBadge");
     sb.className = "stufe s" + state.stufe; sb.innerHTML = `<small>Stufe</small>${STUFEN[state.stufe]}`;
+    // Tagesziel: die Sonnenbarke fährt über den Himmel, bis das Ziel erreicht ist
+    const G = state.cfg.goal, tc = todayCount(), sr = goalStreak(), gr = $("goalRow");
+    gr.hidden = !G;
+    if (G) {
+      const pc = Math.min(100, tc / G * 100);
+      gr.innerHTML = `<span class="goal-txt">Tagesziel <b>${Math.min(tc, G)} von ${G}</b>${tc >= G ? " ✓" : ""}</span><span class="goal-track" role="img" aria-label="Tagesziel: ${Math.min(tc, G)} von ${G} Aufgaben"><span class="goal-fill" style="width:${pc}%"></span><span class="goal-boat" style="left:${pc}%">${BARQUE}</span></span>`
+        + `<span class="goal-serie">${sr ? `☀ ${sr} ${sr === 1 ? "Tag" : "Tage"} in Folge` : "Serie startet heute"}</span>`;
+    }
+    // Prüfung läuft: Leiste statt Tempelwahl
+    $("examBar").hidden = !exam; $("templeBtn").hidden = !!exam;
+    if (exam) { const t = TEMPLE_BY_ID[exam.area]; $("examBar").innerHTML = `<span class="tp-seal">${medalSVG(exam.area, 0)}</span><span><small>Prüfung im Tempel ${godArticle(t.god)} ${GODS[t.god].name}</small>Aufgabe ${Math.min(exam.i + 1, EXAM_N)} von ${EXAM_N} · ${exam.ok} ohne Hilfe richtig</span><button type="button" class="link-btn" id="examStop">Abbrechen</button>`; }
     const pts = rankPoints(), nx = RANKS[state.rank + 1], lo = RANKS[state.rank].min;
     $("rankBar").innerHTML = `<span class="rb-text"><small>Dein Rang</small><b>${rankName(state.rank)}</b></span><span class="rb-next">${pts} von ${MAX_POINTS} Punkten, ${rankNextLine()}<span class="minibar"><span style="width:${nx ? Math.min(100, (pts - lo) / (nx.min - lo) * 100) : 100}%"></span></span></span><span class="tp-change">Mein Weg</span>`;
     const found = Object.keys(state.pups).length;
@@ -3302,7 +3565,7 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
       if (i > ui.stepIdx) return "";
       const done = i < ui.stepIdx;
       const cls = ["step", st.type === "info" ? "info" : done ? (ui.shownSteps[i] ? "shown" : "done") : "active"].join(" ");
-      let b = `<p>${st.text}</p>`;
+      let b = `<p>${st.text}</p>${st.pic ? `<div class="step-pic">${st.pic}</div>` : ""}`;
       if (st.type === "choice") b += `<div class="choices small">${choicesHTML(st.options, st.value, "s" + i, done, ui.wrongPick && ui.wrongPick.scope === "s" + i ? ui.wrongPick.val : null)}</div>`;
       else if (st.type !== "info") b += `<div class="calc">${calcHTML(st, i)}</div>`;
       if (!done && st.type !== "info") {
@@ -3318,25 +3581,25 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
     const p2 = isText ? `<div class="phase"><h3>2 · Was wissen wir? Was suchen wir?</h3><ul>${task.given.map((g) => `<li>${g}</li>`).join("")}</ul>
       <p class="wanted">Gesucht: ${task.wanted}</p>${task.distractor ? `<p class="distract">Brauchst du nicht: „${task.distractor}“</p>` : ""}</div>` : "";
     return `<section class="helper" aria-label="Die Aufgabe in Schritten">${p1}${p2}
-      <div class="phase"><h3>${isText ? "3 · " : ""}Schritt für Schritt</h3>${task.paper || isText ? `<p class="paper-note">Rechne gern auf Papier mit.</p>` : ""}<ol class="steps">${steps}</ol>${fin}</div></section>`;
+      <div class="phase"><h3>${isText ? "3 · " : ""}Schritt für Schritt</h3>${merkOf(task.skill) ? `<p class="merk-card"><b>Merke:</b> ${merkOf(task.skill)}</p>` : ""}${task.paper || isText ? `<p class="paper-note">Rechne gern auf Papier mit.</p>` : ""}<ol class="steps">${steps}</ol>${fin}</div></section>`;
   }
   function eqHTML() {
     const ch = task.answer.type === "choice";
     let eq = task.eq;
     if (!ch) eq = eq.replace("?", `${slotHTML("main")}${task.answer.unit ? `<span class="unit">${esc(task.answer.unit)}</span>` : ""}`);
-    return `${task.prompt ? `<p class="question">${task.prompt}</p>` : ""}${task.pic ? `<div class="pic">${fracSVG(task.pic.shape, task.pic.n, task.pic.d)}</div>` : ""}<div class="equation">${eq}</div>`;
+    return `${task.prompt ? `<p class="question">${task.prompt}</p>` : ""}${task.pic ? `<div class="pic">${task.pic.kind === "strahl" ? strahlSVG(task.pic) : fracSVG(task.pic.shape, task.pic.n, task.pic.d)}</div>` : ""}<div class="equation">${eq}</div>`;
   }
   function render() {
     const a = task.answer, ch = a.type === "choice", T0 = TEMPLE_BY_ID[task.area];
     const label = task.kind === "text" ? TOPIC_LABEL[(T.find((x) => x.id === task.tid) || {}).topic] || T0.short : T0.short;
-    const tags = `<div class="tags"><span class="tag">${label}</span>${task.hard ? '<span class="tag knobel">Knobelaufgabe</span>' : ""}${state.cfg.uebTag && (task.pool === "ueb" || task.pool === "retry") ? '<span class="tag ueb">Übung</span>' : ""}</div>`;
+    const tags = `<div class="tags"><span class="tag">${label}</span>${task.hard ? '<span class="tag knobel">Knobelaufgabe</span>' : ""}${state.cfg.uebTag && (task.pool === "ueb" || task.pool === "retry") ? '<span class="tag ueb">Übung</span>' : ""}${task.pool === "pruef" ? '<span class="tag pruef">Prüfung</span>' : ""}</div>`;
     const bodyH = task.kind === "text"
       ? `<p class="story">${storyHTML()}</p>${tableHTML(task.table)}<p class="question">${task.question}</p>${ch ? "" : `<div class="answer-row"><span class="label">Antwort:</span>${slotHTML("main")}<span class="unit">${esc(a.unit || "")}</span></div>`}`
       : eqHTML();
     const sol = ui.solved ? `<p class="solution"><b>${ui.revealed ? "Lösung" : "Richtig"}:</b> ${task.sentence || solutionLine()}</p>` : "";
     const sk = ui.star ? SKILL_BY_ID[ui.star.id] : null;
     const starH = sk ? `<p class="star-up">${STAR(ui.star.g)} <b>Neuer Stern</b> für „${esc(sk.label)}“ im Tempel ${godArticle(TEMPLE_BY_ID[sk.area].god)} ${GODS[TEMPLE_BY_ID[sk.area].god].name}. <small>${esc(starNext(sk.id))}</small></p>` : "";
-    const nextLabel = ui.queue.length ? { pup: "Weiter zum Welpen", treasure: "Weiter zum Goldschatz", grade: "Weiter zur Urkunde", rank: "Weiter zur Urkunde", stufe: "Weiter" }[ui.queue[0].type] : "Nächste Aufgabe";
+    const nextLabel = ui.queue.length ? { pup: "Weiter zum Welpen", treasure: "Weiter zum Goldschatz", grade: "Weiter zur Urkunde", rank: "Weiter zur Urkunde", stufe: "Weiter", exam: "Zum Prüfungsergebnis", honor: "Weiter zum Ehrenzeichen" }[ui.queue[0].type] : "Nächste Aufgabe";
     const canRead = hasSpeech && state.cfg.readBtn && task.kind === "text";
     const actions = `<div class="actions">
       ${ui.solved || !task.steps.length ? "" : `<button type="button" class="btn help ${ui.nudge ? "nudge" : ""}" id="splitBtn" aria-expanded="${ui.helperOpen}">${ui.helperOpen ? "Schritte ausblenden" : "In Schritte zerlegen"}</button>`}
@@ -3406,9 +3669,16 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
     save();
     const msg = praise(code, task.hard);
     ui.fb = [code === 0 ? msg : msg + (ui.queue.length && ui.queue[0].type === "pup" ? " Ein Welpe wartet auf dich!" : ui.queue.length && ui.queue[0].type === "treasure" ? " Ein Goldschatz wartet!" : ""), "good"];
-    if (task.answer.type === "choice" && task.explain && task.kind === "text") ui.fb[0] += " " + task.explain;
+    if (task.answer.type === "choice" && ui.wrongPick && ui.wrongPick.scope === "main") ui.fb = [`Nicht ganz. ${task.explain || "Die richtige Antwort ist markiert."}${merkOf(task.skill) ? ` Merke: ${merkOf(task.skill)}` : ""}`, "try"];
+    else if (task.answer.type === "choice" && task.explain && task.kind === "text") ui.fb[0] += " " + task.explain;
+    // Prüfung, Ehrenzeichen, Tagesziel
+    const ex = examAnswer(code);
+    if (ex) ui.queue.push({ type: "exam", a: ex.area, ok: ex.ok, g: ex.g, better: ex.better });
+    [...(rec.honors || []), ...(ex ? ex.honors : [])].forEach((h) => ui.queue.push({ type: "honor", h }));
+    if (goalJustReached()) { ui.fb[0] += ` Tagesziel geschafft! Ra ist mit seiner Barke am Ziel.${goalStreak() > 1 ? ` Schon ${goalStreak()} Tage in Folge.` : ""}`; ui.goalHit = true; }
+    save();
     if (rec.star) ui.star = rec.star;
-    if (code >= 1) { (ui.queue.some((q) => q.gold || q.type === "treasure") ? SFX.gold : ui.queue.length ? SFX.pup : () => SFX.ok(mem.streak))(); speak(msg); }
+    if (code >= 1) { (ui.queue.some((q) => q.gold || q.type === "treasure") || ui.goalHit ? SFX.gold : ui.queue.length ? SFX.pup : () => SFX.ok(mem.streak))(); speak(msg); }
     else SFX.soft();
     if (needOffer()) ui.offer = true;
     render(); renderProgress(pop);
@@ -3421,7 +3691,7 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
     const pv = parse(val, task.answer.type), hint = state.cfg.detektiv && ui.tries === 1 && typeof pv === "number" ? diagnose(task, pv) : null;
     if (hint) state.err[hint.kind] = (state.err[hint.kind] || 0) + 1;
     if (ui.revealed) ui.fb = [`Die Lösung ist ${shown(task.answer)}. Tipp sie ein.`, "try"];
-    else if (ui.tries === 1) ui.fb = [hint ? hint.text : task.kind === "text" ? "Noch nicht. Lies die Frage noch einmal genau: Was ist gesucht?" : "Noch nicht ganz. Rechne in Ruhe noch einmal.", "try"];
+    else if (ui.tries === 1) ui.fb = [hint ? hint.text : task.kind === "text" ? "Noch nicht. Lies die Frage noch einmal genau: Was ist gesucht?" : merkOf(task.skill) ? `Noch nicht ganz. Merke: ${merkOf(task.skill)}` : "Noch nicht ganz. Rechne in Ruhe noch einmal.", "try"];
     else if (ui.tries === 2) { ui.fb = [ui.helperOpen ? "Schau dir die Schritte unten an und rechne sie nacheinander." : "Tipp: Drück auf „In Schritte zerlegen“. Dann geht es Stück für Stück.", "try"]; ui.nudge = !ui.helperOpen; }
     else { revealAll(); ui.fb = [`Die Lösung ist ${shown(task.answer)}. Schau dir unten die Schritte an und tipp die Lösung dann ein.`, "try"]; }
     render();
@@ -3549,6 +3819,22 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
   }
   function docText(q) {
     const who = state.cfg.name || "du", pts = rankPoints();
+    if (q.type === "exam") {
+      const t = TEMPLE_BY_ID[q.a], god = GODS[t.god];
+      if (!q.g) return { title: "Prüfung beendet", art: `<div class="doc-medal">${medalSVG(q.a, 0)}</div>`,
+        text: `${q.ok} von ${EXAM_N} Aufgaben ohne Hilfe richtig. Für eine Medaille brauchst du ${EXAM_PASS}. Das war trotzdem gutes Training: Jede Aufgabe zählt für deine Sterne und Pfoten.<span class="doc-why">Morgen kannst du die Prüfung im Tempel ${godArticle(t.god)} ${god.name} noch einmal versuchen.</span>`,
+        say: `${q.ok} von ${EXAM_N}. Morgen klappt es bestimmt!`, quietDoc: true };
+      return { title: "Prüfung bestanden!", art: `<div class="doc-medal">${medalSVG(q.a, q.g)}</div>`,
+        text: `${cap(who)} ${who === "du" ? "hast" : "hat"} die Prüfung im Tempel ${godArticle(t.god)} ${god.name} bestanden: <b>${q.ok} von ${EXAM_N}</b> ohne Hilfe. Medaille aus <b>${SEALS[q.g]}</b>.`
+          + `<span class="doc-why">${q.g < 3 ? `Mit ${q.g === 1 ? 9 : 10} von ${EXAM_N} wird sie ${q.g === 1 ? "silbern" : "golden"}. ` : "Gold ist die höchste Medaille. "}Die Medaille siehst du in der Sammlung unter „Ehren“.</span>`,
+        say: `Prüfung bestanden! Medaille aus ${SEALS[q.g]}.` };
+    }
+    if (q.type === "honor") {
+      const h = HONOR_BY_ID[q.h];
+      return { title: "Ehrenzeichen", art: `<div class="doc-medal">${honorSVG(h, true)}</div>`,
+        text: `<b>${esc(h.name)}</b>. ${HONOR_KIND[h.kind]}: ${h.n}.<span class="doc-why">Ehrenzeichen gibt es für Ausdauer und Prüfungen. Alle findest du in der Sammlung unter „Ehren“.</span>`,
+        say: `Ein Ehrenzeichen: ${h.name}!` };
+    }
     if (q.type === "grade") {
       const t = TEMPLE_BY_ID[q.a], g = GODS[t.god], about = (state.cfg.titel === "m" ? GRADE_ABOUT_M : GRADE_ABOUT)[q.g];
       return { title: q.g === 1 ? "Aufnahme in den Tempel" : q.g === 2 ? `Weihe ${zur()} ` + gradeName(2) : `Weihe ${zur()} ` + gradeName(3),
@@ -3564,12 +3850,13 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
   }
   const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
   function showDoc(q, quiet) {
+    if (!q.type) q = { ...q, type: q.t };   // gespeicherte Urkunden haben t statt type
     const d = docText(q);
     $("docTitle").textContent = d.title; $("docArt").innerHTML = d.art; $("docText").innerHTML = d.text;
     const n = state.cfg.name; $("docCart").textContent = hieroName(n); $("docCart").hidden = !n;
     $("docDate").textContent = q.d ? new Date(q.d + "T12:00").toLocaleDateString("de-DE") : new Date().toLocaleDateString("de-DE");
     openOverlay("doc"); $("docClose").focus();
-    if (!quiet) { SFX.doc(); speak(d.say); }
+    if (!quiet) { (d.quietDoc ? SFX.soft : SFX.doc)(); speak(d.say); }
   }
   function closeReward() { $("reward").hidden = true; afterOverlay(); }
   function afterOverlay() { if (ui && ui.solved && !overlayOpen()) { if (ui.queue.length) next(); else newTask(); } }
@@ -3585,7 +3872,7 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
     const pts = rankPoints(), cur = RANKS[state.rank], nx = RANKS[state.rank + 1], R_ = RULES[state.cfg.sicher] || RULES["4in5"];
     const sTot = AREAS.reduce((s, a) => s + starsIn(a), 0), sMax = AREAS.reduce((s, a) => s + starsMax(a), 0), tOpen = AREAS.filter((a) => (state.tg[a] || 0) > 0).length;
     const speech = nx ? `<p class="speech"><b>${RULERS[nx.ruler].name}:</b> „${nx.min - pts <= 0 ? "Gleich ist es so weit" : `Sammle noch ${ptsWord(nx.min - pts)}`}, dann ernenne ich dich ${zur()} ${rankName(state.rank + 1)}.“</p>`
-      : `<p class="speech"><b>Hatschepsut:</b> „Du regierst nun selbst. Sammle weiter Sterne, bis du in allen Tempeln ${gradeName(3)} bist.“</p>`;
+      : `<p class="speech"><b>Hatschepsut:</b> „Du regierst nun selbst. Jetzt warten neue Aufgaben: Bestehe in allen 8 Tempeln die Prüfung mit Gold und sammle die Ehrenzeichen. Du findest sie unter ‚Ehren‘.“</p>`;
     const ticks = RANKS.slice(1).map((r) => `<span class="tick${pts >= r.min ? " on" : ""}" style="left:${r.min / MAX_POINTS * 100}%" title="${rankName(RANKS.indexOf(r))}"></span>`).join("");
     const temples = TEMPLES.map((t) => {
       const g = state.tg[t.id] || 0, nt = templeNext(t.id);
@@ -3646,13 +3933,20 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
     } else if (collTab === "weg") {
       info.textContent = "";
       body.innerHTML = wegHTML();
+    } else if (collTab === "ehren") {
+      const vals = { serie: goalStreak(), tage: state.dayCount, auf: state.correct, pruef: passedExams(), gold: goldExams() };
+      info.textContent = "Medaillen gibt es für Prüfungen in den Tempeln, Ehrenzeichen für Ausdauer. Beides bleibt dir für immer.";
+      body.innerHTML = `<h3 class="coll-h">Prüfungsmedaillen</h3><p class="note">Prüfungen findest du in jedem Tempel unter „Mein Weg“, sobald du dort ${gradeName(1)} bist.</p>
+        <div class="medal-grid">${TEMPLES.map((t) => { const e = state.exams[t.id], g = e ? e.g : 0; return `<button type="button" class="medal-item" data-temple="${t.id}">${medalSVG(t.id, g)}<span>${GODS[t.god].name}</span><small>${g ? SEALS[g] : "noch offen"}</small></button>`; }).join("")}</div>
+        <h3 class="coll-h">Ehrenzeichen</h3>
+        <div class="honor-grid">${HONORS.map((h) => { const got = state.honors.includes(h.id); return `<div class="honor-item${got ? "" : " locked"}">${honorSVG(h, got)}<b>${esc(h.name)}</b><small>${got ? "erreicht" : h.kind === "serie" && !state.cfg.goal ? "Tagesziel ist ausgeschaltet" : `${Math.min(vals[h.kind], h.n)} von ${h.n}`}</small></div>`; }).join("")}</div>`;
     } else if (collTab === "pharao") {
       info.textContent = "Sechs berühmte Herrscherinnen und Herrscher begleiten deinen Weg. Jede und jeder verleiht dir einen Rang. Tipp auf ein Bild, dann erfährst du ihre Geschichte.";
       body.innerHTML = pharaoHTML();
     } else {
       const docs = state.docs.slice().reverse();
       info.textContent = docs.length ? "Alle deine Urkunden. Tipp darauf, um sie noch einmal anzusehen." : "Noch keine Urkunde. Urkunden gibt es für jeden neuen Grad in einem Tempel und für jeden neuen Rang.";
-      body.innerHTML = `<ul class="doc-list">${docs.map((d, i) => `<li><button type="button" class="link-btn" data-doc="${docs.length - 1 - i}">${d.t === "grade" ? `${gradeName(d.g)} im Tempel ${godArticle(TEMPLE_BY_ID[d.a].god)} ${GODS[TEMPLE_BY_ID[d.a].god].name}` : rankName(d.r)}</button> <small>${d.d ? new Date(d.d + "T12:00").toLocaleDateString("de-DE") : ""}</small></li>`).join("")}</ul>`;
+      body.innerHTML = `<ul class="doc-list">${docs.map((d, i) => `<li><button type="button" class="link-btn" data-doc="${docs.length - 1 - i}">${d.t === "grade" ? `${gradeName(d.g)} im Tempel ${godArticle(TEMPLE_BY_ID[d.a].god)} ${GODS[TEMPLE_BY_ID[d.a].god].name}` : d.t === "exam" ? `Prüfung im Tempel ${godArticle(TEMPLE_BY_ID[d.a].god)} ${GODS[TEMPLE_BY_ID[d.a].god].name} (${SEALS[d.g]})` : d.t === "honor" ? `Ehrenzeichen: ${esc(HONOR_BY_ID[d.h].name)}` : rankName(d.r)}</button> <small>${d.d ? new Date(d.d + "T12:00").toLocaleDateString("de-DE") : ""}</small></li>`).join("")}</ul>`;
     }
     openOverlay("coll");
   }
@@ -3690,7 +3984,14 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
        <ul class="grade-steps">${[1, 2, 3].map((k) => `<li class="${cur >= k ? "on" : ""}"><b>${gradeName(k)}</b> (${ptsWord(k)}): ${needs[k]} ${needs[k] === 1 ? "Aufgabenart" : "Aufgabenarten"} mit ${"★".repeat(k)}</li>`).join("")}</ul>
        ${nt ? `<p class="goal-line">Dein nächstes Ziel: <b>${gradeName(nt.g)}</b>. Du hast ${nt.have} von ${nt.need}.</p>` : `<p class="goal-line">Du bist ${gradeName(3)} in diesem Tempel!</p>`}
        <ul class="skill-list">${rows}</ul>`,
-      state.areas[id] ? [[`In diesem Tempel rechnen`, () => { setStation(id); }]] : []);
+      [...(canExam(id).ok ? [[`Prüfung ablegen (${EXAM_N} Aufgaben)`, () => startExam(id)]] : []), ...(state.areas[id] ? [[`In diesem Tempel rechnen`, () => { setStation(id); }]] : [])]);
+    const ce = canExam(id), ex = state.exams[id];
+    $("detailText").insertAdjacentHTML("beforeend", `<div class="exam-info"><span class="exam-medal">${medalSVG(id, ex ? ex.g : 0)}</span><p><b>Prüfung:</b> ${EXAM_N} Aufgaben aus diesem Tempel. Nur ohne Hilfe zählt. ${EXAM_PASS} richtig = Bronze, ${EXAM_N - 1} = Silber, ${EXAM_N} = Gold. ${ex && ex.g ? `Deine beste Medaille: <b>${SEALS[ex.g]}</b>.` : ""} ${ce.ok ? "" : ce.why}</p></div>`);
+  }
+  function startExam(area) {
+    OVERLAYS.forEach((x) => { if (x !== "parents") $(x).hidden = true; });
+    examStart(area); newTask(); renderProgress();
+    ui.fb = [`Die Prüfung beginnt: ${EXAM_N} Aufgaben aus dem Tempel ${godArticle(TEMPLE_BY_ID[area].god)} ${GODS[TEMPLE_BY_ID[area].god].name}. Rechne in Ruhe, nur ohne Hilfe zählt.`, "good"]; render();
   }
   function detail(title, art, text, btns = []) {
     $("detailTitle").textContent = title; $("detailArt").innerHTML = art; $("detailText").innerHTML = text;
@@ -3743,6 +4044,7 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
     if (e.target.closest("#splitBtn")) { toggleHelper(); return; }
     if (e.target.closest("#readBtn")) { speak(sayable(task.kind === "text" ? task.story + " " + task.question : (task.prompt || "") + " " + task.eq), true); return; }
     if (e.target.closest("#nextBtn")) next();
+    if (e.target.closest("#examStop")) { examCancel(); renderProgress(); newTask(); }
   });
   const KEYS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "sep", "0", "del", "ok"];
   $("pad").innerHTML = KEYS.map((k) => k === "del" ? `<button class="key del" type="button" data-k="del" aria-label="Löschen">Löschen</button>`
@@ -3770,7 +4072,7 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
   const opt = (v, cur, label) => `<option value="${v}"${String(v) === String(cur) ? " selected" : ""}>${label}</option>`;
   const chk = (key, label, note) => `<label class="row-check"><input type="checkbox" id="cfg-${key}" data-cfg="${key}"${state.cfg[key] ? " checked" : ""}><span>${label}${note ? `<small>${note}</small>` : ""}</span></label>`;
   // ---------- Lernverlauf: zwei Wochen als Säulen, Vergleich der Wochen, Wackelkandidaten, Fehlerarten, Sterne je Tempel ----------
-  const ERR_WORD = { op: "Rechenzeichen verwechselt", copy: "Zahl aus der Aufgabe abgeschrieben", dig: "Ziffern vertauscht", row: "Reihe um eins verrechnet", ten: "Zehner- oder Hunderterübergang", one: "um 1 daneben" };
+  const ERR_WORD = { op: "Rechenzeichen verwechselt", copy: "Zahl aus der Aufgabe abgeschrieben", dig: "Ziffern vertauscht", row: "Reihe um eins verrechnet", ten: "Zehner- oder Hunderterübergang", one: "um 1 daneben", komma: "Komma verrutscht", stelle: "Zehntel und Hundertstel verwechselt" };
   function dayKeys(n) {
     const out = [], p = (x) => String(x).padStart(2, "0");
     for (let i = n - 1; i >= 0; i--) { const d = new Date(); d.setHours(12, 0, 0, 0); d.setDate(d.getDate() - i); out.push(`${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`); }
@@ -3796,6 +4098,7 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
         <p>Diese Woche: <b>${thisW[0]}</b> Aufgaben, <b>${pct(thisW)} %</b> ohne Hilfe${trend ? ` (${trend})` : ""}. Letzte Woche: ${lastW[0]} Aufgaben${lastW[0] ? `, ${pct(lastW)} %` : ""}.</p>
         <svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(label)}"><line class="b-base" x1="0" x2="${W}" y1="${base}" y2="${base}"/>${bars}</svg>
         <p class="note legend"><span class="sw ok"></span>ohne Hilfe richtig <span class="sw all"></span>alle Aufgaben des Tages. Wochentage unten, heute ganz rechts.</p>
+        <p>Tagesziel: ${state.cfg.goal ? `${state.cfg.goal} Aufgaben, heute ${todayCount()}, Serie ${goalStreak()} ${goalStreak() === 1 ? "Tag" : "Tage"}` : "aus"}. Rechentage insgesamt: ${state.dayCount}. Prüfungen bestanden: ${passedExams()} von 8${goldExams() ? `, davon ${goldExams()} in Gold` : ""}.</p>
         <h4>Sterne je Tempel</h4><ul class="tstars">${tbars}</ul>
         <h4>Das wackelt gerade</h4>
         ${wobbly.length ? `<ul class="lern">${wobbly.map((s) => `<li><span>${esc(s.label)} <small>${esc(s.ex)}</small></span><span class="pill wackelig">${Math.round(rate10(s.id) * 100)} % ohne Hilfe</span></li>`).join("")}</ul><p class="note">Diese Arten kommen in der Automatik öfter als Übung dran.</p>` : `<p class="note">Im Moment wackelt nichts. Das ist ein gutes Zeichen.</p>`}
@@ -3835,6 +4138,8 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
       </section>
       <section class="psec"><h3>Belohnungen</h3>
         <label class="row-sel" for="cfg-rewardEvery">Ein Welpe alle <select id="cfg-rewardEvery" data-cfg-sel="rewardEvery">${[3, 5, 10].map((n) => opt(n, c.rewardEvery, `${n} Aufgaben`)).join("")}</select></label>
+        <label class="row-sel" for="cfg-goal">Tagesziel <select id="cfg-goal" data-cfg-sel="goal">${CFG_RULE.goal.map((n) => opt(n, c.goal, n ? `${n} Aufgaben am Tag` : "aus")).join("")}</select></label>
+        <p class="note">Das Tagesziel zeigt eine Sonnenbarke auf der Startseite und zählt die Tage in Folge. Es gibt keine Strafe, wenn ein Tag ausfällt. Die Serie beginnt dann einfach neu.</p>
         <label class="row-sel" for="cfg-goldEvery">Gold alle <select id="cfg-goldEvery" data-cfg-sel="goldEvery">${[0, 50, 100].map((n) => opt(n, c.goldEvery, n ? `${n} Aufgaben` : "nie")).join("")}</select></label>
         ${chk("mythen", "Kleine Geschichten aus den Mythen zeigen", "Kindgerecht erzählt, zum Beispiel wie Isis die Teile wieder zusammenfügt.")}
         <p class="note">${PUPS.length} Welpenfotos, keines doppelt, bevor alle einmal dran waren. ${PUPS.filter((p) => !p.credit).length ? `${PUPS.filter((p) => !p.credit).length} davon sind Übergangsfotos ohne freie Lizenz.` : "Alle Fotos sind gemeinfrei oder CC0 (Wikimedia Commons)."}</p>
@@ -3992,7 +4297,7 @@ details summary { cursor: pointer; font-weight: 700; } details summary small { c
   let pendingImport = null;
 
   // Für automatische Tests
-  window.__rzr = { exportLog, log: () => logList, SKILLS, T, state: () => state, setState: (s) => { state = s; }, nextTask, recordResult, countReward, sanitize, mem, cur: () => ({ task, ui }), clock, statusOf, templeGradeCalc, newTask };
+  window.__rzr = { MERK, exportLog, log: () => logList, SKILLS, T, state: () => state, setState: (s) => { state = s; }, nextTask, recordResult, countReward, sanitize, mem, cur: () => ({ task, ui }), clock, statusOf, templeGradeCalc, newTask };
 
   // ---------- Start ----------
   try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) { /* kein Problem */ }
